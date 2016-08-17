@@ -1,0 +1,206 @@
+//          VARIABLES
+
+// $header-font: 'Francois One', sans-serif;
+// $main-font: 'Open Sans', sans-serif;
+$header-font: sans-serif;
+$main-font: sans-serif;
+
+$red: #ec5151;
+$orange: #fab54e;
+$yellow: #faed4e;
+$green: #6ccb6c;
+$aqua: #4bedee;
+$blue: #34b3ff;
+$indigo: #8787ff;
+$purple: #c18be2;
+
+$dark-grey: #3e3f50;
+$light-grey: #e4e4e6;
+
+//           RESET
+
+html, body, header, nav, h1, a,
+ul, li, strong, main, button, i,
+section, img, div, h2, p, form,
+fieldset, label, input, textarea,
+span, article, footer, time, small, div, img {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  vertical-align: inherit;
+  box-sizing: inherit;
+  background: transparent;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+input[type="password"],
+input[type="email"],
+input[type="text"],
+input[type="submit"],
+textarea,
+button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+button,
+input[type="submit"] {
+  cursor: pointer;
+}
+
+/* Clearfix */
+
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+
+//      END RESET
+
+
+//      UNIVERSAL CSS
+
+
+.red {
+  color: $red;
+}
+
+.orange {
+  color: $orange;
+}
+
+.yellow {
+  color: $yellow;
+}
+
+.green {
+  color: $green;
+}
+
+.aqua {
+  color: $aqua;
+}
+
+.blue {
+  color: $blue;
+}
+
+.indigo {
+  color: $indigo;
+}
+
+.purple {
+  color: $purple;
+}
+
+
+
+
+
+
+.main-page {
+  width: 800px;
+  height: 600px;
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  font-family: $main-font;
+
+  header {
+    font-size: 40px;
+    text-align: center;
+    letter-spacing: .2px;
+    font-family: $header-font;
+    color: #3e3f50;
+  }
+
+}
+
+
+.screen {
+  width: 400px;
+  height: 400px;
+  margin: 20px auto;
+  border: $light-grey 2px solid;
+  position: relative;
+}
+
+.play-button {
+  line-height: 400px;
+  text-align: center;
+
+  button:hover {
+    color: $indigo;
+  }
+
+}
+
+.dot-cont {
+  height: 25px;
+  width: 25px;
+  // border: 1px solid black;
+  overflow: hidden;
+  position: absolute;
+
+  div {
+    position: absolute;
+    text-shadow: 1px 0px 3px #d7d7d7;
+    // unselectable
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+}
+
+.square {
+  font-family: sans-serif;
+  font-size: 52px;
+  top: -23.5px;
+  left: -.8px;
+}
+
+.heart {
+  font-family: serif;
+  font-size: 25px;
+  top: -2px;
+  left: 3px;
+}
+
+.circle {
+  font-size: 60px;
+  top: -22px;
+  left: 2px;
+  font-family: serif;
+}
+
+.triangle {
+  font-family: sans-serif;
+  font-size: 55px;
+  top: -25.5px;
+  left: -3px;
+}
+
+.star {
+  font-family: sans-serif;
+  font-size: 24px;
+  top: -4px;
+  left: 0.5px;
+}

@@ -1,0 +1,27 @@
+{
+  "name": "swopdotz",
+  "version": "1.0.0",
+  "description": "swopdotz",
+  "main": "application.jsx",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "webpack": "webpack --watch"
+  },
+  "dependencies": {
+    "babel-core": "^6.13.2",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.11.1",
+    "react": "^15.3.0",
+    "react-addons-css-transition-group": "^15.3.0",
+    "react-dom": "^15.3.0",
+    "react-drag-and-drop": "^2.0.2",
+    "react-router": "^2.6.1",
+    "webpack": "^1.13.1"
+  },
+  "devDependencies": {},
+  "author": "RB Embleton",
+  "license": "ISC"
+}

@@ -1,0 +1,140 @@
+html, body, header, nav, h1, a,
+ul, li, strong, main, button, i,
+section, img, div, h2, p, form,
+fieldset, label, input, textarea,
+span, article, footer, time, small, div, img {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  vertical-align: inherit;
+  box-sizing: inherit;
+  background: transparent; }
+
+ul {
+  list-style: none; }
+
+img {
+  display: block;
+  width: 100%;
+  height: auto; }
+
+input[type="password"],
+input[type="email"],
+input[type="text"],
+input[type="submit"],
+textarea,
+button {
+  -webkit-appearance: none;
+  -moz-appearance: none; }
+
+button,
+input[type="submit"] {
+  cursor: pointer; }
+
+/* Clearfix */
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both; }
+
+.red {
+  color: #ec5151; }
+
+.orange {
+  color: #fab54e; }
+
+.yellow {
+  color: #faed4e; }
+
+.green {
+  color: #6ccb6c; }
+
+.aqua {
+  color: #4bedee; }
+
+.blue {
+  color: #34b3ff; }
+
+.indigo {
+  color: #8787ff; }
+
+.purple {
+  color: #c18be2; }
+
+.main-page {
+  width: 800px;
+  height: 600px;
+  display: block;
+  margin: auto;
+  margin-top: 60px;
+  font-family: sans-serif; }
+  .main-page header {
+    font-size: 40px;
+    text-align: center;
+    letter-spacing: .2px;
+    font-family: sans-serif;
+    color: #3e3f50; }
+
+.screen {
+  width: 400px;
+  height: 400px;
+  margin: 20px auto;
+  border: #e4e4e6 2px solid;
+  position: relative; }
+
+.play-button {
+  line-height: 400px;
+  text-align: center; }
+  .play-button button:hover {
+    color: #8787ff; }
+
+.dot-cont {
+  height: 25px;
+  width: 25px;
+  overflow: hidden;
+  position: absolute; }
+  .dot-cont div {
+    position: absolute;
+    text-shadow: 1px 0px 3px #d7d7d7;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; }
+
+.square {
+  font-family: sans-serif;
+  font-size: 52px;
+  top: -23.5px;
+  left: -.8px; }
+
+.heart {
+  font-family: serif;
+  font-size: 25px;
+  top: -2px;
+  left: 3px; }
+
+.circle {
+  font-size: 60px;
+  top: -22px;
+  left: 2px;
+  font-family: serif; }
+
+.triangle {
+  font-family: sans-serif;
+  font-size: 55px;
+  top: -25.5px;
+  left: -3px; }
+
+.star {
+  font-family: sans-serif;
+  font-size: 24px;
+  top: -4px;
+  left: 0.5px; }
+
+/*# sourceMappingURL=application.css.map */
