@@ -4,7 +4,8 @@ const Dot = require('./dot');
 let CircleDot = function (options) {
   Dot.call(this, {
     color: options.color,
-    pos: options.pos
+    pos: options.pos,
+    id: options.id
   });
   this.shape = 'circle';
   this.icon = '•';

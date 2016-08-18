@@ -149,6 +149,8 @@ input[type="submit"] {
 .dot-holder {
   position: absolute;
   z-index: 1;
-  background-color: black; }
+  width: 23px;
+  height: 23px;
+  margin: 1px; }
 
 /*# sourceMappingURL=application.css.map */

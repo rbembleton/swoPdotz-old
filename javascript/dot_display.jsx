@@ -3,11 +3,12 @@ const PropTypes = React.PropTypes;
 const Dots = require('./dots/all_dots');
 const Colors = require('./constants/colors');
 const Shapes = require('./constants/shapes');
+const DotsStore = require('./flux/dots_store');
 import { DragSource } from 'react-dnd';
 
 const dotSource = {
   beginDrag(props) {
-    return {};
+    return { dot: props.dot };
   }
 };
 
@@ -19,59 +20,40 @@ function collect(connect, monitor) {
 }
 
 
-const Dot = React.createClass({
+const DotDisplay = React.createClass({
 
   getInitialState () {
-    return({ pos: this.props.dot.pos, specialClass: '', specialStyle: {} });
+    return({ pos: this.props.pos, specialClass: '', specialStyle: {} });
   },
-
-  // propTypes: {
-  //   connectDragSource: PropTypes.func.isRequired,
-  //   isDragging: PropTypes.bool.isRequired
-  // },
 
   changePos(e) {
     const newPos = [
       ((e.pageX - this.props.offset[0]) / 25) ,
       ((this.props.offset[1] - e.pageY) / 25)
     ];
-    console.log(newPos);
-    // this.removeSpecialClass('highlighted');
-    // this.setSpecialClass('selected');
     this.setState({ pos: newPos });
-    // this.props.dot.pos = this.state.pos;
   },
 
-  confirmPos(e) {
+  switchDots(e) {
+    e.preventDefault();
+
   },
 
-  // setSpecialClass(string) {
-  //   if (!this.state.specialClass.includes(string)) {
-  //     const newSpecialClass = this.state.specialClass + " " + string;
-  //     this.setState({specialClass: newSpecialClass});
-  //   }
+  // componentWillReceiveProps() {
+  //   this.setState({ pos: this.props.pos });
   // },
-  //
-  // removeSpecialClass(string) {
-  //   if (this.state.specialClass.includes(string)) {
-  //     const newSpecialClass = this.state.specialClass.replace(" " + string, "");
-  //     this.setState({specialClass: newSpecialClass});
-  //   }
-  // },
-  //
-  // highlight(e) {
-  //   this.setSpecialClass('highlighted');
-  // },
-  //
-  // unhighlight(e) {
-  //   this.removeSpecialClass('highlighted');
-  // },
-  //
-  // switchDots(e) {
-  //   e.preventDefault();
-  //   debugger
-  //   this.removeSpecialClass('selected');
-  // },
+
+  componentDidMount () {
+    this.dotListener = DotsStore.addListener(this.updateDot);
+  },
+
+  componentWillUnmount () {
+    this.dotListener.remove();
+  },
+
+  updateDot () {
+    this.setState({ pos: DotsStore.byId(this.props.dot.id).pos });
+  },
 
   render () {
 
@@ -92,8 +74,6 @@ const Dot = React.createClass({
         className={"dot-cont " + addedClass}
         style={pos}
         onDrag={this.changePos}
-        onMouseEnter={this.highlight}
-        onMouseLeave={this.unhighlight}
         onDrop={this.switchDots}
       >
         <div className={this.props.dot.color + " " + this.props.dot.shape}>
@@ -105,5 +85,10 @@ const Dot = React.createClass({
 
 });
 
-module.exports = DragSource('Dot', dotSource, collect)(Dot);
+DotDisplay.propTypes = {
+  connectDragSource: PropTypes.func.isRequired,
+  isDragging: PropTypes.bool.isRequired
+};
+
+module.exports = DragSource('Dot', dotSource, collect)(DotDisplay);
 // module.exports = Dot;

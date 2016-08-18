@@ -4,7 +4,8 @@ const Dot = require('./dot');
 let SquareDot = function (options) {
   Dot.call(this, {
     color: options.color,
-    pos: options.pos
+    pos: options.pos,
+    id: options.id
   });
   this.shape = 'square';
   this.icon = '▪';
