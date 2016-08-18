@@ -63,7 +63,7 @@ score          | integer    |
 
 - [x] Create file structure
 - [x] Assemble colors and symbols
-- [ ] Implement basic tile swapping
+- [x] Implement basic tile swapping
 - [x] Implement simple and elegant CSS
 
 ### Day Two

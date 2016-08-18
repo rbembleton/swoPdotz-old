@@ -47,6 +47,11 @@ function switchDots(dots) {
   _dotsByPos[dot2.pos[0]][dot2.pos[1]] = dot2;
 }
 
+function snapDot(dot) {
+  _dotsByPos[dot.pos[0]][dot.pos[1]] = dot;
+  _dotsById[dot.id] = dot;
+}
+
 function objDeepDup(obj) {
   let newObject = {};
 
@@ -97,6 +102,9 @@ DotsStore.__onDispatch = function (payload) {
       break;
     case DotActionConstants.SWITCH_DOTS:
       switchDots(payload.dots);
+      break;
+    case DotActionConstants.SNAP_DOT_TO_ORIGIN:
+      snapDot(payload.dot);
       break;
   }
   DotsStore.__emitChange();

@@ -23,7 +23,7 @@ const Game = React.createClass({
   componentDidMount () {
     this.dotsListener = DotsStore.addListener(this.updateDots);
     DotActions.initializeDots();
-    
+
     this.windowListener = window.addEventListener("resize", this.updateOffset);
     let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
 
@@ -83,9 +83,21 @@ const Game = React.createClass({
 });
 
 export function  swapDots (pos, dot) {
-   const dotToSwap = DotsStore.at(pos);
-   DotActions.switchDots(dotToSwap, dot);
+  if (posInRange(pos, dot.pos)) {
+    const dotToSwap = DotsStore.at(pos);
+    DotActions.switchDots(dotToSwap, dot);
+  } else {
+    DotActions.snapToOrigin(dot);
+  }
+}
+
+function posInRange(pos1, pos2) {
+  return (
+    (pos1[0] + 1 === pos2[0] && pos1[1] === pos2[1]) ||
+    (pos1[0] - 1 === pos2[0] && pos1[1] === pos2[1]) ||
+    (pos1[0] === pos2[0] && pos1[1] + 1 === pos2[1]) ||
+    (pos1[0] === pos2[0] && pos1[1] - 1 === pos2[1])
+  );
 }
 
 module.exports = DragDropContext(HTML5Backend)(Game);
-// module.exports = Game;

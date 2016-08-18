@@ -4,18 +4,26 @@ const Dots = require('./dots/all_dots');
 const Colors = require('./constants/colors');
 const Shapes = require('./constants/shapes');
 const DotsStore = require('./flux/dots_store');
+const DotActions = require('./flux/dot_actions');
 import { DragSource } from 'react-dnd';
 
 const dotSource = {
   beginDrag(props) {
     return { dot: props.dot };
+  },
+  endDrag(props, monitor) {
+    if (!monitor.didDrop()) {
+      DotActions.snapToOrigin(props.dot);
+    }
+    // return { dot: props.dot };
   }
 };
 
 function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
+    dragOver: monitor.didDrop()
   };
 }
 
@@ -31,12 +39,17 @@ const DotDisplay = React.createClass({
       ((e.pageX - this.props.offset[0]) / 25) ,
       ((this.props.offset[1] - e.pageY) / 25)
     ];
+
+    if (newPos[0] < 0) {newPos[0] = 0;}
+    if (newPos[1] < 0) {newPos[1] = 0;}
+    if (newPos[0] > 15) {newPos[0] = 15;}
+    if (newPos[1] > 15) {newPos[1] = 15;}
+
     this.setState({ pos: newPos });
   },
 
   switchDots(e) {
     e.preventDefault();
-
   },
 
   // componentWillReceiveProps() {
@@ -54,6 +67,11 @@ const DotDisplay = React.createClass({
   updateDot () {
     this.setState({ pos: DotsStore.byId(this.props.dot.id).pos });
   },
+
+  checkPos () {
+    console.log('hi');
+  },
+
 
   render () {
 
@@ -74,7 +92,6 @@ const DotDisplay = React.createClass({
         className={"dot-cont " + addedClass}
         style={pos}
         onDrag={this.changePos}
-        onDrop={this.switchDots}
       >
         <div className={this.props.dot.color + " " + this.props.dot.shape}>
           {this.props.dot.icon}

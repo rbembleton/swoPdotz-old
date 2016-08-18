@@ -10,6 +10,13 @@ const DotActions = {
     });
   },
 
+  snapToOrigin(dot) {
+    AppDispatcher.dispatch({
+      actionType: DotActionConstants.SNAP_DOT_TO_ORIGIN,
+      dot: dot
+    });
+  },
+
   initializeDots() {
     AppDispatcher.dispatch({
       actionType: DotActionConstants.INITIALIZE_DOTS,
