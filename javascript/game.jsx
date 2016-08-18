@@ -12,10 +12,10 @@ const Game = React.createClass({
 
 
   componentDidMount () {
-    window.addEventListener("resize", this.updateOffset);
+    this.windowListener = window.addEventListener("resize", this.updateOffset);
     let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
     console.log(myRect);
-    this.setState({offset: [myRect.left + 10, myRect.bottom + 390]});
+    this.setState({offset: [myRect.left + 12.5, myRect.bottom + 387.5]});
     this.initializeDots();
   },
 
@@ -26,10 +26,11 @@ const Game = React.createClass({
   },
 
    componentWillUnmount() {
-      window.removeEventListener("resize", this.updateOffset);
+      this.windowListener.remove();
    },
 
    initializeDots () {
+
      let newDots = [];
 
      for (var ix = 0; ix < 16; ix++) {
@@ -50,14 +51,14 @@ const Game = React.createClass({
     //     <DotDisplay key={idx} dot={dot}/>
     //   );
     // });
-
     const dispAllDots = this.state.dots.map((dot, idx)=> {
       return(
         <DotDisplay
           key={idx}
           dot={dot}
           offset={this.state.offset}
-        />);
+        />
+      );
     });
 
 
