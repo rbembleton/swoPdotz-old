@@ -1,9 +1,12 @@
 const React = require('react');
+const DotHolder = require('./dot_holder');
 const DotDisplay = require('./dot_display');
 const Dots = require('./dots/all_dots');
 const Colors = require('./constants/colors');
 const Shapes = require('./constants/shapes');
 const ReactDOM = require('react-dom');
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 const Game = React.createClass({
   getInitialState () {
@@ -53,11 +56,16 @@ const Game = React.createClass({
     // });
     const dispAllDots = this.state.dots.map((dot, idx)=> {
       return(
-        <DotDisplay
-          key={idx}
-          dot={dot}
-          offset={this.state.offset}
-        />
+        <div key={idx}>
+          <DotHolder
+            pos={dot.pos}
+            dot={dot}
+          />
+          <DotDisplay
+            dot={dot}
+            offset={this.state.offset}
+          />
+        </div>
       );
     });
 
@@ -71,4 +79,5 @@ const Game = React.createClass({
 
 });
 
-module.exports = Game;
+module.exports = DragDropContext(HTML5Backend)(Game);
+// module.exports = Game;

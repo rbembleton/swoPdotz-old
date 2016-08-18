@@ -217,3 +217,9 @@ input[type="submit"] {
     z-index: 3;
   }
 }
+
+.dot-holder {
+  position: absolute;
+  z-index: 1;
+  background-color: black;
+}

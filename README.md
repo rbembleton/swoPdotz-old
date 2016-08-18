@@ -61,10 +61,10 @@ score          | integer    |
 
 ### Day One
 
-- [ ] Create file structure
-- [ ] Assemble colors and symbols
+- [x] Create file structure
+- [x] Assemble colors and symbols
 - [ ] Implement basic tile swapping
-- [ ] Implement simple and elegant CSS
+- [x] Implement simple and elegant CSS
 
 ### Day Two
 
