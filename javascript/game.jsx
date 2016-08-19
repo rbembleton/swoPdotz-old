@@ -33,7 +33,7 @@ const Game = React.createClass({
 
   updateOffset () {
     let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-    this.setState({offset: [myRect.left, myRect.bottom + 400]});
+    this.setState({offset: [myRect.left + 12.5, myRect.bottom + 387.5]});
   },
 
   updateDots () {

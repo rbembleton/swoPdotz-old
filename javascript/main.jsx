@@ -1,4 +1,5 @@
 const React = require('react');
+const Score = require('./score');
 
 const Main = React.createClass({
 
@@ -12,6 +13,7 @@ const Main = React.createClass({
         <div className="screen clearfix">
           {this.props.children}
         </div>
+        <Score />
         <footer className="clearfix">
 
         </footer>

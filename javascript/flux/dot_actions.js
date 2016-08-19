@@ -17,6 +17,20 @@ const DotActions = {
     });
   },
 
+  endDotAnimation(dot) {
+    AppDispatcher.dispatch({
+      actionType: DotActionConstants.END_DOT_ANIMATION,
+      dot: dot
+    });
+  },
+
+  addDot(dot) {
+    AppDispatcher.dispatch({
+      actionType: DotActionConstants.SNAP_DOT_TO_ORIGIN,
+      dot: dot
+    });
+  },
+
   initializeDots() {
     AppDispatcher.dispatch({
       actionType: DotActionConstants.INITIALIZE_DOTS,

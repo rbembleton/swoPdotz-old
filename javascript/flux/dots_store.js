@@ -5,51 +5,55 @@ const DotActionConstants = require('./dot_action_constants');
 const Dots = require('../dots/all_dots');
 const Colors = require('../constants/colors');
 const Shapes = require('../constants/shapes');
+const Board = require('../gameplay/board');
 
-let _dotsByPos = {};
-let _dotsById = {};
-let _dotIdentifier = 0;
+// let _board.dotsById = {};
+// let _dotIdentifier = 0;
+let _board = new Board();
 
 const DotsStore = new Store (AppDispatcher);
 
 function resetDots () {
-  _dotsByPos = {};
-  _dotsById = {};
-  _dotIdentifier = 0;
+  _board = new Board();
+  // _dotsById = {};
+  // _dotIdentifier = 0;
 
   for (var ix = 0; ix < 16; ix++) {
-    _dotsByPos[ix] = {};
 
     for (var iy = 0; iy < 16; iy++) {
       let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
-      let randShape = Object.keys(Shapes)[Math.floor(Math.random() * 5)];
+      // let randShape = Object.keys(Shapes)[Math.floor(Math.random() * 2)];
 
-      const newDot = (new Dots[randShape]({
+      const newDot = (new Dots.circle({
         color: randColor,
         pos: [ix, iy],
-        id: _dotIdentifier
+        id: _board.dotIdentifier
       }));
 
-      _dotsById[_dotIdentifier] = newDot;
-      _dotsByPos[ix][iy] = newDot;
-      _dotIdentifier++;
+      _board.dotsById[_board.dotIdentifier] = newDot;
+      _board.setValAt([ix,iy], newDot);
+      _board.dotIdentifier++;
     }
   }
+
+  _board.checkInARows(fillInTop);
 }
 
 function switchDots(dots) {
-  const dot1 = _dotsById[dots[0].id];
-  const dot2 = _dotsById[dots[1].id];
+  const dot1 = _board.dotsById[dots[0].id];
+  const dot2 = _board.dotsById[dots[1].id];
   const tempPos = dot1.pos;
   dot1.pos = dot2.pos;
   dot2.pos = tempPos;
-  _dotsByPos[dot1.pos[0]][dot1.pos[1]] = dot1;
-  _dotsByPos[dot2.pos[0]][dot2.pos[1]] = dot2;
+
+  _board.setValAt(dot1.pos, dot1);
+  _board.setValAt(dot2.pos, dot2);
+  _board.checkInARows(fillInTop);
 }
 
 function snapDot(dot) {
-  _dotsByPos[dot.pos[0]][dot.pos[1]] = dot;
-  _dotsById[dot.id] = dot;
+  _board.setValAt(dot.pos, dot);
+  _board.dotsById[dot.id] = dot;
 }
 
 function objDeepDup(obj) {
@@ -72,23 +76,82 @@ function unknwnTypeDup(val) {
   }
 }
 
+function update() {
+  DotsStore.__emitChange();
+}
+
+function endAnimation(dot) {
+  _board.dotsById[dot.id].style = 'dropped';
+  _board.dotsById[dot.id].oldPos = null;
+
+  // window.setTimeout(() => {
+  //   _board.dotsById[dot.id].style = ' ';
+  // }, 500);
+}
+
+function addDot(dot) {
+  _board.dotsById[dot.id] = dot;
+}
+
+function fillInTop() {
+  let noFills = true;
+
+  for (var ix = 0; ix < 16; ix++) {
+
+    for (var iy = 0; iy < 16; iy++) {
+      if (!_board.getValAt([ix, iy])) {
+        let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
+        // let randShape = Object.keys(Shapes)[Math.floor(Math.random() * 5)];
+
+        const newDot = (new Dots.circle({
+          color: randColor,
+          pos: [ix, iy],
+          id: _board.dotIdentifier
+        }));
+
+        _board.dotsById[_board.dotIdentifier] = newDot;
+        _board.setValAt([ix,iy], newDot);
+        _board.dotIdentifier++;
+        noFills = false;
+      }
+    }
+  }
+
+  if (noFills) {
+    update();
+  } else {
+    _board.checkInARows(fillInTop);
+  }
+}
+
+DotsStore.score = function () {
+  return _board.score;
+};
+
+
 DotsStore.all = function () {
   let retArr = [];
 
-  Object.keys(_dotsById).forEach((id) => {
-    retArr.push(objDeepDup(_dotsById[id]));
+  Object.keys(_board.dotsById).forEach((id) => {
+    // if (_board.dotsById[id].pos[0] === -1 && _board.dotsById[id].pos[0] === -1) {
+    if (_board.dotsById[id].isKilled === true) {
+
+      delete _board.dotsById[id];
+      return;
+    }
+    retArr.push(objDeepDup(_board.dotsById[id]));
   });
 
   return retArr;
 };
 
 DotsStore.byId = function (id) {
-  return objDeepDup(_dotsById[id]);
+  return objDeepDup(_board.dotsById[id]);
 };
 
 DotsStore.at = function (pos) {
-  if (!_dotsByPos[pos[0]]) { return null; }
-  return objDeepDup(_dotsByPos[pos[0]][pos[1]]);
+  if (!_board.getValAt(pos)) { return null; }
+  return objDeepDup(_board.getValAt(pos));
 };
 
 
@@ -97,14 +160,17 @@ DotsStore.__onDispatch = function (payload) {
     case DotActionConstants.INITIALIZE_DOTS:
       resetDots();
       break;
-    case DotActionConstants.UPDATE_POSITION:
-      resetPhotos(payload.dot);
-      break;
     case DotActionConstants.SWITCH_DOTS:
       switchDots(payload.dots);
       break;
     case DotActionConstants.SNAP_DOT_TO_ORIGIN:
       snapDot(payload.dot);
+      break;
+    case DotActionConstants.ADD_DOT:
+      addDot(payload.dot);
+      break;
+    case DotActionConstants.END_DOT_ANIMATION:
+      endAnimation(payload.dot);
       break;
   }
   DotsStore.__emitChange();

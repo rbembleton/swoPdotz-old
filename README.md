@@ -68,9 +68,9 @@ score          | integer    |
 
 ### Day Two
 
-- [ ] Develop game play
-  - [ ] Restrict tile swapping to appropriate pieces
-  - [ ] Add at least two different types of combinations
+- [x] Develop game play
+  - [x] Restrict tile swapping to appropriate pieces
+  - [x] Add at least two different types of combinations
   - [ ] Create explosion CSS
 - [ ] Adjust CSS, ensuring modernity
 

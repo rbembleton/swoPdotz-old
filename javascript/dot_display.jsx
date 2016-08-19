@@ -31,7 +31,7 @@ function collect(connect, monitor) {
 const DotDisplay = React.createClass({
 
   getInitialState () {
-    return({ pos: this.props.pos, specialClass: '', specialStyle: {} });
+    return({ pos: this.props.pos });
   },
 
   changePos(e) {
@@ -53,7 +53,8 @@ const DotDisplay = React.createClass({
   },
 
   // componentWillReceiveProps() {
-  //   this.setState({ pos: this.props.pos });
+  //
+  //   // this.setState({ pos: this.props.pos });
   // },
 
   componentDidMount () {
@@ -65,7 +66,13 @@ const DotDisplay = React.createClass({
   },
 
   updateDot () {
-    this.setState({ pos: DotsStore.byId(this.props.dot.id).pos });
+    let thisDot = DotsStore.byId(this.props.dot.id);
+    // if (thisDot.style === 'drop') {
+    //   this.setState({ pos: thisDot.oldPos });
+    //   DotActions.endDotAnimation(thisDot);
+    // } else {
+      this.setState({ pos: thisDot.pos });
+    // }
   },
 
   checkPos () {
@@ -80,16 +87,13 @@ const DotDisplay = React.createClass({
       left: `${this.state.pos[0] * 25}px`
     };
 
-
-    const addedClass = this.state.specialClass === '' ? "" : this.state.specialClass;
-
     var connectDragSource = this.props.connectDragSource;
     var isDragging = this.props.isDragging;
 
     return connectDragSource(
       <div
         draggable={true}
-        className={"dot-cont " + addedClass}
+        className={"dot-cont " + this.props.dot.style}
         style={pos}
         onDrag={this.changePos}
       >
