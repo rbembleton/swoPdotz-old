@@ -72,12 +72,12 @@ input[type="submit"] {
   display: block;
   margin: auto;
   margin-top: 60px;
-  font-family: sans-serif; }
+  font-family: "Open Sans", sans-serif; }
   .main-page header {
     font-size: 40px;
     text-align: center;
     letter-spacing: .2px;
-    font-family: sans-serif;
+    font-family: "Francois One", sans-serif;
     color: #3e3f50; }
 
 .screen {
@@ -107,11 +107,18 @@ input[type="submit"] {
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none; }
-  .dot-cont .drop {
-    background-color: grey; }
-  .dot-cont .dropped {
-    transition: all 2s linear;
-    background-color: black; }
+
+.dot-cont.dropped {
+  transition: all 0.6s cubic-bezier(0.95, 0.38, 0.7, 0.97); }
+
+.dot-cont.new-dot {
+  opacity: 0;
+  text-shadow: 1px 1px 2px black; }
+
+.dot-cont.new-transition {
+  transition: all 0.4s linear;
+  background-color: white;
+  opacity: 1; }
 
 .square {
   font-family: sans-serif;
@@ -161,7 +168,7 @@ input[type="submit"] {
 .score-cont {
   margin: 10px auto;
   text-align: center;
-  font-family: sans-serif;
+  font-family: "Open Sans", sans-serif;
   transition: all .5s ease; }
 
 /*# sourceMappingURL=application.css.map */

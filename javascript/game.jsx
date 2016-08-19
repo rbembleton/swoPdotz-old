@@ -3,8 +3,7 @@ const PropTypes = React.PropTypes;
 const DropGrid = require('./drop_grid');
 const DotDisplay = require('./dot_display');
 const ReactDOM = require('react-dom');
-const DotActions = require('./flux/dot_actions');
-const DotsStore = require('./flux/dots_store');
+const Liason = require('./gameplay/liason');
 
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -12,7 +11,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 const Game = React.createClass({
   getInitialState () {
-    return({ offset: [0,0], dots: DotsStore.all() });
+    return({ offset: [0,0], dots: Liason.all() });
   },
 
   propTypes: {
@@ -21,8 +20,8 @@ const Game = React.createClass({
 
 
   componentDidMount () {
-    this.dotsListener = DotsStore.addListener(this.updateDots);
-    DotActions.initializeDots();
+    this.dotListener = Liason.addListener(this.updateDots);
+    Liason.ACTIONinitializeDots();
 
     this.windowListener = window.addEventListener("resize", this.updateOffset);
     let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
@@ -37,13 +36,14 @@ const Game = React.createClass({
   },
 
   updateDots () {
-    this.setState({ dots: DotsStore.all() });
+    this.setState({ dots: Liason.all() });
+
   },
 
-   componentWillUnmount() {
-      this.windowListener.remove();
-      this.dotsListener.remove();
-   },
+  componentWillUnmount() {
+   Liason.removeListener(this.dotListener);
+    this.windowListener.remove();
+  },
 
 
 
@@ -63,12 +63,12 @@ const Game = React.createClass({
     }
 
 
-    const dispAllDots = this.state.dots.map((dot, idx) => {
+    const dispAllDots = this.state.dots.map((dot) => {
       return(
         <DotDisplay
           dot={dot}
           pos={dot.pos}
-          key={idx}
+          key={dot.id}
           offset={this.state.offset}/>);
       });
 
@@ -84,10 +84,12 @@ const Game = React.createClass({
 
 export function  swapDots (pos, dot) {
   if (posInRange(pos, dot.pos)) {
-    const dotToSwap = DotsStore.at(pos);
-    DotActions.switchDots(dotToSwap, dot);
+    const dotToSwap = Liason.at(pos);
+    Liason.ACTIONswitchDots(dotToSwap, dot);
+
   } else {
-    DotActions.snapToOrigin(dot);
+
+    Liason.ACTIONsnapToOrigin(dot);
   }
 }
 

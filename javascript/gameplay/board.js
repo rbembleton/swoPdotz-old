@@ -49,22 +49,24 @@ Board.prototype.checkInARows = function (callback) {
   for (var ix = 0; ix < this.size; ix++) {
     for (var iy = 0; iy < this.size; iy++) {
 
-      this.checkNumInDelta(ix, iy, 6, [0, 1], callback);
-      this.checkNumInDelta(ix, iy, 6, [1, 0], callback);
-      this.checkNumInDelta(ix, iy, 5, [0, 1], callback);
-      this.checkNumInDelta(ix, iy, 5, [1, 0], callback);
-      this.checkNumInDelta(ix, iy, 4, [0, 1], callback);
-      this.checkNumInDelta(ix, iy, 4, [1, 0], callback);
-      this.checkNumInDelta(ix, iy, 3, [0, 1], callback);
-      this.checkNumInDelta(ix, iy, 3, [1, 0], callback);
+      this.checkNumInDelta(ix, iy, 6, [0, 1]);
+      this.checkNumInDelta(ix, iy, 6, [1, 0]);
+      this.checkNumInDelta(ix, iy, 5, [0, 1]);
+      this.checkNumInDelta(ix, iy, 5, [1, 0]);
+      this.checkNumInDelta(ix, iy, 4, [0, 1]);
+      this.checkNumInDelta(ix, iy, 4, [1, 0]);
+      this.checkNumInDelta(ix, iy, 3, [0, 1]);
+      this.checkNumInDelta(ix, iy, 3, [1, 0]);
 
     }
   }
-  this.columnsDrop(callback);
+
+  callback();
+
 };
 
 
-Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
+Board.prototype.checkNumInDelta = function (x, y, num, dPos) {
   const dx = dPos[0];
   const dy = dPos[1];
   const size = this.size;
@@ -82,7 +84,6 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
 
     if (sameColor === true && i === num) {
       for (var j = 0; j < num; j++) {
-        // this.grid[x + dx * j][y + dy * j].pos = [-1,-1];
         if (Math.floor(num / 2) === j) {
           let oldDot = this.grid[x + dx * j][y + dy * j];
           oldDot.isKilled = true;
@@ -98,9 +99,8 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
           this.grid[x + dx * j][y + dy * j] = null;
         }
       }
-      // console.log(num);
       this.score += scoreConv[num];
-      this.columnsDrop(callback);
+
     }
   }
 };
@@ -141,12 +141,8 @@ Board.prototype.columnsDrop = function (callback) {
     }
   }
 
-  if (columnsDropped && this.grid[0][0].id) {
-    this.checkInARows(callback);
-  } else {
-    callback();
-  }
-
+  callback();
+  
 };
 
 module.exports = Board;

@@ -1,23 +1,22 @@
 const React = require('react');
-const DotsStore = require('./flux/dots_store');
-
+const Liason = require('./gameplay/liason');
 
 const Score = React.createClass({
 
   getInitialState() {
-    return({ score: DotsStore.score() || 0 });
+    return({ score: Liason.score() || 0 });
   },
 
   componentDidMount() {
-    this.scoreListener = DotsStore.addListener(this.updateScore);
+    this.scoreListener = Liason.addListener(this.updateScore);
   },
 
   componentWillUnmount () {
-    this.scoreListener.remove();
+    Liason.removeListener(this.scoreListener);
   },
 
   updateScore () {
-    this.setState({ score: DotsStore.score() });
+    this.setState({ score: Liason.score() });
   },
 
   render () {

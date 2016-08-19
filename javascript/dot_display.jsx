@@ -3,19 +3,18 @@ const PropTypes = React.PropTypes;
 const Dots = require('./dots/all_dots');
 const Colors = require('./constants/colors');
 const Shapes = require('./constants/shapes');
-const DotsStore = require('./flux/dots_store');
-const DotActions = require('./flux/dot_actions');
+const Liason = require('./gameplay/liason');
+
 import { DragSource } from 'react-dnd';
 
 const dotSource = {
   beginDrag(props) {
-    return { dot: props.dot };
+    return { dot: props.dot, specialClass: ' ' };
   },
   endDrag(props, monitor) {
     if (!monitor.didDrop()) {
-      DotActions.snapToOrigin(props.dot);
+      Liason.ACTIONsnapToOrigin(props.dot);
     }
-    // return { dot: props.dot };
   }
 };
 
@@ -31,7 +30,7 @@ function collect(connect, monitor) {
 const DotDisplay = React.createClass({
 
   getInitialState () {
-    return({ pos: this.props.pos });
+    return({ pos: this.props.pos, specialClass: 'new-dot' });
   },
 
   changePos(e) {
@@ -52,28 +51,44 @@ const DotDisplay = React.createClass({
     e.preventDefault();
   },
 
-  // componentWillReceiveProps() {
-  //
-  //   // this.setState({ pos: this.props.pos });
-  // },
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.dot.shape !== this.props.dot.shape) {
+      this.setState({specialClass: 'new-dot'});
+    }
+    if (nextProps.dot.pos[1] !== this.props.dot.pos[1]) {
+      this.setState({specialClass: 'drop', pos: this.props.pos});
+      this.setState({specialClass: 'dropped', pos: nextProps.pos});
+    } else {
+      this.setState({ pos: nextProps.pos });
+    }
+  },
+
+  newDotRemoveClass () {
+    const that = this;
+    setTimeout((() => {
+      that.setState({ specialClass: 'new-transition ' });
+    }), 100);
+    setTimeout((() => {
+      that.setState({ specialClass: ' ' });
+    }), 800);
+  },
+
+  changePosDotClass () {
+    const that = this;
+    setTimeout((() => {
+      that.setState({ specialClass: ' ' });
+    }), 620);
+  },
 
   componentDidMount () {
-    this.dotListener = DotsStore.addListener(this.updateDot);
+    if (this.state.specialClass === 'new-dot') { this.newDotRemoveClass(); }
   },
 
-  componentWillUnmount () {
-    this.dotListener.remove();
+  componentDidUpdate () {
+    if (this.state.specialClass === 'new-dot') { this.newDotRemoveClass(); }
+    if (this.state.specialClass === 'drop') { this.changePosDotClass(); }
   },
 
-  updateDot () {
-    let thisDot = DotsStore.byId(this.props.dot.id);
-    // if (thisDot.style === 'drop') {
-    //   this.setState({ pos: thisDot.oldPos });
-    //   DotActions.endDotAnimation(thisDot);
-    // } else {
-      this.setState({ pos: thisDot.pos });
-    // }
-  },
 
   checkPos () {
     console.log('hi');
@@ -81,7 +96,6 @@ const DotDisplay = React.createClass({
 
 
   render () {
-
     let pos = {
       bottom: `${this.state.pos[1] * 25}px`,
       left: `${this.state.pos[0] * 25}px`
@@ -93,7 +107,7 @@ const DotDisplay = React.createClass({
     return connectDragSource(
       <div
         draggable={true}
-        className={"dot-cont " + this.props.dot.style}
+        className={"dot-cont " + this.state.specialClass}
         style={pos}
         onDrag={this.changePos}
       >
@@ -112,4 +126,3 @@ DotDisplay.propTypes = {
 };
 
 module.exports = DragSource('Dot', dotSource, collect)(DotDisplay);
-// module.exports = Dot;

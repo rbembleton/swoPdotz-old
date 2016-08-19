@@ -1,28 +1,39 @@
 const React = require('react');
-const Store = require('flux/utils').Store;
-const AppDispatcher = require('./dispatcher');
-const DotActionConstants = require('./dot_action_constants');
 const Dots = require('../dots/all_dots');
 const Colors = require('../constants/colors');
 const Shapes = require('../constants/shapes');
-const Board = require('../gameplay/board');
+const Board = require('./board');
 
-// let _board.dotsById = {};
-// let _dotIdentifier = 0;
 let _board = new Board();
+let _listeners = [];
 
-const DotsStore = new Store (AppDispatcher);
+let Liason = function () {
+};
+
+
+Liason.addListener = function (callback) {
+  _listeners.push(callback);
+  return (_listeners.length - 1);
+};
+
+Liason.broadcastChanges = function () {
+  _listeners.forEach((callback) => {
+    if (callback === undefined) {return;}
+    callback();
+  });
+};
+
+Liason.removeListener = function (idx) {
+  _listeners[idx] = undefined;
+};
 
 function resetDots () {
   _board = new Board();
-  // _dotsById = {};
-  // _dotIdentifier = 0;
 
   for (var ix = 0; ix < 16; ix++) {
 
     for (var iy = 0; iy < 16; iy++) {
       let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
-      // let randShape = Object.keys(Shapes)[Math.floor(Math.random() * 2)];
 
       const newDot = (new Dots.circle({
         color: randColor,
@@ -36,7 +47,8 @@ function resetDots () {
     }
   }
 
-  _board.checkInARows(fillInTop);
+  Liason.broadcastChanges();
+  removeGroups();
 }
 
 function switchDots(dots) {
@@ -48,12 +60,18 @@ function switchDots(dots) {
 
   _board.setValAt(dot1.pos, dot1);
   _board.setValAt(dot2.pos, dot2);
-  _board.checkInARows(fillInTop);
+
+  _board.continueUpdate = 1;
+  Liason.broadcastChanges();
+  setTimeout((() => {
+    removeGroups();
+  }), 200);
 }
 
 function snapDot(dot) {
   _board.setValAt(dot.pos, dot);
   _board.dotsById[dot.id] = dot;
+  Liason.broadcastChanges();
 }
 
 function objDeepDup(obj) {
@@ -76,21 +94,25 @@ function unknwnTypeDup(val) {
   }
 }
 
-function update() {
-  DotsStore.__emitChange();
+// run this first
+function removeGroups() {
+  _board.checkInARows(boardDrop);
 }
 
-function endAnimation(dot) {
-  _board.dotsById[dot.id].style = 'dropped';
-  _board.dotsById[dot.id].oldPos = null;
-
-  // window.setTimeout(() => {
-  //   _board.dotsById[dot.id].style = ' ';
-  // }, 500);
+// second callback
+function boardDrop() {
+  Liason.broadcastChanges();
+  setTimeout((() => {
+    _board.columnsDrop(updateDisplay);
+  }), 400);
 }
 
-function addDot(dot) {
-  _board.dotsById[dot.id] = dot;
+// third callback
+function updateDisplay () {
+  Liason.broadcastChanges();
+  setTimeout((() => {
+    fillInTop();
+  }), 400);
 }
 
 function fillInTop() {
@@ -118,22 +140,31 @@ function fillInTop() {
   }
 
   if (noFills) {
-    update();
+    setTimeout((() => {
+      Liason.broadcastChanges();
+    }), 400);
   } else {
-    _board.checkInARows(fillInTop);
+    Liason.broadcastChanges();
+    setTimeout((() => {
+      removeGroups();
+    }), 400);
   }
 }
 
-DotsStore.score = function () {
+//    STORE FUNCTIONS
+
+Liason.score = function () {
   return _board.score;
 };
 
+Liason.continueUpdate = function () {
+  return (_board.continueUpdate);
+};
 
-DotsStore.all = function () {
+Liason.all = function () {
   let retArr = [];
 
   Object.keys(_board.dotsById).forEach((id) => {
-    // if (_board.dotsById[id].pos[0] === -1 && _board.dotsById[id].pos[0] === -1) {
     if (_board.dotsById[id].isKilled === true) {
 
       delete _board.dotsById[id];
@@ -145,36 +176,41 @@ DotsStore.all = function () {
   return retArr;
 };
 
-DotsStore.byId = function (id) {
+Liason.byId = function (id) {
   return objDeepDup(_board.dotsById[id]);
 };
 
-DotsStore.at = function (pos) {
+Liason.at = function (pos) {
   if (!_board.getValAt(pos)) { return null; }
   return objDeepDup(_board.getValAt(pos));
 };
 
 
-DotsStore.__onDispatch = function (payload) {
-  switch (payload.actionType) {
-    case DotActionConstants.INITIALIZE_DOTS:
-      resetDots();
-      break;
-    case DotActionConstants.SWITCH_DOTS:
-      switchDots(payload.dots);
-      break;
-    case DotActionConstants.SNAP_DOT_TO_ORIGIN:
-      snapDot(payload.dot);
-      break;
-    case DotActionConstants.ADD_DOT:
-      addDot(payload.dot);
-      break;
-    case DotActionConstants.END_DOT_ANIMATION:
-      endAnimation(payload.dot);
-      break;
-  }
-  DotsStore.__emitChange();
+// ACTIONS FUNCTIONS
 
+
+Liason.ACTIONinitializeDots = function () {
+  resetDots();
 };
 
-module.exports = DotsStore;
+Liason.ACTIONsnapToOrigin = function (dot) {
+  snapDot(dot);
+};
+
+Liason.ACTIONswitchDots = function (dot1, dot2) {
+  switchDots([dot1, dot2]);
+};
+
+Liason.ACTIONremoveGroups = function () {
+  removeGroups();
+};
+
+Liason.ACTIONboardDrop = function () {
+  boardDrop();
+};
+
+Liason.ACTIONfillInBoard = function () {
+  fillInTop();
+};
+
+module.exports = Liason;

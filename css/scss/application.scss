@@ -1,9 +1,9 @@
 //          VARIABLES
 
-// $header-font: 'Francois One', sans-serif;
-// $main-font: 'Open Sans', sans-serif;
-$header-font: sans-serif;
-$main-font: sans-serif;
+$header-font: 'Francois One', sans-serif;
+$main-font: 'Open Sans', sans-serif;
+// $header-font: sans-serif;
+// $main-font: sans-serif;
 
 $red: #ec5151;
 $orange: #fab54e;
@@ -170,18 +170,32 @@ input[type="submit"] {
     -ms-user-select: none;
   }
 
-  .drop {
-    background-color: grey;
-  }
 
-  .dropped {
-    transition: all 2s linear;
-    background-color: black;
-  }
 
 }
 
+.dot-cont.drop {
+  // background-color: black;
+}
 
+.dot-cont.dropped {
+  transition: all .6s cubic-bezier(0.95, 0.38, 0.7, 0.97);
+  // background-color: white;
+}
+
+.dot-cont.new-dot {
+  opacity: 0;
+  text-shadow: 1px 1px 2px black;
+}
+
+.dot-cont.new-transition {
+  transition: all 0.4s linear;
+  background-color: white;
+
+  opacity: 1;
+  // text-shadow: none;
+
+}
 
 .square {
   font-family: sans-serif;
