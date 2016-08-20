@@ -9,6 +9,8 @@ let StarDot = function (options) {
   });
   this.shape = 'star';
   this.icon = '★';
+  this.iconClass = 'icon-star';
+
 };
 
 Util.inherits(StarDot, Dot);

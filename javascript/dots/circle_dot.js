@@ -9,6 +9,8 @@ let CircleDot = function (options) {
   });
   this.shape = 'circle';
   this.icon = '•';
+  this.iconClass = 'icon-geo-circle';
+
 };
 
 Util.inherits(CircleDot, Dot);

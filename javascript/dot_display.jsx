@@ -121,7 +121,7 @@ const DotDisplay = React.createClass({
         onDrag={this.changePos}
       >
         <div className={this.props.dot.color + " " + this.props.dot.shape}>
-          {this.props.dot.icon}
+          <span className={this.props.dot.iconClass}/>
         </div>
       </div>
     );
@@ -129,6 +129,7 @@ const DotDisplay = React.createClass({
 
 });
 
+// {this.props.dot.icon}
 DotDisplay.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired

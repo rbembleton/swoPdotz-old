@@ -7,6 +7,8 @@ const Liason = require('./gameplay/liason');
 
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+// import { default as TouchBackend } from 'react-dnd-touch-backend';
+
 
 
 const Game = React.createClass({
@@ -23,11 +25,10 @@ const Game = React.createClass({
     this.dotListener = Liason.addListener(this.updateDots);
     Liason.ACTIONinitializeDots();
 
-    this.windowListener = window.addEventListener("resize", this.updateOffset);
+    this.windowListenerResize = window.addEventListener("resize", this.updateOffset);
     let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
 
     this.setState({offset: [myRect.left + 12.5, myRect.bottom + 387.5]});
-
   },
 
   updateOffset () {
@@ -41,8 +42,9 @@ const Game = React.createClass({
   },
 
   componentWillUnmount() {
-   Liason.removeListener(this.dotListener);
-    this.windowListener.remove();
+    window.removeEventListener(this.windowListenerResize);
+    // this.windowListener.remove();
+    Liason.removeListener(this.dotListener);
   },
 
 
@@ -103,3 +105,4 @@ function posInRange(pos1, pos2) {
 }
 
 module.exports = DragDropContext(HTML5Backend)(Game);
+// module.exports = DragDropContext(TouchBackend({ enableMouseEvents: true }))(Game);

@@ -9,6 +9,8 @@ let TriangleDot = function (options) {
   });
   this.shape = 'triangle';
   this.icon = '▴';
+  this.iconClass = 'icon-geo-triangle';
+
 };
 
 Util.inherits(TriangleDot, Dot);

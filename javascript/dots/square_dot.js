@@ -9,6 +9,8 @@ let SquareDot = function (options) {
   });
   this.shape = 'square';
   this.icon = '▪';
+  this.iconClass = 'icon-geo-square';
+
 };
 
 Util.inherits(SquareDot, Dot);

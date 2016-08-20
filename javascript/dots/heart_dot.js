@@ -9,6 +9,7 @@ let HeartDot = function (options) {
   });
   this.shape = 'heart';
   this.icon = '♥';
+  this.iconClass = 'icon-like-3';
 };
 
 Util.inherits(HeartDot, Dot);
