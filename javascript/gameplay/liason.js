@@ -1,7 +1,7 @@
 const React = require('react');
 const Dots = require('../dots/all_dots');
-const Colors = require('../constants/colors');
-const Shapes = require('../constants/shapes');
+// const Colors = require('../constants/colors');
+// const Shapes = require('../constants/shapes');
 const Board = require('./board');
 
 const explosionCallbacks = {
@@ -36,26 +36,11 @@ Liason.removeListener = function (idx) {
 
 function resetDots () {
   _board = new Board({callbacks: explosionCallbacks});
-
-  for (var ix = 0; ix < 16; ix++) {
-
-    for (var iy = 0; iy < 16; iy++) {
-      let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
-
-      const newDot = (new Dots.circle({
-        color: randColor,
-        pos: [ix, iy],
-        id: _board.dotIdentifier
-      }));
-
-      _board.dotsById[_board.dotIdentifier] = newDot;
-      _board.setValAt([ix,iy], newDot);
-      _board.dotIdentifier++;
-    }
-  }
-
+  _board.placeDots();
   Liason.broadcastChanges();
-  removeGroups();
+  setTimeout((() => {
+    removeGroups();
+  }), 200);
 }
 
 function explodeStar(x, y) {
@@ -132,28 +117,7 @@ function updateDisplay () {
 }
 
 function fillInTop() {
-  let noFills = true;
-
-  for (var ix = 0; ix < 16; ix++) {
-
-    for (var iy = 0; iy < 16; iy++) {
-      if (!_board.getValAt([ix, iy])) {
-        let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
-        // let randShape = Object.keys(Shapes)[Math.floor(Math.random() * 5)];
-
-        const newDot = (new Dots.circle({
-          color: randColor,
-          pos: [ix, iy],
-          id: _board.dotIdentifier
-        }));
-
-        _board.dotsById[_board.dotIdentifier] = newDot;
-        _board.setValAt([ix,iy], newDot);
-        _board.dotIdentifier++;
-        noFills = false;
-      }
-    }
-  }
+  const noFills = _board.fillInTop();
 
   if (noFills) {
     setTimeout((() => {

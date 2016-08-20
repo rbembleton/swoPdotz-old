@@ -1,4 +1,7 @@
 const Dots = require('../dots/all_dots');
+const Colors = require('../constants/colors');
+const Shapes = require('../constants/shapes');
+
 
 let Board = function (options) {
   this.size = 16;
@@ -37,6 +40,44 @@ function initializeGrid(size) {
 
   return newGrid;
 }
+
+Board.prototype.placeRandomDot = function (x, y) {
+  let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
+
+  const newDot = (new Dots.circle({
+    color: randColor,
+    pos: [x, y],
+    id: this.dotIdentifier
+  }));
+
+  this.grid[x][y] = newDot;
+  this.dotsById[this.dotIdentifier] = newDot;
+  this.dotIdentifier++;
+};
+
+Board.prototype.placeDots = function () {
+  for (var ix = 0; ix < 16; ix++) {
+    for (var iy = 0; iy < 16; iy++) {
+      this.placeRandomDot(ix, iy);
+    }
+  }
+};
+
+Board.prototype.fillInTop = function () {
+  let noFills = true;
+
+  for (var ix = 0; ix < 16; ix++) {
+    for (var iy = 0; iy < 16; iy++) {
+      if ( !this.grid[ix][iy] ) {
+
+        this.placeRandomDot(ix, iy);
+        noFills = false;
+      }
+    }
+  }
+
+  return noFills;
+};
 
 Board.prototype.getValAt = function (pos) {
   return this.grid[pos[0]][pos[1]];
@@ -93,9 +134,15 @@ Board.prototype.killCross = function (x, y) {
 };
 
 Board.prototype.killTri = function (x, y) {
-  if (this.grid[x][y + 1]) { this.removeDot(x, y + 1); }
-  if (this.grid[x - 1][y - 1]) { this.removeDot(x - 1, y - 1); }
-  if (this.grid[x + 1][y - 1]) { this.removeDot(x + 1, y - 1); }
+  if (y < (this.size - 1) && this.grid[x][y + 1]) {
+    this.removeDot(x, y + 1); 
+  }
+  if (x > 0 && y > 0 && this.grid[x - 1][y - 1]) {
+    this.removeDot(x - 1, y - 1);
+  }
+  if (x < (this.size - 1) && y > 0 && this.grid[x + 1][y - 1]) {
+    this.removeDot(x + 1, y - 1);
+  }
 };
 
 Board.prototype.killSquare = function (x, y) {

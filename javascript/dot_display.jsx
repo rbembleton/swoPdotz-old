@@ -66,18 +66,27 @@ const DotDisplay = React.createClass({
   newDotRemoveClass () {
     const that = this;
     setTimeout((() => {
-      that.setState({ specialClass: 'new-transition ' });
-    }), 100);
+      if (that.isMounted()) {
+        that.setState({ specialClass: 'new-transition ' });
+        that.removeSpecialClasses();
+      }
+    }), 200);
+  },
+
+  removeSpecialClasses () {
+    const that = this;
     setTimeout((() => {
-      that.setState({ specialClass: ' ' });
-    }), 800);
+      if (that.isMounted()) {
+        that.setState({ specialClass: ' ' });
+      }
+    }), 200);
   },
 
   changePosDotClass () {
     const that = this;
     setTimeout((() => {
       that.setState({ specialClass: ' ' });
-    }), 620);
+    }), 200);
   },
 
   componentDidMount () {
