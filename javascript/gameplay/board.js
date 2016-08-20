@@ -8,6 +8,7 @@ let Board = function (options) {
   this.dotIdentifier = 0;
   this.dotsById = {};
   this.style = ' ';
+  this.explosionCallbacks = options.callbacks;
 };
 
 const scoreConv = {
@@ -21,7 +22,7 @@ const dotNumConv = {
   3: Dots.triangle,
   4: Dots.square,
   5: Dots.star,
-  6: Dots.heart
+  6: Dots.star
 };
 
 function initializeGrid(size) {
@@ -45,18 +46,19 @@ Board.prototype.setValAt = function (pos, val) {
   this.grid[pos[0]][pos[1]] = val;
 };
 
-Board.prototype.checkInARows = function (callback) {
+Board.prototype.checkInARows = function (callback, update) {
   for (var ix = 0; ix < this.size; ix++) {
     for (var iy = 0; iy < this.size; iy++) {
 
-      this.checkNumInDelta(ix, iy, 6, [0, 1]);
-      this.checkNumInDelta(ix, iy, 6, [1, 0]);
-      this.checkNumInDelta(ix, iy, 5, [0, 1]);
-      this.checkNumInDelta(ix, iy, 5, [1, 0]);
-      this.checkNumInDelta(ix, iy, 4, [0, 1]);
-      this.checkNumInDelta(ix, iy, 4, [1, 0]);
-      this.checkNumInDelta(ix, iy, 3, [0, 1]);
-      this.checkNumInDelta(ix, iy, 3, [1, 0]);
+      this.checkClusters(ix, iy);
+      this.checkNumInDelta(ix, iy, 6, [0, 1], update);
+      this.checkNumInDelta(ix, iy, 6, [1, 0], update);
+      this.checkNumInDelta(ix, iy, 5, [0, 1], update);
+      this.checkNumInDelta(ix, iy, 5, [1, 0], update);
+      this.checkNumInDelta(ix, iy, 4, [0, 1], update);
+      this.checkNumInDelta(ix, iy, 4, [1, 0], update);
+      this.checkNumInDelta(ix, iy, 3, [0, 1], update);
+      this.checkNumInDelta(ix, iy, 3, [1, 0], update);
 
     }
   }
@@ -65,8 +67,107 @@ Board.prototype.checkInARows = function (callback) {
 
 };
 
+Board.prototype.killColor = function (color) {
+  for (var ix = 0; ix < this.size; ix++) {
+    for (var iy = 0; iy < this.size; iy++) {
 
-Board.prototype.checkNumInDelta = function (x, y, num, dPos) {
+      if (this.grid[ix][iy] && this.grid[ix][iy].color === color) {
+        this.removeDot(ix, iy);
+      }
+
+    }
+  }
+};
+
+Board.prototype.killCross = function (x, y) {
+  for (var ix = 0; ix < this.size; ix++) {
+    if (this.grid[ix][y]) {
+      this.removeDot(ix, y);
+    }
+  }
+  for (var iy = 0; iy < this.size; iy++) {
+    if (this.grid[x][iy]) {
+      this.removeDot(x, iy);
+    }
+  }
+};
+
+Board.prototype.killTri = function (x, y) {
+  if (this.grid[x][y + 1]) { this.removeDot(x, y + 1); }
+  if (this.grid[x - 1][y - 1]) { this.removeDot(x - 1, y - 1); }
+  if (this.grid[x + 1][y - 1]) { this.removeDot(x + 1, y - 1); }
+};
+
+Board.prototype.killSquare = function (x, y) {
+  for (var ix = x - 2; ix < x + 3; ix++) {
+    for (var iy = y - 2; iy < y + 3; iy++) {
+      if (ix >= 0 && iy >= 0 && ix < this.size && iy < this.size && this.grid[ix][iy]) {
+        this.removeDot(ix, iy);
+      }
+    }
+  }
+};
+
+Board.prototype.removeDot = function (x, y) {
+  if (this.grid[x][y] === null) { return; }
+  let oldDot = this.grid[x][y];
+
+  oldDot.isKilled = true;
+  this.grid[x][y] = null;
+
+  if (oldDot instanceof Dots.star) {
+    this.explosionCallbacks.star();
+    this.killColor(oldDot.color);
+  } else if (oldDot instanceof Dots.square) {
+    this.explosionCallbacks.square();
+    this.killCross(x, y);
+  } else if (oldDot instanceof Dots.triangle) {
+    this.explosionCallbacks.triangle();
+    this.killTri(x, y);
+  } else if (oldDot instanceof Dots.heart) {
+    this.explosionCallbacks.heart();
+    this.killSquare(x, y);
+  }
+
+};
+
+Board.prototype.replaceDot = function (x, y, dotConstructor) {
+  if (this.grid[x][y] === null) { return; }
+  const oldDot = this.grid[x][y];
+  this.removeDot(x, y);
+
+  this.grid[x][y] = new dotConstructor({
+    color: oldDot.color,
+    pos: oldDot.pos,
+    id: this.dotIdentifier
+  });
+  this.dotsById[this.dotIdentifier] = this.grid[x][y];
+  this.dotIdentifier ++;
+};
+
+Board.prototype.checkClusters = function (x, y) {
+  if (!this.grid[x][y] || (x === this.size - 1) || (y === this.size - 1) ||
+    !this.grid[x + 1][y] ||
+    !this.grid[x][y + 1] ||
+    !this.grid[x + 1][y + 1]) { return; }
+
+  const thisColor = this.grid[x][y].color;
+  if ((this.grid[x + 1][y].color === thisColor) &&
+      (this.grid[x + 1][y + 1].color === thisColor) &&
+      (this.grid[x][y + 1].color === thisColor)) {
+
+    this.removeDot(x, y + 1);
+    this.removeDot(x + 1, y);
+    this.removeDot(x + 1, y + 1);
+    this.replaceDot(x, y, Dots.heart);
+
+    this.score += scoreConv[4];
+  }
+
+};
+
+
+Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
   const dx = dPos[0];
   const dy = dPos[1];
   const size = this.size;
@@ -85,22 +186,13 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos) {
     if (sameColor === true && i === num) {
       for (var j = 0; j < num; j++) {
         if (Math.floor(num / 2) === j) {
-          let oldDot = this.grid[x + dx * j][y + dy * j];
-          oldDot.isKilled = true;
-          this.grid[x + dx * j][y + dy * j] = new dotNumConv[num]({
-            color: oldDot.color,
-            pos: oldDot.pos,
-            id: this.dotIdentifier
-          });
-          this.dotsById[this.dotIdentifier] = this.grid[x + dx * j][y + dy * j];
-          this.dotIdentifier ++;
+          this.replaceDot(x + dx * j, y + dy * j, dotNumConv[num]);
         } else {
-          this.grid[x + dx * j][y + dy * j].isKilled = true;
-          this.grid[x + dx * j][y + dy * j] = null;
+          this.removeDot(x + dx * j, y + dy * j);
         }
       }
       this.score += scoreConv[num];
-
+      // callback();
     }
   }
 };
@@ -142,7 +234,7 @@ Board.prototype.columnsDrop = function (callback) {
   }
 
   callback();
-  
+
 };
 
 module.exports = Board;

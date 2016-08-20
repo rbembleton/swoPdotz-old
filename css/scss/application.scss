@@ -179,7 +179,8 @@ input[type="submit"] {
 }
 
 .dot-cont.dropped {
-  transition: all .6s cubic-bezier(0.95, 0.38, 0.7, 0.97);
+  transition: all .3s ease;
+  // transition: all .6s cubic-bezier(0.95, 0.38, 0.7, 0.97);
   // background-color: white;
 }
 
@@ -189,7 +190,7 @@ input[type="submit"] {
 }
 
 .dot-cont.new-transition {
-  transition: all 0.4s linear;
+  transition: all 0.2s linear;
   background-color: white;
 
   opacity: 1;

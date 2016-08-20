@@ -109,14 +109,14 @@ input[type="submit"] {
     -ms-user-select: none; }
 
 .dot-cont.dropped {
-  transition: all 0.6s cubic-bezier(0.95, 0.38, 0.7, 0.97); }
+  transition: all .3s ease; }
 
 .dot-cont.new-dot {
   opacity: 0;
   text-shadow: 1px 1px 2px black; }
 
 .dot-cont.new-transition {
-  transition: all 0.4s linear;
+  transition: all 0.2s linear;
   background-color: white;
   opacity: 1; }
 

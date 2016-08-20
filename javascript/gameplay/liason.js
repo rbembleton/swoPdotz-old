@@ -4,7 +4,14 @@ const Colors = require('../constants/colors');
 const Shapes = require('../constants/shapes');
 const Board = require('./board');
 
-let _board = new Board();
+const explosionCallbacks = {
+  star: explodeStar,
+  square: explodeStar,
+  triangle: explodeStar,
+  heart: explodeStar
+};
+
+let _board = new Board({callbacks: explosionCallbacks});
 let _listeners = [];
 
 let Liason = function () {
@@ -28,7 +35,7 @@ Liason.removeListener = function (idx) {
 };
 
 function resetDots () {
-  _board = new Board();
+  _board = new Board({callbacks: explosionCallbacks});
 
   for (var ix = 0; ix < 16; ix++) {
 
@@ -49,6 +56,11 @@ function resetDots () {
 
   Liason.broadcastChanges();
   removeGroups();
+}
+
+function explodeStar(x, y) {
+  // Liason.broadcastChanges();
+  console.log('star!');
 }
 
 function switchDots(dots) {
@@ -93,6 +105,10 @@ function unknwnTypeDup(val) {
     return val;
   }
 }
+
+// function justUpdate() {
+//   Liason.broadcastChanges();
+// }
 
 // run this first
 function removeGroups() {
