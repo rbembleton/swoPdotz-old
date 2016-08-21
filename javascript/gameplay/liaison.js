@@ -15,23 +15,23 @@ const explosionCallbacks = {
 let _board = new Board({ callbacks: explosionCallbacks });
 let _listeners = [];
 
-let Liason = function () {
+let Liaison = function () {
 };
 
 
-Liason.addListener = function (callback) {
+Liaison.addListener = function (callback) {
   _listeners.push(callback);
   return (_listeners.length - 1);
 };
 
-Liason.broadcastChanges = function () {
+Liaison.broadcastChanges = function () {
   _listeners.forEach((callback) => {
     if (callback === undefined) {return;}
     callback();
   });
 };
 
-Liason.removeListener = function (idx) {
+Liaison.removeListener = function (idx) {
   _listeners[idx] = undefined;
 };
 
@@ -49,7 +49,7 @@ function resetDots (options) {
     colors: options.colors
   });
   _board.placeDots();
-  Liason.broadcastChanges();
+  Liaison.broadcastChanges();
   setTimeout((() => {
     _board.resetExplodedSpaces();
     removeGroups();
@@ -82,7 +82,7 @@ function switchDots(dots) {
   _board.setValAt(dot1.pos, dot1);
   _board.setValAt(dot2.pos, dot2);
 
-  Liason.broadcastChanges();
+  Liaison.broadcastChanges();
   setTimeout((() => {
     _board.resetExplodedSpaces();
     removeGroups();
@@ -92,7 +92,7 @@ function switchDots(dots) {
 function snapDot(dot) {
   _board.setValAt(dot.pos, dot);
   _board.dotsById[dot.id] = dot;
-  Liason.broadcastChanges();
+  Liaison.broadcastChanges();
 }
 
 function objDeepDup(obj) {
@@ -116,7 +116,7 @@ function unknwnTypeDup(val) {
 }
 
 // function justUpdate() {
-//   Liason.broadcastChanges();
+//   Liaison.broadcastChanges();
 // }
 
 // run this first
@@ -126,7 +126,7 @@ function removeGroups() {
 
 // second callback
 function boardDrop() {
-  Liason.broadcastChanges();
+  Liaison.broadcastChanges();
   setTimeout((() => {
     _board.resetExplodedSpaces();
     _board.columnsDrop(updateDisplay);
@@ -135,7 +135,7 @@ function boardDrop() {
 
 // third callback
 function updateDisplay () {
-  Liason.broadcastChanges();
+  Liaison.broadcastChanges();
   setTimeout((() => {
     _board.resetExplodedSpaces();
     fillInTop();
@@ -147,10 +147,10 @@ function fillInTop() {
 
   if (noFills) {
     setTimeout((() => {
-      Liason.broadcastChanges();
+      Liaison.broadcastChanges();
     }), 400);
   } else {
-    Liason.broadcastChanges();
+    Liaison.broadcastChanges();
     setTimeout((() => {
       _board.resetExplodedSpaces();
       removeGroups();
@@ -160,20 +160,20 @@ function fillInTop() {
 
 //    STORE FUNCTIONS
 
-Liason.explosions = function () {
+Liaison.explosions = function () {
   // console.log(_board.explodedSpaces);
   return _board.explodedSpaces;
 };
 
-Liason.score = function () {
+Liaison.score = function () {
   return _board.score;
 };
 
-Liason.continueUpdate = function () {
+Liaison.continueUpdate = function () {
   return (_board.continueUpdate);
 };
 
-Liason.all = function () {
+Liaison.all = function () {
   let retArr = [];
 
   Object.keys(_board.dotsById).forEach((id) => {
@@ -188,11 +188,11 @@ Liason.all = function () {
   return retArr;
 };
 
-Liason.byId = function (id) {
+Liaison.byId = function (id) {
   return objDeepDup(_board.dotsById[id]);
 };
 
-Liason.at = function (pos) {
+Liaison.at = function (pos) {
   if (!_board.getValAt(pos)) { return null; }
   return objDeepDup(_board.getValAt(pos));
 };
@@ -201,32 +201,32 @@ Liason.at = function (pos) {
 // ACTIONS FUNCTIONS
 
 
-Liason.ACTIONinitializeDots = function (options) {
+Liaison.ACTIONinitializeDots = function (options) {
   resetDots(options);
 };
 
-Liason.ACTIONsnapToOrigin = function (dot) {
+Liaison.ACTIONsnapToOrigin = function (dot) {
   snapDot(dot);
 };
 
-Liason.ACTIONswitchDots = function (dot1, dot2) {
+Liaison.ACTIONswitchDots = function (dot1, dot2) {
   switchDots([dot1, dot2]);
 };
 
-Liason.ACTIONremoveGroups = function () {
+Liaison.ACTIONremoveGroups = function () {
   removeGroups();
 };
 
-Liason.ACTIONboardDrop = function () {
+Liaison.ACTIONboardDrop = function () {
   boardDrop();
 };
 
-Liason.ACTIONfillInBoard = function () {
+Liaison.ACTIONfillInBoard = function () {
   fillInTop();
 };
 
-Liason.ACTIONclearBoard = function () {
+Liaison.ACTIONclearBoard = function () {
   clearBoard();
 };
 
-module.exports = Liason;
+module.exports = Liaison;

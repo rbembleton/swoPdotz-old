@@ -1,26 +1,26 @@
 const React = require('react');
-const Liason = require('./gameplay/liason');
+const Liaison = require('./gameplay/liaison');
 
 const Score = React.createClass({
 
   getInitialState() {
     return({
-      score: Liason.score() || 0 ,
-      score1: Liason.score() || 0 ,
-      score2: Liason.score() || 0 ,
+      score: Liaison.score() || 0 ,
+      score1: Liaison.score() || 0 ,
+      score2: Liaison.score() || 0 ,
       cont: 1});
   },
 
   componentDidMount() {
-    this.scoreListener = Liason.addListener(this.updateScore);
+    this.scoreListener = Liaison.addListener(this.updateScore);
   },
 
   componentWillUnmount () {
-    Liason.removeListener(this.scoreListener);
+    Liaison.removeListener(this.scoreListener);
   },
 
   updateScore () {
-    const newScore = Liason.score();
+    const newScore = Liaison.score();
     if (this.state.score !== newScore) {
       if (this.state.cont === 1) {
         this.setState({

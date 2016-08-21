@@ -21,7 +21,9 @@ const HomeScreen = React.createClass({
       <div className="levels-select">
         <DotsDivider />
         <div className="play-button">
-          <button id="ilikewinning" onClick={this.playGame}>{"'I ♥ Winning' Level"}</button>
+          <button id="ilikewinning" onClick={this.playGame}>
+            {"'I "}<span className="icon-like-3"/>{" Winning' Level"}
+          </button>
         </div>
         <div className="play-button">
           <button id="coolcolors" onClick={this.playGame}>Cool Colors Level</button>

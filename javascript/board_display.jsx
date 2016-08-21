@@ -3,7 +3,7 @@ const PropTypes = React.PropTypes;
 const DropGrid = require('./drop_grid');
 const DotDisplay = require('./dot_display');
 const ReactDOM = require('react-dom');
-const Liason = require('./gameplay/liason');
+const Liaison = require('./gameplay/liaison');
 
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -15,8 +15,8 @@ const BoardDisplay = React.createClass({
   getInitialState () {
     return({
       offset: [0,0],
-      dots: Liason.all(),
-      explosions: Liason.explosions()
+      dots: Liaison.all(),
+      explosions: Liaison.explosions()
     });
   },
 
@@ -26,8 +26,8 @@ const BoardDisplay = React.createClass({
 
 
   componentDidMount () {
-    this.dotListener = Liason.addListener(this.updateDots);
-    Liason.ACTIONinitializeDots(this.props.board);
+    this.dotListener = Liaison.addListener(this.updateDots);
+    Liaison.ACTIONinitializeDots(this.props.board);
 
     this.windowListenerResize = window.addEventListener("resize", this.updateOffset);
     let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
@@ -42,17 +42,17 @@ const BoardDisplay = React.createClass({
 
   updateDots () {
     this.setState({
-      dots: Liason.all() ,
-      explosions: Liason.explosions()
+      dots: Liaison.all() ,
+      explosions: Liaison.explosions()
     });
 
   },
 
   componentWillUnmount() {
-    Liason.ACTIONclearBoard();
+    Liaison.ACTIONclearBoard();
     window.removeEventListener('resize', this.windowListenerResize);
     // this.windowListener.remove();
-    Liason.removeListener(this.dotListener);
+    Liaison.removeListener(this.dotListener);
   },
 
 
@@ -95,12 +95,12 @@ const BoardDisplay = React.createClass({
 
 export function  swapDots (pos, dot) {
   if (posInRange(pos, dot.pos)) {
-    const dotToSwap = Liason.at(pos);
-    Liason.ACTIONswitchDots(dotToSwap, dot);
+    const dotToSwap = Liaison.at(pos);
+    Liaison.ACTIONswitchDots(dotToSwap, dot);
 
   } else {
 
-    Liason.ACTIONsnapToOrigin(dot);
+    Liaison.ACTIONsnapToOrigin(dot);
   }
 }
 

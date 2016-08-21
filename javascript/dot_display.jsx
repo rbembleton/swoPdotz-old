@@ -3,7 +3,7 @@ const PropTypes = React.PropTypes;
 const Dots = require('./dots/all_dots');
 const Colors = require('./constants/colors');
 const Shapes = require('./constants/shapes');
-const Liason = require('./gameplay/liason');
+const Liaison = require('./gameplay/liaison');
 
 import { DragSource } from 'react-dnd';
 
@@ -13,7 +13,7 @@ const dotSource = {
   },
   endDrag(props, monitor) {
     if (!monitor.didDrop()) {
-      Liason.ACTIONsnapToOrigin(props.dot);
+      Liaison.ACTIONsnapToOrigin(props.dot);
     }
   }
 };
