@@ -6,12 +6,13 @@ const Board = require('./board');
 
 const explosionCallbacks = {
   star: explodeStar,
-  square: explodeStar,
-  triangle: explodeStar,
-  heart: explodeStar
+  square: explodeSquare,
+  triangle: explodeTriangle,
+  heart: explodeHeart,
+  asterisk: explodeAsterisk
 };
 
-let _board = new Board({callbacks: explosionCallbacks});
+let _board = new Board({ callbacks: explosionCallbacks });
 let _listeners = [];
 
 let Liason = function () {
@@ -34,8 +35,19 @@ Liason.removeListener = function (idx) {
   _listeners[idx] = undefined;
 };
 
-function resetDots () {
-  _board = new Board({callbacks: explosionCallbacks});
+function clearBoard () {
+  _board.grid = {};
+  _board.dotsById = {};
+  _board.score = 0;
+  _board = new Board({});
+}
+
+function resetDots (options) {
+  _board = new Board({
+    callbacks: explosionCallbacks,
+    size: options.size,
+    colors: options.colors
+  });
   _board.placeDots();
   Liason.broadcastChanges();
   setTimeout((() => {
@@ -44,8 +56,19 @@ function resetDots () {
 }
 
 function explodeStar(x, y) {
-  // Liason.broadcastChanges();
   console.log('star!');
+}
+function explodeAsterisk(x, y) {
+  console.log('asterisk!');
+}
+function explodeTriangle(x, y) {
+  console.log('triangle!');
+}
+function explodeSquare(x, y) {
+  console.log('square!');
+}
+function explodeHeart(x, y) {
+  console.log('heart!');
 }
 
 function switchDots(dots) {
@@ -169,8 +192,8 @@ Liason.at = function (pos) {
 // ACTIONS FUNCTIONS
 
 
-Liason.ACTIONinitializeDots = function () {
-  resetDots();
+Liason.ACTIONinitializeDots = function (options) {
+  resetDots(options);
 };
 
 Liason.ACTIONsnapToOrigin = function (dot) {
@@ -191,6 +214,10 @@ Liason.ACTIONboardDrop = function () {
 
 Liason.ACTIONfillInBoard = function () {
   fillInTop();
+};
+
+Liason.ACTIONclearBoard = function () {
+  clearBoard();
 };
 
 module.exports = Liason;

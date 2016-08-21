@@ -42,6 +42,26 @@ input[type="submit"] {
   display: block;
   clear: both; }
 
+/* Unselectable */
+.unsel {
+  cursor: default;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  -khtml-user-select: none;
+  /* Konqueror */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+     not supported by any browser */ }
+
+.pink {
+  color: #ff66c2; }
+
 .red {
   color: #ec5151; }
 
@@ -52,10 +72,13 @@ input[type="submit"] {
   color: #faed4e; }
 
 .green {
-  color: #6ccb6c; }
+  color: #49e46b; }
 
 .aqua {
   color: #4bedee; }
+
+.teal {
+  color: #2dc377; }
 
 .blue {
   color: #34b3ff; }
@@ -66,8 +89,38 @@ input[type="submit"] {
 .purple {
   color: #c18be2; }
 
+.pink-hover:hover {
+  color: #ff66c2; }
+
+.red-hover:hover {
+  color: #ec5151; }
+
+.orange-hover:hover {
+  color: #fab54e; }
+
+.yellow-hover:hover {
+  color: #faed4e; }
+
+.green-hover:hover {
+  color: #49e46b; }
+
+.teal-hover:hover {
+  color: #2dc377; }
+
+.aqua-hover:hover {
+  color: #4bedee; }
+
+.blue-hover:hover {
+  color: #34b3ff; }
+
+.indigo-hover:hover {
+  color: #8787ff; }
+
+.purple-hover:hover {
+  color: #c18be2; }
+
 .main-page {
-  width: 800px;
+  width: 600px;
   height: 600px;
   display: block;
   margin: auto;
@@ -79,17 +132,107 @@ input[type="submit"] {
     letter-spacing: .2px;
     font-family: "Francois One", sans-serif;
     color: #3e3f50; }
+  .main-page footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    min-width: 600px;
+    margin: auto;
+    color: #b1b1bc;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.8); }
+    .main-page footer .footer-links {
+      display: block;
+      width: 360px;
+      margin: auto; }
+    .main-page footer .footer-left {
+      display: inline-block;
+      float: left;
+      margin: 10px; }
+      .main-page footer .footer-left a:hover {
+        color: #2dc377; }
+    .main-page footer .footer-right {
+      display: inline-block;
+      float: right;
+      margin: 3px 0px; }
+    .main-page footer .click-icons {
+      color: #b1b1bc;
+      margin: 10px; }
+    .main-page footer .click-icons:hover {
+      color: #8787ff; }
+    .main-page footer span {
+      color: #e4e4e6; }
+
+.dots-divider {
+  margin: 10px; }
+  .dots-divider span {
+    padding: 12px 10px;
+    font-size: 12px; }
+
+.back-to-levels {
+  margin: auto;
+  width: 200px;
+  font-family: "Open Sans", sans-serif;
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer; }
+
+.back-to-levels:hover {
+  color: #8787ff; }
+
+.screen-holder {
+  width: 600px;
+  margin: 20px auto;
+  color: #3e3f50; }
 
 .screen {
   width: 400px;
   height: 400px;
-  margin: 20px auto;
+  margin: auto;
   border: #e4e4e6 2px solid;
   position: relative; }
 
+.levels-select {
+  width: 400px;
+  height: 400px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start; }
+
+.how-to {
+  width: 400px;
+  height: 600px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start; }
+  .how-to .icon-geo-circle, .how-to .icon-geo-square {
+    font-size: 16px; }
+  .how-to .icon-star {
+    font-size: 20px; }
+  .how-to span {
+    margin: 5px;
+    font-size: 18px; }
+  .how-to .rule {
+    width: 360px;
+    margin: 20px auto 10px auto;
+    text-align: center; }
+    .how-to .rule .make-square {
+      text-align: left;
+      display: inline-block; }
+    .how-to .rule .description {
+      margin-top: 10px; }
+
 .play-button {
-  line-height: 400px;
-  text-align: center; }
+  text-align: center;
+  margin: 20px; }
   .play-button button:hover {
     color: #8787ff; }
 
@@ -139,6 +282,11 @@ input[type="submit"] {
   font-size: 15px;
   top: 0.7px;
   left: 5px; }
+
+.asterisk {
+  font-size: 13px;
+  top: 2.5px;
+  left: 6px; }
 
 .star {
   font-size: 15px;

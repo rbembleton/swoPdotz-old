@@ -4,14 +4,15 @@ const Shapes = require('../constants/shapes');
 
 
 let Board = function (options) {
-  this.size = 16;
+  this.size = options.size || 16;
   this.grid = initializeGrid(this.size);
   this.isKilled = false;
   this.score = 0;
+  this.colors = levelColors(options.colors || [0,1,2,3,4,5,6,7,8]);
   this.dotIdentifier = 0;
   this.dotsById = {};
   this.style = ' ';
-  this.explosionCallbacks = options.callbacks;
+  this.explosionCallbacks = options.callbacks || {};
 };
 
 const scoreConv = {
@@ -25,8 +26,19 @@ const dotNumConv = {
   3: Dots.triangle,
   4: Dots.square,
   5: Dots.star,
-  6: Dots.star
+  6: Dots.asterisk
 };
+
+function levelColors(array) {
+  const colorKeys = Object.keys(Colors);
+  let myColors = [];
+
+  array.forEach((el) => {
+    myColors.push(Colors[colorKeys[el]]);
+  });
+
+  return myColors;
+}
 
 function initializeGrid(size) {
   let newGrid = {};
@@ -42,7 +54,8 @@ function initializeGrid(size) {
 }
 
 Board.prototype.placeRandomDot = function (x, y) {
-  let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
+  // let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
+  let randColor = this.colors[Math.floor(Math.random() * this.colors.length)];
 
   const newDot = (new Dots.circle({
     color: randColor,
@@ -56,8 +69,8 @@ Board.prototype.placeRandomDot = function (x, y) {
 };
 
 Board.prototype.placeDots = function () {
-  for (var ix = 0; ix < 16; ix++) {
-    for (var iy = 0; iy < 16; iy++) {
+  for (var ix = 0; ix < this.size; ix++) {
+    for (var iy = 0; iy < this.size; iy++) {
       this.placeRandomDot(ix, iy);
     }
   }
@@ -66,8 +79,8 @@ Board.prototype.placeDots = function () {
 Board.prototype.fillInTop = function () {
   let noFills = true;
 
-  for (var ix = 0; ix < 16; ix++) {
-    for (var iy = 0; iy < 16; iy++) {
+  for (var ix = 0; ix < this.size; ix++) {
+    for (var iy = 0; iy < this.size; iy++) {
       if ( !this.grid[ix][iy] ) {
 
         this.placeRandomDot(ix, iy);
@@ -120,6 +133,18 @@ Board.prototype.killColor = function (color) {
   }
 };
 
+Board.prototype.changeColors = function (color) {
+  for (var ix = 0; ix < this.size; ix++) {
+    for (var iy = 0; iy < this.size; iy++) {
+
+      if (this.grid[ix][iy]) {
+        this.grid[ix][iy].color = color;
+      }
+
+    }
+  }
+};
+
 Board.prototype.killCross = function (x, y) {
   for (var ix = 0; ix < this.size; ix++) {
     if (this.grid[ix][y]) {
@@ -135,7 +160,7 @@ Board.prototype.killCross = function (x, y) {
 
 Board.prototype.killTri = function (x, y) {
   if (y < (this.size - 1) && this.grid[x][y + 1]) {
-    this.removeDot(x, y + 1); 
+    this.removeDot(x, y + 1);
   }
   if (x > 0 && y > 0 && this.grid[x - 1][y - 1]) {
     this.removeDot(x - 1, y - 1);
@@ -174,6 +199,9 @@ Board.prototype.removeDot = function (x, y) {
   } else if (oldDot instanceof Dots.heart) {
     this.explosionCallbacks.heart();
     this.killSquare(x, y);
+  } else if (oldDot instanceof Dots.asterisk) {
+    this.explosionCallbacks.asterisk();
+    this.changeColors(oldDot.color);
   }
 
 };

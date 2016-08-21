@@ -5,17 +5,20 @@ $main-font: 'Open Sans', sans-serif;
 // $header-font: sans-serif;
 // $main-font: sans-serif;
 
+$pink: #ff66c2;
 $red: #ec5151;
 $orange: #fab54e;
 $yellow: #faed4e;
-$green: #6ccb6c;
+$green: #49e46b;
+$teal: #2dc377;
 $aqua: #4bedee;
 $blue: #34b3ff;
 $indigo: #8787ff;
 $purple: #c18be2;
 
 $dark-grey: #3e3f50;
-$light-grey: #e4e4e6;
+$lighter-grey: #e4e4e6;
+$light-grey: #b1b1bc;
 
 //           RESET
 
@@ -70,52 +73,51 @@ input[type="submit"] {
   clear: both;
 }
 
+/* Unselectable */
+.unsel {
+  cursor: default;
+  -webkit-touch-callout: none;  /* iOS Safari */
+  -webkit-user-select: none;  /* Chrome/Safari/Opera */
+  -khtml-user-select: none;  /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none;  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+     not supported by any browser */ }
 
 //      END RESET
 
 
 //      UNIVERSAL CSS
 
+.pink { color: $pink; }
+.red { color: $red; }
+.orange { color: $orange; }
+.yellow { color: $yellow; }
+.green { color: $green; }
+.aqua { color: $aqua; }
+.teal { color: $teal; }
+.blue { color: $blue; }
+.indigo { color: $indigo; }
+.purple { color: $purple; }
 
-.red {
-  color: $red;
-}
-
-.orange {
-  color: $orange;
-}
-
-.yellow {
-  color: $yellow;
-}
-
-.green {
-  color: $green;
-}
-
-.aqua {
-  color: $aqua;
-}
-
-.blue {
-  color: $blue;
-}
-
-.indigo {
-  color: $indigo;
-}
-
-.purple {
-  color: $purple;
-}
-
+.pink-hover:hover { color: $pink; }
+.red-hover:hover { color: $red; }
+.orange-hover:hover { color: $orange; }
+.yellow-hover:hover { color: $yellow; }
+.green-hover:hover { color: $green; }
+.teal-hover:hover { color: $teal; }
+.aqua-hover:hover { color: $aqua; }
+.blue-hover:hover { color: $blue; }
+.indigo-hover:hover { color: $indigo; }
+.purple-hover:hover { color: $purple; }
 
 
 
 
 
 .main-page {
-  width: 800px;
+  width: 600px;
   height: 600px;
   display: block;
   margin: auto;
@@ -127,23 +129,150 @@ input[type="submit"] {
     text-align: center;
     letter-spacing: .2px;
     font-family: $header-font;
-    color: #3e3f50;
+    color: $dark-grey;
   }
 
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    min-width: 600px;
+    margin: auto;
+    color: $light-grey;
+    z-index: 10;
+    background-color: rgba(255,255,255,0.8);
+
+    .footer-links {
+      display: block;
+      width: 360px;
+      margin: auto;
+    }
+
+    .footer-left {
+      display: inline-block;
+      float: left;
+      margin: 10px;
+
+      a:hover {
+        color: $teal;
+      }
+    }
+
+    .footer-right {
+      display: inline-block;
+      float: right;
+      margin: 3px 0px;
+    }
+
+    .click-icons {
+      color: $light-grey;
+      margin: 10px;
+    }
+
+    .click-icons:hover {
+      color: $indigo;
+    }
+
+    span {
+      color: $lighter-grey;
+    }
+  }
+
+}
+
+.dots-divider {
+  margin: 10px;
+
+  span {
+    padding:12px 10px;
+    font-size: 12px;
+  }
+}
+
+.back-to-levels {
+  margin: auto;
+  width: 200px;
+  font-family: $main-font;
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.back-to-levels:hover {
+  color: $indigo;
+}
+
+.screen-holder {
+  width: 600px;
+  margin: 20px auto;
+  color: $dark-grey;
 }
 
 
 .screen {
   width: 400px;
   height: 400px;
-  margin: 20px auto;
-  border: $light-grey 2px solid;
+  margin: auto;
+  border: $lighter-grey 2px solid;
   position: relative;
 }
 
+.levels-select {
+  width: 400px;
+  height: 400px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.how-to {
+  width: 400px;
+  height: 600px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+
+  .icon-geo-circle, .icon-geo-square {
+    font-size: 16px;
+  }
+
+  .icon-star {
+    font-size: 20px;
+  }
+
+  span {
+    margin: 5px;
+    font-size: 18px;
+  }
+
+  .rule {
+    width: 360px;
+    margin: 20px auto 10px auto;
+    text-align: center;
+
+    .make-square {
+      text-align: left;
+      display: inline-block;
+    }
+
+    .description {
+      margin-top: 10px;
+    }
+  }
+}
+
 .play-button {
-  line-height: 400px;
+  // line-height: 400px;
   text-align: center;
+  margin: 20px;
 
   button:hover {
     color: $indigo;
@@ -236,6 +365,12 @@ input[type="submit"] {
   font-size: 15px;
   top: 0.7px;
   left: 5px;
+}
+
+.asterisk {
+  font-size: 13px;
+  top: 2.5px;
+  left: 6px;
 }
 
 .star {

@@ -3,5 +3,6 @@ module.exports = {
   square: 'square',
   star: 'star',
   triangle: 'triangle',
-  heart: 'heart'
+  heart: 'heart',
+  asterisk: 'asterisk'
 };

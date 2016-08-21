@@ -1,6 +1,6 @@
 const React = require('react');
 const PropTypes = React.PropTypes;
-const swapDots = require('./game').swapDots;
+const swapDots = require('./board_display').swapDots;
 const DropTarget = require('react-dnd').DropTarget;
 
 

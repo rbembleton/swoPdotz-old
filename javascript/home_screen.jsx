@@ -1,20 +1,37 @@
 const React = require('react');
 const hashHistory = require('react-router').hashHistory;
-
+const DotsDivider = require('./dots/dots_divider');
 
 const HomeScreen = React.createClass({
 
   playGame (e) {
     e.preventDefault();
-    hashHistory.push('game');
+    hashHistory.push(`game/${e.target.id}`);
   },
+
+  howTo (e) {
+    e.preventDefault();
+    hashHistory.push(`how`);
+  },
+
 
   render () {
 
     return (
-      <div>
+      <div className="levels-select">
+        <DotsDivider />
         <div className="play-button">
-          <button onClick={this.playGame}>Play game</button>
+          <button id="ilikewinning" onClick={this.playGame}>{"'I ♥ Winning' Level"}</button>
+        </div>
+        <div className="play-button">
+          <button id="coolcolors" onClick={this.playGame}>Cool Colors Level</button>
+        </div>
+        <div className="play-button">
+          <button id="infinity" onClick={this.playGame}>Infinity Level</button>
+        </div>
+        <DotsDivider />
+        <div className="play-button">
+          <button onClick={this.howTo}>How to Play</button>
         </div>
       </div>
     );
@@ -23,13 +40,3 @@ const HomeScreen = React.createClass({
 });
 
 module.exports = HomeScreen;
-
-
-// <div className="red">Whatsup?!</div>
-// <div className="orange">Whatsup?!</div>
-// <div className="yellow">Whatsup?!</div>
-// <div className="green">Whatsup?!</div>
-// <div className="aqua">Whatsup?!</div>
-// <div className="blue">Whatsup?!</div>
-// <div className="indigo">Whatsup?!</div>
-// <div className="purple">Whatsup?!</div>

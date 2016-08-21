@@ -3,6 +3,7 @@ const HeartDot = require('./heart_dot');
 const SquareDot = require('./square_dot');
 const StarDot = require('./star_dot');
 const TriangleDot = require('./triangle_dot');
+const AsteriskDot = require('./asterisk_dot');
 
 
 module.exports = {
@@ -10,5 +11,6 @@ module.exports = {
   heart: HeartDot,
   square: SquareDot,
   star: StarDot,
-  triangle: TriangleDot
+  triangle: TriangleDot,
+  asterisk: AsteriskDot
 };
