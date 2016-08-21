@@ -5,13 +5,14 @@ const Shapes = require('../constants/shapes');
 
 let Board = function (options) {
   this.size = options.size || 16;
-  this.grid = initializeGrid(this.size);
+  this.grid = initializeGrid(this.size, {});
   this.isKilled = false;
   this.score = 0;
   this.colors = levelColors(options.colors || [0,1,2,3,4,5,6,7,8]);
   this.dotIdentifier = 0;
   this.dotsById = {};
   this.style = ' ';
+  this.explodedSpaces = initializeGrid(this.size, ' ');
   this.explosionCallbacks = options.callbacks || {};
 };
 
@@ -40,18 +41,22 @@ function levelColors(array) {
   return myColors;
 }
 
-function initializeGrid(size) {
+function initializeGrid(size, placeholder) {
   let newGrid = {};
 
   for (var ix = 0; ix < size; ix++) {
     newGrid[ix] = {};
     for (var iy = 0; iy < size; iy++) {
-      newGrid[ix][iy] = {};
+      newGrid[ix][iy] = placeholder;
     }
   }
 
   return newGrid;
 }
+
+Board.prototype.resetExplodedSpaces = function () {
+  this.explodedSpaces = initializeGrid(this.size, ' ');
+};
 
 Board.prototype.placeRandomDot = function (x, y) {
   // let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
@@ -186,6 +191,7 @@ Board.prototype.removeDot = function (x, y) {
 
   oldDot.isKilled = true;
   this.grid[x][y] = null;
+  this.explodedSpaces[x][y] = oldDot.color;
 
   if (oldDot instanceof Dots.star) {
     this.explosionCallbacks.star();

@@ -122,6 +122,7 @@ input[type="submit"] {
   display: block;
   margin: auto;
   margin-top: 60px;
+  margin-bottom: 160px;
   font-family: $main-font;
 
   header {
@@ -142,12 +143,14 @@ input[type="submit"] {
     margin: auto;
     color: $light-grey;
     z-index: 10;
-    background-color: rgba(255,255,255,0.8);
+    background-color: rgba(255, 255, 255, 0.9);
 
     .footer-links {
       display: block;
-      width: 360px;
+      width: 320px;
       margin: auto;
+      border-top: 1px solid $lighter-grey;
+      padding-top: 10px;
     }
 
     .footer-left {
@@ -327,41 +330,45 @@ input[type="submit"] {
 
 }
 
+@keyframes pound {
+  50% { transform: scale(1.2); }
+}
+
+@keyframes wiggle {
+  25% { transform: rotate(4deg); }
+  75% { transform: rotate(-4deg); }
+}
+
+@keyframes spin {
+  5% { transform: rotateY(-20deg);}
+  25% { transform: rotateY(360deg);}
+  26% { transform: rotateY(0deg); }
+}
+
+
 .square {
-  // font-family: sans-serif;
-  // font-size: 38px;
-  // top: -15px;
-  // left: 3.2px;
   font-size: 11.5px;
   top: 3.7px;
   left: 6.75px;
+  transform-origin: center;
 }
 
 .heart {
-  // font-family: serif;
-  // font-size: 19px;
-  // top: 1.2px;
-  // left: 5.5px;
   font-size: 14.5px;
   top: 1.5px;
   left: 5.3px;
+  animation: pound .6s infinite;
+  transform-origin: center;
 }
+
 
 .circle {
   font-size: 13px;
   top: 2.5px;
   left: 6px;
-  // font-size: 42px;
-  // top: -12px;
-  // left: 5.5px;
-  // font-family: serif;
 }
 
 .triangle {
-  // font-family: sans-serif;
-  // font-size: 40px;
-  // top: -16.5px;
-  // left: 2px;
   font-size: 15px;
   top: 0.7px;
   left: 5px;
@@ -371,16 +378,17 @@ input[type="submit"] {
   font-size: 13px;
   top: 2.5px;
   left: 6px;
+  animation: spin 2s infinite;
+  transform-origin: center;
+
 }
 
 .star {
-  // font-family: sans-serif;
-  // font-size: 19px;
-  // top: -2px;
-  // left: 3px;
   font-size: 15px;
   top: .5px;
   left: 5px;
+  animation: wiggle .5s infinite;
+  transform-origin: center;
 }
 
 .highlighted {
@@ -401,15 +409,77 @@ input[type="submit"] {
   width: 25px;
   height: 25px;
   margin: 0px;
-  // border: 1px solid black;
-  // opacity: .5;
-  // background-color: black;
+
+
+
 }
 
 
+.particle {
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 1px 1px 2px white;
+}
+
+
+.particle.finish {
+  transition: all .6s linear;
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+}
+
+.particle.start {
+  // background-color: white;
+  width: 2px;
+  height: 2px;
+  opacity: 1;
+}
+
+// .particle.pink.finish { background-color: $pink; }
+// .particle.red.finish { background-color: $red; }
+// .particle.orange.finish { background-color: $orange; }
+// .particle.yellow.finish { background-color: $yellow; }
+// .particle.green.finish { background-color: $green; }
+// .particle.teal.finish { background-color: $teal; }
+// .particle.aqua.finish { background-color: $aqua; }
+// .particle.blue.finish { background-color: $blue; }
+// .particle.indigo.finish { background-color: $indigo; }
+// .particle.purple.finish { background-color: $purple; }
+
+.particle.pink { background-color: $pink; }
+.particle.red { background-color: $red; }
+.particle.orange { background-color: $orange; }
+.particle.yellow { background-color: $yellow; }
+.particle.green { background-color: $green; }
+.particle.teal { background-color: $teal; }
+.particle.aqua { background-color: $aqua; }
+.particle.blue { background-color: $blue; }
+.particle.indigo { background-color: $indigo; }
+.particle.purple { background-color: $purple; }
+
 .score-cont {
-  margin: 10px auto;
-  text-align: center;
-  font-family: $main-font;
-  transition: all .5s ease;
+  margin: 20px auto;
+  width: 200px;
+  position: relative;
+
+  div {
+    font-size: 20px;
+    text-align: center;
+    font-family: $main-font;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background-color: white;
+  }
+
+  .score-cont-1 {
+    transition: all 1s ease;
+
+  }
+
+  .score-cont-2 {
+    transition: all 1s ease;
+  }
+
 }

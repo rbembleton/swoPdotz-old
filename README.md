@@ -71,16 +71,16 @@ score          | integer    |
 - [x] Develop game play
   - [x] Restrict tile swapping to appropriate pieces
   - [x] Add at least two different types of combinations
-  - [ ] Create explosion CSS
-- [ ] Adjust CSS, ensuring modernity
+  - [x] Create explosion CSS
+- [x] Adjust CSS, ensuring modernity
 
 ### Day Three
 
-- [ ] Develop game play
-  - [ ] Add obstacles
-  - [ ] Add levels/algorithm for levels to be created dynamically
-  - [ ] Add new types of combinations/explosions
-- [ ] Continue to perfect CSS
+- [x] Develop game play
+  - [ ] Add goals/obstacles
+  - [x] Add levels/algorithm for levels to be created dynamically
+  - [x] Add new types of combinations/explosions
+- [x] Continue to perfect CSS
 
 ### BONUS
 

@@ -51,24 +51,25 @@ function resetDots (options) {
   _board.placeDots();
   Liason.broadcastChanges();
   setTimeout((() => {
+    _board.resetExplodedSpaces();
     removeGroups();
   }), 200);
 }
 
 function explodeStar(x, y) {
-  console.log('star!');
+  // console.log('star!');
 }
 function explodeAsterisk(x, y) {
-  console.log('asterisk!');
+  // console.log('asterisk!');
 }
 function explodeTriangle(x, y) {
-  console.log('triangle!');
+  // console.log('triangle!');
 }
 function explodeSquare(x, y) {
-  console.log('square!');
+  // console.log('square!');
 }
 function explodeHeart(x, y) {
-  console.log('heart!');
+  // console.log('heart!');
 }
 
 function switchDots(dots) {
@@ -81,9 +82,9 @@ function switchDots(dots) {
   _board.setValAt(dot1.pos, dot1);
   _board.setValAt(dot2.pos, dot2);
 
-  _board.continueUpdate = 1;
   Liason.broadcastChanges();
   setTimeout((() => {
+    _board.resetExplodedSpaces();
     removeGroups();
   }), 200);
 }
@@ -127,6 +128,7 @@ function removeGroups() {
 function boardDrop() {
   Liason.broadcastChanges();
   setTimeout((() => {
+    _board.resetExplodedSpaces();
     _board.columnsDrop(updateDisplay);
   }), 400);
 }
@@ -135,6 +137,7 @@ function boardDrop() {
 function updateDisplay () {
   Liason.broadcastChanges();
   setTimeout((() => {
+    _board.resetExplodedSpaces();
     fillInTop();
   }), 400);
 }
@@ -149,12 +152,18 @@ function fillInTop() {
   } else {
     Liason.broadcastChanges();
     setTimeout((() => {
+      _board.resetExplodedSpaces();
       removeGroups();
     }), 400);
   }
 }
 
 //    STORE FUNCTIONS
+
+Liason.explosions = function () {
+  // console.log(_board.explodedSpaces);
+  return _board.explodedSpaces;
+};
 
 Liason.score = function () {
   return _board.score;

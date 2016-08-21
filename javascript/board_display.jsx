@@ -13,7 +13,11 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 const BoardDisplay = React.createClass({
   getInitialState () {
-    return({ offset: [0,0], dots: Liason.all() });
+    return({
+      offset: [0,0],
+      dots: Liason.all(),
+      explosions: Liason.explosions()
+    });
   },
 
   propTypes: {
@@ -37,7 +41,10 @@ const BoardDisplay = React.createClass({
   },
 
   updateDots () {
-    this.setState({ dots: Liason.all() });
+    this.setState({
+      dots: Liason.all() ,
+      explosions: Liason.explosions()
+    });
 
   },
 
@@ -60,6 +67,7 @@ const BoardDisplay = React.createClass({
           <DropGrid
             key={ix * 100 + iy}
             pos={[ix,iy]}
+            animateColor={this.state.explosions[ix][iy]}
           />
       );
       }

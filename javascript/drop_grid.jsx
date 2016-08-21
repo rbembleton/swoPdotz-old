@@ -2,6 +2,7 @@ const React = require('react');
 const PropTypes = React.PropTypes;
 const swapDots = require('./board_display').swapDots;
 const DropTarget = require('react-dnd').DropTarget;
+const Particle = require('./particle');
 
 
 const squareTarget = {
@@ -20,8 +21,30 @@ function collect(connect, monitor) {
 
 const DropGrid = React.createClass({
 
+  getInitialState () {
+    return ({ animate: ' ' });
+  },
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.animateColor !== ' ') {
+      this.setState({ animate: nextProps.animateColor });
+      const that = this;
+      setTimeout((() => {
+        if (that.isMounted()) {
+          that.removeAnimation();
+        }
+      }), 600);
+    }
+  },
+
+  removeAnimation () {
+    const that = this;
+    that.setState({ animate: ' ' });
+  },
+
   render () {
     const { pos, connectDropTarget, currentDragTarget, isOver } = this.props;
+    let explosion = [];
 
     let sqPosZIndex = {
       bottom: `${pos[1] * 25}px`,
@@ -31,13 +54,22 @@ const DropGrid = React.createClass({
           currentDragTarget.dot.pos[1] === pos[1])) ? '5' : '1'}`
     };
 
+    if (this.state.animate !== ' ') {
+      for (var i = 0; i < 4; i++) {
+        explosion.push(
+          <Particle key={i} color={this.state.animate}/>
+
+        );
+      }
+    }
 
     return connectDropTarget(
       <div
-        className="dot-holder"
+        className={"dot-holder"}
         style={sqPosZIndex}
         data-pos={pos}
       >
+        {explosion}
       </div>
     );
   }
