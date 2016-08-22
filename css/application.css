@@ -194,7 +194,6 @@ input[type="submit"] {
   width: 400px;
   height: 400px;
   margin: auto;
-  border: #e4e4e6 2px solid;
   position: relative; }
 
 .levels-select {
@@ -339,8 +338,6 @@ input[type="submit"] {
 .dot-holder {
   position: absolute;
   z-index: 1;
-  width: 25px;
-  height: 25px;
   margin: 0px; }
 
 .particle {

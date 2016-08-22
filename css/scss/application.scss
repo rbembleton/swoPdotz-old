@@ -218,7 +218,7 @@ input[type="submit"] {
   width: 400px;
   height: 400px;
   margin: auto;
-  border: $lighter-grey 2px solid;
+  // border: $lighter-grey 2px solid;
   position: relative;
 }
 
@@ -273,7 +273,6 @@ input[type="submit"] {
 }
 
 .play-button {
-  // line-height: 400px;
   text-align: center;
   margin: 20px;
 
@@ -286,7 +285,6 @@ input[type="submit"] {
 .dot-cont {
   height: 25px;
   width: 25px;
-  // border: 1px solid black;
   overflow: hidden;
   position: absolute;
 
@@ -307,13 +305,10 @@ input[type="submit"] {
 }
 
 .dot-cont.drop {
-  // background-color: black;
 }
 
 .dot-cont.dropped {
   transition: all .3s ease;
-  // transition: all .6s cubic-bezier(0.95, 0.38, 0.7, 0.97);
-  // background-color: white;
 }
 
 .dot-cont.new-dot {
@@ -326,7 +321,6 @@ input[type="submit"] {
   background-color: white;
 
   opacity: 1;
-  // text-shadow: none;
 
 }
 
@@ -414,8 +408,8 @@ input[type="submit"] {
 .dot-holder {
   position: absolute;
   z-index: 1;
-  width: 25px;
-  height: 25px;
+  // width: 25px;
+  // height: 25px;
   margin: 0px;
 
 
@@ -438,7 +432,6 @@ input[type="submit"] {
 }
 
 .particle.start {
-  // background-color: white;
   width: 2px;
   height: 2px;
   opacity: 1;
@@ -456,16 +449,6 @@ input[type="submit"] {
 .particle.indigo.finish { background-color: $indigo; }
 .particle.purple.finish { background-color: $purple; }
 
-// .particle.pink { background-color: $pink; }
-// .particle.red { background-color: $red; }
-// .particle.orange { background-color: $orange; }
-// .particle.yellow { background-color: $yellow; }
-// .particle.green { background-color: $green; }
-// .particle.teal { background-color: $teal; }
-// .particle.aqua { background-color: $aqua; }
-// .particle.blue { background-color: $blue; }
-// .particle.indigo { background-color: $indigo; }
-// .particle.purple { background-color: $purple; }
 
 .score-cont {
   margin: 20px auto;

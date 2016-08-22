@@ -1,7 +1,4 @@
 const React = require('react');
-const Dots = require('../dots/all_dots');
-// const Colors = require('../constants/colors');
-// const Shapes = require('../constants/shapes');
 const Board = require('./board');
 
 const explosionCallbacks = {
@@ -57,19 +54,23 @@ function resetDots (options) {
 }
 
 function explodeStar(x, y) {
-  // console.log('star!');
+  // potentially build this out in the future
 }
+
 function explodeAsterisk(x, y) {
-  // console.log('asterisk!');
+  // potentially build this out in the future
 }
+
 function explodeTriangle(x, y) {
-  // console.log('triangle!');
+  // potentially build this out in the future
 }
+
 function explodeSquare(x, y) {
-  // console.log('square!');
+  // potentially build this out in the future;
 }
+
 function explodeHeart(x, y) {
-  // console.log('heart!');
+  // potentially build this out in the future
 }
 
 function switchDots(dots) {
@@ -115,9 +116,6 @@ function unknwnTypeDup(val) {
   }
 }
 
-// function justUpdate() {
-//   Liaison.broadcastChanges();
-// }
 
 // run this first
 function removeGroups() {
@@ -161,7 +159,6 @@ function fillInTop() {
 //    STORE FUNCTIONS
 
 Liaison.explosions = function () {
-  // console.log(_board.explodedSpaces);
   return _board.explodedSpaces;
 };
 

@@ -47,8 +47,10 @@ const DropGrid = React.createClass({
     let explosion = [];
 
     let sqPosZIndex = {
-      bottom: `${pos[1] * 25}px`,
-      left: `${pos[0] * 25}px`,
+      width: `${this.props.sizeOfGrids}px`,
+      height: `${this.props.sizeOfGrids}px`,
+      bottom: `${pos[1] * this.props.sizeOfGrids}px`,
+      left: `${pos[0] * this.props.sizeOfGrids}px`,
       zIndex: `${(currentDragTarget &&
         !(currentDragTarget.dot.pos[0] === pos[0] &&
           currentDragTarget.dot.pos[1] === pos[1])) ? '5' : '1'}`

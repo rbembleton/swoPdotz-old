@@ -35,14 +35,14 @@ const DotDisplay = React.createClass({
 
   changePos(e) {
     const newPos = [
-      ((e.pageX - this.props.offset[0]) / 25) ,
-      ((this.props.offset[1] - e.pageY) / 25)
+      ((e.pageX - this.props.offset[0]) / this.props.sizeOfGrids) ,
+      ((this.props.offset[1] - e.pageY) / this.props.sizeOfGrids)
     ];
 
     if (newPos[0] < 0) {newPos[0] = 0;}
     if (newPos[1] < 0) {newPos[1] = 0;}
-    if (newPos[0] > 15) {newPos[0] = 15;}
-    if (newPos[1] > 15) {newPos[1] = 15;}
+    if (newPos[0] > (this.props.numOfGrids - 1)) {newPos[0] = (this.props.numOfGrids - 1);}
+    if (newPos[1] > (this.props.numOfGrids - 1)) {newPos[1] = (this.props.numOfGrids - 1);}
 
     this.setState({ pos: newPos });
   },
@@ -100,14 +100,19 @@ const DotDisplay = React.createClass({
 
 
   checkPos () {
-    console.log('hi');
   },
 
 
   render () {
     let pos = {
-      bottom: `${this.state.pos[1] * 25}px`,
-      left: `${this.state.pos[0] * 25}px`
+      bottom: `${this.state.pos[1] * this.props.sizeOfGrids}px`,
+      left: `${this.state.pos[0] * this.props.sizeOfGrids}px`,
+      width: `${this.props.sizeOfGrids}px`,
+      height: `${this.props.sizeOfGrids}px`
+    };
+
+    let margin = {
+      margin: `${(this.props.sizeOfGrids - 25) / 2.0}px`
     };
 
     var connectDragSource = this.props.connectDragSource;
@@ -120,7 +125,9 @@ const DotDisplay = React.createClass({
         style={pos}
         onDrag={this.changePos}
       >
-        <div className={this.props.dot.color + " " + this.props.dot.shape}>
+        <div
+          className={this.props.dot.color + " " + this.props.dot.shape}
+          style={margin}>
           <span className={this.props.dot.iconClass}/>
         </div>
       </div>

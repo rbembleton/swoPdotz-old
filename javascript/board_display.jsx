@@ -13,6 +13,8 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 const BoardDisplay = React.createClass({
   getInitialState () {
+    Liaison.ACTIONinitializeDots(this.props.board);
+    this.sizeOfGrids = (400.0 / (this.props.board.size || 16.0));
     return({
       offset: [0,0],
       dots: Liaison.all(),
@@ -27,17 +29,14 @@ const BoardDisplay = React.createClass({
 
   componentDidMount () {
     this.dotListener = Liaison.addListener(this.updateDots);
-    Liaison.ACTIONinitializeDots(this.props.board);
-
     this.windowListenerResize = window.addEventListener("resize", this.updateOffset);
-    let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-
-    this.setState({offset: [myRect.left + 12.5, myRect.bottom + 387.5]});
+    this.updateOffset();
   },
 
   updateOffset () {
+    const boxResize = (this.sizeOfGrids) / 2.0;
     let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-    this.setState({offset: [myRect.left + 12.5, myRect.bottom + 387.5]});
+    this.setState({offset: [myRect.left + boxResize, myRect.bottom + (400 - boxResize)]});
   },
 
   updateDots () {
@@ -51,7 +50,6 @@ const BoardDisplay = React.createClass({
   componentWillUnmount() {
     Liaison.ACTIONclearBoard();
     window.removeEventListener('resize', this.windowListenerResize);
-    // this.windowListener.remove();
     Liaison.removeListener(this.dotListener);
   },
 
@@ -61,12 +59,13 @@ const BoardDisplay = React.createClass({
   render () {
     let dispGrid = [];
 
-    for (var ix = 0; ix < 16; ix++) {
-      for (var iy = 0; iy < 16; iy++) {
+    for (var ix = 0; ix < this.props.board.size; ix++) {
+      for (var iy = 0; iy < this.props.board.size; iy++) {
         dispGrid.push(
           <DropGrid
             key={ix * 100 + iy}
             pos={[ix,iy]}
+            sizeOfGrids={this.sizeOfGrids}
             animateColor={this.state.explosions[ix][iy]}
           />
       );
@@ -80,6 +79,8 @@ const BoardDisplay = React.createClass({
           dot={dot}
           pos={dot.pos}
           key={dot.id}
+          sizeOfGrids={this.sizeOfGrids}
+          numOfGrids={this.props.board.size}
           offset={this.state.offset}/>);
       });
 

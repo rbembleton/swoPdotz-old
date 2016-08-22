@@ -264,7 +264,7 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
       }
     }
 
-    if (sameColor === true && i === num) {
+    if (sameColor && i === num) {
       for (var j = 0; j < num; j++) {
         if (Math.floor(num / 2) === j) {
           this.replaceDot(x + dx * j, y + dy * j, dotNumConv[num]);
