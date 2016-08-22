@@ -61,6 +61,28 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos) {
 
 ```
 
+## Drag n' Drop
+
+It turns out that draggin' and droppin' in React isn't as easy as one might expect. However, there is an incredible library `react-dnd` that makes it much more accessible. To use `react-dnd` you must wrap several of your components to identify your DragSource, DropTarget, and DragDropContext. Implementing this might seem very simple, but in swoPdotz, the drag source and drop target are actually the same thing: they're both dots or rather spaces on the grid. To overcome this, I added a second, seemingly duplicate, component `DropGrid` which was a series of squares, positioned just below their corresponding `Dot`s but these squares wouldn't change when the dots changed, rather they would remain in place at all times to represent the actual spaces of the grid. However, since they were immediately behind the `Dot`s it was impossible to actually drop things into them at first, that's when I implemented this:
+
+```JavaScript
+let sqPosZIndex = {
+  zIndex: `${(currentDragTarget &&
+    !(currentDragTarget.dot.pos[0] === pos[0] &&
+      currentDragTarget.dot.pos[1] === pos[1])) ? '5' : '1'}`
+};
+
+return connectDropTarget(
+  <div
+    className={"dot-holder"}
+    style={sqPosZIndex}
+  >
+  </div>
+);
+```
+
+This inline style object allowed me to check if there was a `currentDragTarget` and if so, it ensured that all of the zIndices of the `DropGrid` components were high enough that a user could access them and drop a dot into them.
+
 
 ## Custom Flux-Like Cycle
 
