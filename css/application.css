@@ -281,10 +281,20 @@ input[type="submit"] {
     transform: rotateY(360deg); }
   26% {
     transform: rotateY(0deg); } }
+@keyframes shake {
+  15% {
+    transform: scaleX(1.2); }
+  30% {
+    transform: scaleX(1); }
+  70% {
+    transform: scaleY(1); }
+  85% {
+    transform: scaleY(1.2); } }
 .square {
   font-size: 11.5px;
   top: 3.7px;
   left: 6.75px;
+  animation: shake 2s infinite;
   transform-origin: center; }
 
 .heart {
@@ -339,7 +349,7 @@ input[type="submit"] {
   box-shadow: 1px 1px 2px white; }
 
 .particle.finish {
-  transition: all .6s linear;
+  transition: all .6s linear, background-color .01s linear;
   width: 10px;
   height: 10px;
   opacity: 0; }
@@ -347,36 +357,37 @@ input[type="submit"] {
 .particle.start {
   width: 2px;
   height: 2px;
-  opacity: 1; }
+  opacity: 1;
+  background-color: white; }
 
-.particle.pink {
+.particle.pink.finish {
   background-color: #ff66c2; }
 
-.particle.red {
+.particle.red.finish {
   background-color: #ec5151; }
 
-.particle.orange {
+.particle.orange.finish {
   background-color: #fab54e; }
 
-.particle.yellow {
+.particle.yellow.finish {
   background-color: #faed4e; }
 
-.particle.green {
+.particle.green.finish {
   background-color: #49e46b; }
 
-.particle.teal {
+.particle.teal.finish {
   background-color: #2dc377; }
 
-.particle.aqua {
+.particle.aqua.finish {
   background-color: #4bedee; }
 
-.particle.blue {
+.particle.blue.finish {
   background-color: #34b3ff; }
 
-.particle.indigo {
+.particle.indigo.finish {
   background-color: #8787ff; }
 
-.particle.purple {
+.particle.purple.finish {
   background-color: #c18be2; }
 
 .score-cont {

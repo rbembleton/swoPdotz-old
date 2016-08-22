@@ -345,11 +345,19 @@ input[type="submit"] {
   26% { transform: rotateY(0deg); }
 }
 
+@keyframes shake {
+  15% { transform: scaleX(1.2);}
+  30% { transform: scaleX(1); }
+  70% { transform: scaleY(1); }
+  85% { transform: scaleY(1.2); }
+}
+
 
 .square {
   font-size: 11.5px;
   top: 3.7px;
   left: 6.75px;
+  animation: shake 2s infinite;
   transform-origin: center;
 }
 
@@ -423,7 +431,7 @@ input[type="submit"] {
 
 
 .particle.finish {
-  transition: all .6s linear;
+  transition: all .6s linear, background-color .01s linear;
   width: 10px;
   height: 10px;
   opacity: 0;
@@ -434,29 +442,30 @@ input[type="submit"] {
   width: 2px;
   height: 2px;
   opacity: 1;
+  background-color: white;
 }
 
-// .particle.pink.finish { background-color: $pink; }
-// .particle.red.finish { background-color: $red; }
-// .particle.orange.finish { background-color: $orange; }
-// .particle.yellow.finish { background-color: $yellow; }
-// .particle.green.finish { background-color: $green; }
-// .particle.teal.finish { background-color: $teal; }
-// .particle.aqua.finish { background-color: $aqua; }
-// .particle.blue.finish { background-color: $blue; }
-// .particle.indigo.finish { background-color: $indigo; }
-// .particle.purple.finish { background-color: $purple; }
+.particle.pink.finish { background-color: $pink; }
+.particle.red.finish { background-color: $red; }
+.particle.orange.finish { background-color: $orange; }
+.particle.yellow.finish { background-color: $yellow; }
+.particle.green.finish { background-color: $green; }
+.particle.teal.finish { background-color: $teal; }
+.particle.aqua.finish { background-color: $aqua; }
+.particle.blue.finish { background-color: $blue; }
+.particle.indigo.finish { background-color: $indigo; }
+.particle.purple.finish { background-color: $purple; }
 
-.particle.pink { background-color: $pink; }
-.particle.red { background-color: $red; }
-.particle.orange { background-color: $orange; }
-.particle.yellow { background-color: $yellow; }
-.particle.green { background-color: $green; }
-.particle.teal { background-color: $teal; }
-.particle.aqua { background-color: $aqua; }
-.particle.blue { background-color: $blue; }
-.particle.indigo { background-color: $indigo; }
-.particle.purple { background-color: $purple; }
+// .particle.pink { background-color: $pink; }
+// .particle.red { background-color: $red; }
+// .particle.orange { background-color: $orange; }
+// .particle.yellow { background-color: $yellow; }
+// .particle.green { background-color: $green; }
+// .particle.teal { background-color: $teal; }
+// .particle.aqua { background-color: $aqua; }
+// .particle.blue { background-color: $blue; }
+// .particle.indigo { background-color: $indigo; }
+// .particle.purple { background-color: $purple; }
 
 .score-cont {
   margin: 20px auto;
