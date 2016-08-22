@@ -1,5 +1,10 @@
 # swoPdotz
 
+[swoPdotz LIVE][swopdotz]
+
+[swopdotz]: http://webdev.rbembleton.com/swopdotz
+
+
 An addictive JavaScript browser game inspired by Dots and Candy Crush, implementing React.js and JavaScript.
 
 ![bright_colors](docs/bright_colors.png)
