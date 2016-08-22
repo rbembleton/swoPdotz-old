@@ -103,9 +103,9 @@ score          | integer    |
 ### Repo and README
 
 - [x] Link to live version.
-- [ ] Instructions on how to play/use the project.
-- [ ] List of techs/languages/plugins/APIs used.
-- [ ] Technical implementation details with code snippets (make sure it looks good).
-- [ ] To-dos/future features.
-- [ ] No .DS_Stores / debuggers / console.logs.
-- [ ] Organize into /assets and /lib.
+- [x] Instructions on how to play/use the project.
+- [x] List of techs/languages/plugins/APIs used.
+- [x] Technical implementation details with code snippets (make sure it looks good).
+- [x] To-dos/future features.
+- [x] No .DS_Stores / debuggers / console.logs.
+- [x] Organize into /assets and /lib.
