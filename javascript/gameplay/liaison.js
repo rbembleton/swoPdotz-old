@@ -11,7 +11,7 @@ const explosionCallbacks = {
 
 let _board = new Board({ callbacks: explosionCallbacks });
 let _listeners = [];
-let _preventMove = false;
+let _preventMove = true;
 
 let Liaison = function () {
 };

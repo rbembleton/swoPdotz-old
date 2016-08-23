@@ -18,7 +18,8 @@ const BoardDisplay = React.createClass({
     return({
       offset: [0,0],
       dots: Liaison.all(),
-      explosions: Liaison.explosions()
+      explosions: Liaison.explosions(),
+      canTheyMove: Liason.isItTimeToMove()
     });
   },
 
@@ -42,7 +43,8 @@ const BoardDisplay = React.createClass({
   updateDots () {
     this.setState({
       dots: Liaison.all() ,
-      explosions: Liaison.explosions()
+      explosions: Liaison.explosions(),
+      canTheyMove: Liason.isItTimeToMove()
     });
 
   },
@@ -58,6 +60,7 @@ const BoardDisplay = React.createClass({
 
   render () {
     let dispGrid = [];
+    // const canTheyMove = Liaison.isItTimeToMove();
 
     for (var ix = 0; ix < this.props.board.size; ix++) {
       for (var iy = 0; iy < this.props.board.size; iy++) {
@@ -79,6 +82,7 @@ const BoardDisplay = React.createClass({
           dot={dot}
           pos={dot.pos}
           key={dot.id}
+          canIMove={this.state.canTheyMove}
           sizeOfGrids={this.sizeOfGrids}
           numOfGrids={this.props.board.size}
           offset={this.state.offset}/>);
