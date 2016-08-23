@@ -11,6 +11,7 @@ const explosionCallbacks = {
 
 let _board = new Board({ callbacks: explosionCallbacks });
 let _listeners = [];
+let _preventMove = false;
 
 let Liaison = function () {
 };
@@ -74,6 +75,7 @@ function explodeHeart(x, y) {
 }
 
 function switchDots(dots) {
+  _preventMove = true;
   const dot1 = _board.dotsById[dots[0].id];
   const dot2 = _board.dotsById[dots[1].id];
   const tempPos = dot1.pos;
@@ -145,6 +147,7 @@ function fillInTop() {
 
   if (noFills) {
     setTimeout((() => {
+      _preventMove = false;
       Liaison.broadcastChanges();
     }), 400);
   } else {
@@ -194,6 +197,9 @@ Liaison.at = function (pos) {
   return objDeepDup(_board.getValAt(pos));
 };
 
+Liaison.isItTimeToMove = function () {
+  return (_preventMove === false);
+};
 
 // ACTIONS FUNCTIONS
 

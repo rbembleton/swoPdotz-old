@@ -120,7 +120,7 @@ const DotDisplay = React.createClass({
 
     return connectDragSource(
       <div
-        draggable={true}
+        draggable={Liaison.isItTimeToMove() ? true : false}
         className={"dot-cont " + this.state.specialClass}
         style={pos}
         onDrag={this.changePos}
