@@ -14,13 +14,14 @@ let Board = function (options) {
   this.style = ' ';
   this.explodedSpaces = initializeGrid(this.size, ' ');
   this.explosionCallbacks = options.callbacks || {};
+  this.scoreMultiplier = 0;
 };
 
 const scoreConv = {
-  3: 50,
-  4: 200,
-  5: 500,
-  6: 1000
+  3: 51,
+  4: 201,
+  5: 501,
+  6: 1001
 };
 
 const dotNumConv = {
@@ -242,7 +243,7 @@ Board.prototype.checkClusters = function (x, y) {
     this.removeDot(x + 1, y + 1);
     this.replaceDot(x, y, Dots.heart);
 
-    this.score += scoreConv[4];
+    this.score += scoreConv[4] * this.scoreMultiplier;
   }
 
 };

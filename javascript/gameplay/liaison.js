@@ -121,6 +121,7 @@ function unknwnTypeDup(val) {
 
 // run this first
 function removeGroups() {
+  _board.scoreMultiplier ++;
   _board.checkInARows(boardDrop);
 }
 
@@ -148,6 +149,7 @@ function fillInTop() {
   if (noFills) {
     setTimeout((() => {
       _preventMove = false;
+      _board.scoreMultiplier = 0;
       Liaison.broadcastChanges();
     }), 400);
   } else {

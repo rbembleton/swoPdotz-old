@@ -16,13 +16,14 @@ const dotSource = {
       Liaison.ACTIONsnapToOrigin(props.dot);
     }
   }
+
 };
 
 function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging(),
-    dragOver: monitor.didDrop()
+    dragOver: monitor.didDrop(),
   };
 }
 
@@ -34,6 +35,7 @@ const DotDisplay = React.createClass({
   },
 
   changePos(e) {
+
     const newPos = [
       ((e.pageX - this.props.offset[0]) / this.props.sizeOfGrids) ,
       ((this.props.offset[1] - e.pageY) / this.props.sizeOfGrids)
@@ -45,6 +47,7 @@ const DotDisplay = React.createClass({
     if (newPos[1] > (this.props.numOfGrids - 1)) {newPos[1] = (this.props.numOfGrids - 1);}
 
     this.setState({ pos: newPos });
+    // }
   },
 
   switchDots(e) {
@@ -120,9 +123,9 @@ const DotDisplay = React.createClass({
 
     return connectDragSource(
       <div
-        draggable={this.props.canIMove}
         className={"dot-cont " + this.state.specialClass}
         style={pos}
+        draggable={true}
         onDrag={this.changePos}
       >
         <div
@@ -136,10 +139,9 @@ const DotDisplay = React.createClass({
 
 });
 
-// {this.props.dot.icon}
 DotDisplay.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired
+  isDragging: PropTypes.bool.isRequired,
 };
 
 module.exports = DragSource('Dot', dotSource, collect)(DotDisplay);
