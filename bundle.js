@@ -27271,6 +27271,7 @@
 	    hashHistory.push('home');
 	  },
 	  render: function render() {
+	    var displayGoals = BoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(Goals, null) : "";
 	
 	    return React.createElement(
 	      'div',
@@ -27280,7 +27281,7 @@
 	        { className: 'back-to-levels', onClick: this.clickBack },
 	        "<< Back to Main Screen"
 	      ),
-	      React.createElement(Goals, null),
+	      displayGoals,
 	      React.createElement(
 	        'div',
 	        { className: 'screen' },
@@ -27385,7 +27386,6 @@
 	var _moves = void 0;
 	var _numOfType = resetNumOfType();
 	var _levelGoals = resetLevelGoals();
-	
 	var Liaison = function Liaison() {};
 	
 	Liaison.addListener = function (callback) {
@@ -27411,6 +27411,9 @@
 	  _board.dotsById = {};
 	  _board.score = 0;
 	  _board = new Board({});
+	  _moves = undefined;
+	  _levelGoals = resetLevelGoals();
+	  _numOfType = resetNumOfType();
 	}
 	
 	function resetDots(options) {
@@ -28277,7 +28280,8 @@
 	
 	  componentDidMount: function componentDidMount() {
 	    this.dotListener = Liaison.addListener(this.updateDots);
-	    this.windowListenerResize = window.addEventListener("resize", this.updateOffset);
+	    // this.windowListenerResize = window.addEventListener('resize', this.updateOffset);
+	    window.addEventListener('resize', this.updateOffset);
 	    this.updateOffset();
 	  },
 	  updateOffset: function updateOffset() {
@@ -28294,7 +28298,8 @@
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    Liaison.ACTIONclearBoard();
-	    window.removeEventListener('resize', this.windowListenerResize);
+	    // removeEventListener('resize', this.windowListenerResize);
+	    removeEventListener('resize', this.updateOffset);
 	    Liaison.removeListener(this.dotListener);
 	  },
 	  render: function render() {
@@ -36299,17 +36304,21 @@
 	
 	module.exports = {
 	  'infinity': {
+	    isGoalBased: false,
 	    size: 16
 	  },
 	  'ilikewinning': {
+	    isGoalBased: false,
 	    size: 16,
 	    colors: [1, 3, 8]
 	  },
 	  'coolcolors': {
+	    isGoalBased: false,
 	    size: 16,
 	    colors: [5, 6, 7, 8, 9]
 	  },
 	  'intro': {
+	    isGoalBased: true,
 	    size: 12,
 	    colors: [1, 3, 5, 7, 8],
 	    goals: {
@@ -36318,6 +36327,7 @@
 	    moves: 10
 	  },
 	  'one': {
+	    isGoalBased: true,
 	    size: 12,
 	    colors: [1, 3, 5, 6, 9],
 	    goals: {
@@ -36326,8 +36336,9 @@
 	    moves: 25
 	  },
 	  'two': {
+	    isGoalBased: true,
 	    size: 14,
-	    colors: [0, 2, 3, 4, 7, 8],
+	    colors: [1, 2, 3, 4, 7, 8],
 	    goals: {
 	      square: 10,
 	      heart: 10
@@ -36335,8 +36346,9 @@
 	    moves: 25
 	  },
 	  'three': {
+	    isGoalBased: true,
 	    size: 12,
-	    colors: [1, 3, 6, 7, 9],
+	    colors: [1, 2, 3, 4, 7],
 	    goals: {
 	      star: 3
 	    },
@@ -36489,6 +36501,7 @@
 	    this.scoreListener = Liaison.addListener(this.updateGoals);
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
+	    this.setState({ levelStatus: {} });
 	    Liaison.removeListener(this.scoreListener);
 	  },
 	  updateGoals: function updateGoals() {
@@ -36496,7 +36509,6 @@
 	      levelStatus: Liaison.levelStatus()
 	
 	    });
-	    console.log(this.state.levelStatus);
 	  },
 	  renderCheck: function renderCheck(kind) {
 	    if (this.state.levelStatus[kind] === 0) {

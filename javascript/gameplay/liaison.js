@@ -15,7 +15,6 @@ let _preventMove = true;
 let _moves;
 let _numOfType = resetNumOfType();
 let _levelGoals = resetLevelGoals();
-
 let Liaison = function () {
 };
 
@@ -41,6 +40,9 @@ function clearBoard () {
   _board.dotsById = {};
   _board.score = 0;
   _board = new Board({});
+  _moves = undefined;
+  _levelGoals = resetLevelGoals();
+  _numOfType = resetNumOfType();
 }
 
 function resetDots (options) {

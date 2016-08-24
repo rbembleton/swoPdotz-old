@@ -14,13 +14,15 @@ const Game = React.createClass({
 
 
   render () {
+    const displayGoals = BoardLevels[this.props.params.gameType].isGoalBased ? <Goals /> : "";
+
 
     return (
       <div>
         <div className="back-to-levels" onClick={this.clickBack}>
           {"<< Back to Main Screen"}
         </div>
-        <Goals />
+        {displayGoals}
         <div className="screen">
           <BoardDisplay board={BoardLevels[this.props.params.gameType]}/>
         </div>

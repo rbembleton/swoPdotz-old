@@ -14,6 +14,7 @@ const Goals = React.createClass({
   },
 
   componentWillUnmount () {
+    this.setState({levelStatus: {}});
     Liaison.removeListener(this.scoreListener);
   },
 
@@ -22,7 +23,6 @@ const Goals = React.createClass({
       levelStatus: Liaison.levelStatus(),
 
     });
-    console.log(this.state.levelStatus);
   },
 
   renderCheck (kind) {

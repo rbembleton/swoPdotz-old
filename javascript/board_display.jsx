@@ -30,7 +30,8 @@ const BoardDisplay = React.createClass({
 
   componentDidMount () {
     this.dotListener = Liaison.addListener(this.updateDots);
-    this.windowListenerResize = window.addEventListener("resize", this.updateOffset);
+    // this.windowListenerResize = window.addEventListener('resize', this.updateOffset);
+    window.addEventListener('resize', this.updateOffset);
     this.updateOffset();
   },
 
@@ -51,7 +52,8 @@ const BoardDisplay = React.createClass({
 
   componentWillUnmount() {
     Liaison.ACTIONclearBoard();
-    window.removeEventListener('resize', this.windowListenerResize);
+    // removeEventListener('resize', this.windowListenerResize);
+    removeEventListener('resize', this.updateOffset);
     Liaison.removeListener(this.dotListener);
   },
 
