@@ -233,13 +233,20 @@ input[type="submit"] {
 
 .levels-select {
   width: 400px;
-  height: 400px;
   margin: auto;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
+
+  h2 {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    border-bottom: 1px solid $light-grey;
+    padding-bottom: 5px;
+  }
 }
 
 .how-to {
@@ -483,4 +490,41 @@ input[type="submit"] {
     transition: all 1s ease;
   }
 
+}
+
+
+.goals-cont {
+  width: 400px;
+  margin: auto;
+  padding: 20px 0px;
+  color: $dark-grey;
+
+  .moves-left-cont {
+    display: inline-block;
+    float: left;
+    margin-left: 20px;
+  }
+
+  .goals-left-cont {
+    display: inline-block;
+    float: right;
+
+    div>div {
+      display: inline-block;
+      float: left;
+      width: 70px;
+      text-align: left;
+
+      span {
+        margin: 0px 3px 0px 8px;
+      }
+    }
+  }
+}
+
+.play-button {
+  span {
+    font-size: 10px;
+    margin: 0px 10px 0px 10px;
+  }
 }

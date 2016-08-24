@@ -12,6 +12,9 @@ const explosionCallbacks = {
 let _board = new Board({ callbacks: explosionCallbacks });
 let _listeners = [];
 let _preventMove = true;
+let _moves;
+let _numOfType = resetNumOfType();
+let _levelGoals = resetLevelGoals();
 
 let Liaison = function () {
 };
@@ -47,6 +50,11 @@ function resetDots (options) {
     colors: options.colors
   });
   _board.placeDots();
+
+  _numOfType = resetNumOfType();
+  _moves = options.moves || undefined;
+  _levelGoals = resetLevelGoals(options.goals);
+
   Liaison.broadcastChanges();
   setTimeout((() => {
     _board.resetExplodedSpaces();
@@ -54,24 +62,44 @@ function resetDots (options) {
   }), 200);
 }
 
+function resetLevelGoals (goalsObj = {}) {
+  return {
+    triangle: goalsObj.triangle || undefined,
+    square: goalsObj.square || undefined,
+    star: goalsObj.star || undefined,
+    heart: goalsObj.heart || undefined,
+    asterisk: goalsObj.asterisk || undefined,
+  };
+}
+
+function resetNumOfType () {
+  return {
+    triangle: 0,
+    square: 0,
+    heart: 0,
+    star: 0,
+    asterisk: 0
+  };
+}
+
 function explodeStar(x, y) {
-  // potentially build this out in the future
+  _numOfType.star ++;
 }
 
 function explodeAsterisk(x, y) {
-  // potentially build this out in the future
+  _numOfType.asterisk ++;
 }
 
 function explodeTriangle(x, y) {
-  // potentially build this out in the future
+  _numOfType.triangle ++;
 }
 
 function explodeSquare(x, y) {
-  // potentially build this out in the future;
+  _numOfType.square ++;
 }
 
 function explodeHeart(x, y) {
-  // potentially build this out in the future
+  _numOfType.heart ++;
 }
 
 function switchDots(dots) {
@@ -84,6 +112,8 @@ function switchDots(dots) {
 
   _board.setValAt(dot1.pos, dot1);
   _board.setValAt(dot2.pos, dot2);
+
+  _moves --;
 
   Liaison.broadcastChanges();
   setTimeout((() => {
@@ -202,6 +232,45 @@ Liaison.at = function (pos) {
 Liaison.isItTimeToMove = function () {
   return (_preventMove === false);
 };
+
+Liaison.levelStatus = function () {
+  return {
+    movesLeft: _moves,
+    star: levelStatusHelper('star'),
+    triangle: levelStatusHelper('triangle'),
+    square: levelStatusHelper('square'),
+    asterisk: levelStatusHelper('asterisk'),
+    heart: levelStatusHelper('heart'),
+    levelCompleted: completedHelper()
+  };
+};
+
+function completedHelper () {
+  let allTrue = true;
+  ['star', 'heart', 'triangle', 'square', 'asterisk'].forEach((el) => {
+    if (_levelGoals[el] && _levelGoals[el] !== 'completed') {
+      allTrue = false;
+    }
+  });
+
+  return allTrue;
+}
+
+function levelStatusHelper (kind) {
+    if (_levelGoals[kind]) {
+      if (_levelGoals[kind] === 'completed') {
+        return 0;
+      } else if( _levelGoals[kind] - _numOfType[kind] > 0) {
+        return _levelGoals[kind] - _numOfType[kind];
+      } else {
+        _levelGoals[kind] = 'completed';
+        // return "✔";
+        return 0;
+      }
+    } else {
+      return undefined;
+    }
+}
 
 // ACTIONS FUNCTIONS
 

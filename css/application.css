@@ -206,13 +206,18 @@ input[type="submit"] {
 
 .levels-select {
   width: 400px;
-  height: 400px;
   margin: auto;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start; }
+  .levels-select h2 {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    border-bottom: 1px solid #b1b1bc;
+    padding-bottom: 5px; }
 
 .how-to {
   width: 400px;
@@ -411,5 +416,29 @@ input[type="submit"] {
     transition: all 1s ease; }
   .score-cont .score-cont-2 {
     transition: all 1s ease; }
+
+.goals-cont {
+  width: 400px;
+  margin: auto;
+  padding: 20px 0px;
+  color: #3e3f50; }
+  .goals-cont .moves-left-cont {
+    display: inline-block;
+    float: left;
+    margin-left: 20px; }
+  .goals-cont .goals-left-cont {
+    display: inline-block;
+    float: right; }
+    .goals-cont .goals-left-cont div > div {
+      display: inline-block;
+      float: left;
+      width: 70px;
+      text-align: left; }
+      .goals-cont .goals-left-cont div > div span {
+        margin: 0px 3px 0px 8px; }
+
+.play-button span {
+  font-size: 10px;
+  margin: 0px 10px 0px 10px; }
 
 /*# sourceMappingURL=application.css.map */

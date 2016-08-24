@@ -27169,6 +27169,44 @@
 	      { className: 'levels-select' },
 	      React.createElement(DotsDivider, null),
 	      React.createElement(
+	        'h2',
+	        null,
+	        'Standard Levels'
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'play-button' },
+	        React.createElement(
+	          'button',
+	          { id: 'intro', onClick: this.playGame },
+	          'intro'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'one', onClick: this.playGame },
+	          'one'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'two', onClick: this.playGame },
+	          'two'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'three', onClick: this.playGame },
+	          'three'
+	        )
+	      ),
+	      React.createElement(DotsDivider, null),
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Unlimited Levels'
+	      ),
+	      React.createElement(
 	        'div',
 	        { className: 'play-button' },
 	        React.createElement(
@@ -27224,6 +27262,7 @@
 	var BoardDisplay = __webpack_require__(253);
 	var hashHistory = __webpack_require__(1).hashHistory;
 	var BoardLevels = __webpack_require__(405);
+	var Goals = __webpack_require__(407);
 	
 	var Game = React.createClass({
 	  displayName: 'Game',
@@ -27241,6 +27280,7 @@
 	        { className: 'back-to-levels', onClick: this.clickBack },
 	        "<< Back to Main Screen"
 	      ),
+	      React.createElement(Goals, null),
 	      React.createElement(
 	        'div',
 	        { className: 'screen' },
@@ -27342,6 +27382,9 @@
 	var _board = new Board({ callbacks: explosionCallbacks });
 	var _listeners = [];
 	var _preventMove = true;
+	var _moves = void 0;
+	var _numOfType = resetNumOfType();
+	var _levelGoals = resetLevelGoals();
 	
 	var Liaison = function Liaison() {};
 	
@@ -27377,6 +27420,11 @@
 	    colors: options.colors
 	  });
 	  _board.placeDots();
+	
+	  _numOfType = resetNumOfType();
+	  _moves = options.moves || undefined;
+	  _levelGoals = resetLevelGoals(options.goals);
+	
 	  Liaison.broadcastChanges();
 	  setTimeout(function () {
 	    _board.resetExplodedSpaces();
@@ -27384,24 +27432,46 @@
 	  }, 200);
 	}
 	
+	function resetLevelGoals() {
+	  var goalsObj = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	  return {
+	    triangle: goalsObj.triangle || undefined,
+	    square: goalsObj.square || undefined,
+	    star: goalsObj.star || undefined,
+	    heart: goalsObj.heart || undefined,
+	    asterisk: goalsObj.asterisk || undefined
+	  };
+	}
+	
+	function resetNumOfType() {
+	  return {
+	    triangle: 0,
+	    square: 0,
+	    heart: 0,
+	    star: 0,
+	    asterisk: 0
+	  };
+	}
+	
 	function explodeStar(x, y) {
-	  // potentially build this out in the future
+	  _numOfType.star++;
 	}
 	
 	function explodeAsterisk(x, y) {
-	  // potentially build this out in the future
+	  _numOfType.asterisk++;
 	}
 	
 	function explodeTriangle(x, y) {
-	  // potentially build this out in the future
+	  _numOfType.triangle++;
 	}
 	
 	function explodeSquare(x, y) {
-	  // potentially build this out in the future;
+	  _numOfType.square++;
 	}
 	
 	function explodeHeart(x, y) {
-	  // potentially build this out in the future
+	  _numOfType.heart++;
 	}
 	
 	function switchDots(dots) {
@@ -27414,6 +27484,8 @@
 	
 	  _board.setValAt(dot1.pos, dot1);
 	  _board.setValAt(dot2.pos, dot2);
+	
+	  _moves--;
 	
 	  Liaison.broadcastChanges();
 	  setTimeout(function () {
@@ -27535,6 +27607,45 @@
 	Liaison.isItTimeToMove = function () {
 	  return _preventMove === false;
 	};
+	
+	Liaison.levelStatus = function () {
+	  return {
+	    movesLeft: _moves,
+	    star: levelStatusHelper('star'),
+	    triangle: levelStatusHelper('triangle'),
+	    square: levelStatusHelper('square'),
+	    asterisk: levelStatusHelper('asterisk'),
+	    heart: levelStatusHelper('heart'),
+	    levelCompleted: completedHelper()
+	  };
+	};
+	
+	function completedHelper() {
+	  var allTrue = true;
+	  ['star', 'heart', 'triangle', 'square', 'asterisk'].forEach(function (el) {
+	    if (_levelGoals[el] && _levelGoals[el] !== 'completed') {
+	      allTrue = false;
+	    }
+	  });
+	
+	  return allTrue;
+	}
+	
+	function levelStatusHelper(kind) {
+	  if (_levelGoals[kind]) {
+	    if (_levelGoals[kind] === 'completed') {
+	      return 0;
+	    } else if (_levelGoals[kind] - _numOfType[kind] > 0) {
+	      return _levelGoals[kind] - _numOfType[kind];
+	    } else {
+	      _levelGoals[kind] = 'completed';
+	      // return "✔";
+	      return 0;
+	    }
+	  } else {
+	    return undefined;
+	  }
+	}
 	
 	// ACTIONS FUNCTIONS
 	
@@ -36197,6 +36308,39 @@
 	  'coolcolors': {
 	    size: 16,
 	    colors: [5, 6, 7, 8, 9]
+	  },
+	  'intro': {
+	    size: 12,
+	    colors: [1, 3, 5, 7, 8],
+	    goals: {
+	      triangle: 5
+	    },
+	    moves: 10
+	  },
+	  'one': {
+	    size: 12,
+	    colors: [1, 3, 5, 6, 9],
+	    goals: {
+	      triangle: 20
+	    },
+	    moves: 25
+	  },
+	  'two': {
+	    size: 14,
+	    colors: [0, 2, 3, 4, 7, 8],
+	    goals: {
+	      square: 10,
+	      heart: 10
+	    },
+	    moves: 25
+	  },
+	  'three': {
+	    size: 12,
+	    colors: [1, 3, 6, 7, 9],
+	    goals: {
+	      star: 3
+	    },
+	    moves: 20
 	  }
 	};
 
@@ -36324,6 +36468,115 @@
 	});
 	
 	module.exports = Game;
+
+/***/ },
+/* 407 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(3);
+	var Liaison = __webpack_require__(240);
+	
+	var Goals = React.createClass({
+	  displayName: 'Goals',
+	  getInitialState: function getInitialState() {
+	    return {
+	      levelStatus: Liaison.levelStatus()
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.scoreListener = Liaison.addListener(this.updateGoals);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    Liaison.removeListener(this.scoreListener);
+	  },
+	  updateGoals: function updateGoals() {
+	    this.setState({
+	      levelStatus: Liaison.levelStatus()
+	
+	    });
+	    console.log(this.state.levelStatus);
+	  },
+	  renderCheck: function renderCheck(kind) {
+	    if (this.state.levelStatus[kind] === 0) {
+	      return '✔';
+	    } else {
+	      return this.state.levelStatus[kind];
+	    }
+	  },
+	  goalsRender: function goalsRender() {
+	    if (this.state.levelStatus.levelCompleted) {
+	      return React.createElement(
+	        'div',
+	        { style: { width: '140px' } },
+	        'LEVEL COMPLETE!'
+	      );
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      this.state.levelStatus.triangle !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-geo-triangle' }),
+	        ': ',
+	        this.renderCheck('triangle')
+	      ) : '',
+	      this.state.levelStatus.square !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-geo-square' }),
+	        ': ',
+	        this.renderCheck('square')
+	      ) : '',
+	      this.state.levelStatus.heart !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-like-3' }),
+	        ': ',
+	        this.renderCheck('heart')
+	      ) : '',
+	      this.state.levelStatus.star !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-star' }),
+	        ': ',
+	        this.renderCheck('star')
+	      ) : '',
+	      this.state.levelStatus.asterisk !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-asterisk' }),
+	        ': ',
+	        this.renderCheck('asterisk')
+	      ) : ''
+	    );
+	  },
+	  render: function render() {
+	
+	    var movesStyle = this.state.levelStatus.movesLeft !== undefined ? {} : { display: 'none' };
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'goals-cont clearfix unsel', style: movesStyle },
+	      React.createElement(
+	        'div',
+	        { className: 'moves-left-cont' },
+	        'Moves: ',
+	        this.state.levelStatus.movesLeft && this.state.levelStatus.movesLeft > 0 ? this.state.levelStatus.movesLeft : 'No more moves left!'
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'goals-left-cont' },
+	        this.goalsRender()
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = Goals;
 
 /***/ }
 /******/ ]);

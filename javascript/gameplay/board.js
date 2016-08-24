@@ -15,6 +15,7 @@ let Board = function (options) {
   this.explodedSpaces = initializeGrid(this.size, ' ');
   this.explosionCallbacks = options.callbacks || {};
   this.scoreMultiplier = 0;
+
 };
 
 const scoreConv = {

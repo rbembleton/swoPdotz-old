@@ -20,6 +20,18 @@ const HomeScreen = React.createClass({
     return (
       <div className="levels-select">
         <DotsDivider />
+        <h2>Standard Levels</h2>
+        <div className="play-button">
+          <button id="intro" onClick={this.playGame}>intro</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="one" onClick={this.playGame}>one</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="two" onClick={this.playGame}>two</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="three" onClick={this.playGame}>three</button>
+        </div>
+        <DotsDivider />
+        <h2>Unlimited Levels</h2>
         <div className="play-button">
           <button id="ilikewinning" onClick={this.playGame}>
             {"'I "}<span className="icon-like-3"/>{" Winning' Level"}
