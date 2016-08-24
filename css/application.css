@@ -119,6 +119,37 @@ input[type="submit"] {
 .purple-hover:hover {
   color: #c18be2; }
 
+@keyframes flipflop {
+  30% {
+    transform: rotate(180deg); }
+  60% {
+    transform: rotate(180deg); }
+  75% {
+    transform: rotate(360deg); }
+  75.0001% {
+    transform: rotate(0deg); }
+  85% {
+    color: black; }
+  95% {
+    color: #8787ff; } }
+@keyframes bounceyball {
+  10% {
+    transform: scaleY(0.2);
+    transform: translateY(10px); }
+  20% {
+    transform: scaleY(1);
+    transform: translateY(0px); }
+  80% {
+    transform: translateY(-40px); } }
+@keyframes udbounceyball {
+  10% {
+    transform: scaleY(0.2);
+    transform: translateY(-10px); }
+  20% {
+    transform: scaleY(1);
+    transform: translateY(0px); }
+  80% {
+    transform: translateY(40px); } }
 .main-page {
   width: 600px;
   height: 600px;
@@ -133,6 +164,23 @@ input[type="submit"] {
     letter-spacing: .2px;
     font-family: "Francois One", sans-serif;
     color: #3e3f50; }
+    .main-page header .logo-swap {
+      display: inline-block;
+      animation-name: flipflop;
+      animation-duration: 4s;
+      animation-iteration-count: 1;
+      animation-timing-function: ease; }
+      .main-page header .logo-swap div {
+        display: inline-block; }
+      .main-page header .logo-swap .logo-ball1 {
+        animation: udbounceyball 1s ease;
+        animation-delay: 1.6s; }
+      .main-page header .logo-swap .logo-ball2 {
+        animation: udbounceyball 1s ease;
+        animation-delay: 1.4s; }
+      .main-page header .logo-swap .logo-ud-p {
+        display: inline-block;
+        transform: rotate(180deg); }
   .main-page footer {
     position: fixed;
     bottom: 0;

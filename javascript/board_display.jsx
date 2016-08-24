@@ -33,6 +33,8 @@ const BoardDisplay = React.createClass({
     // this.windowListenerResize = window.addEventListener('resize', this.updateOffset);
     window.addEventListener('resize', this.updateOffset);
     this.updateOffset();
+    this.updateOffsetTimeout = setTimeout(this.updateOffset, 1000);
+    // this.updateOffsetInterval = setInterval(this.updateOffset, 5000);
   },
 
   updateOffset () {
@@ -55,8 +57,14 @@ const BoardDisplay = React.createClass({
     // removeEventListener('resize', this.windowListenerResize);
     removeEventListener('resize', this.updateOffset);
     Liaison.removeListener(this.dotListener);
+    // clearInterval(this.updateOffsetInterval);
+    clearTimeout(this.updateOffsetTimeout);
   },
 
+  // componentDidUpdate () {
+  //   this.updateOffset();
+  //
+  // },
 
 
 

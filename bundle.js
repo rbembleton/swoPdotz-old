@@ -54,7 +54,7 @@
 	var Main = __webpack_require__(235);
 	var HomeScreen = __webpack_require__(237);
 	var Game = __webpack_require__(238);
-	var HowTo = __webpack_require__(406);
+	var HowTo = __webpack_require__(407);
 	
 	var router = React.createElement(
 	  _reactRouter.Router,
@@ -27052,6 +27052,10 @@
 	var React = __webpack_require__(3);
 	var DotsDivider = __webpack_require__(236);
 	
+	// <span className="logo-dot1">{"•"}</span>
+	// <span className="logo-pd">{"Pd"}</span>
+	// <span className="logo-dot2">{"•"}</span>
+	
 	var Main = React.createClass({
 	  displayName: 'Main',
 	  render: function render() {
@@ -27062,7 +27066,28 @@
 	      React.createElement(
 	        'header',
 	        { className: 'clearfix unsel' },
-	        "sw•Pd•tz"
+	        "sw",
+	        React.createElement(
+	          'div',
+	          { className: 'logo-swap' },
+	          React.createElement(
+	            'div',
+	            { className: 'logo-ball1' },
+	            "•"
+	          ),
+	          'P',
+	          React.createElement(
+	            'span',
+	            { className: 'logo-ud-p' },
+	            'P'
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'logo-ball2' },
+	            "•"
+	          )
+	        ),
+	        "tz"
 	      ),
 	      React.createElement(
 	        'div',
@@ -27170,7 +27195,7 @@
 	      React.createElement(DotsDivider, null),
 	      React.createElement(
 	        'h2',
-	        null,
+	        { className: 'unsel' },
 	        'Standard Levels'
 	      ),
 	      React.createElement(
@@ -27203,7 +27228,7 @@
 	      React.createElement(DotsDivider, null),
 	      React.createElement(
 	        'h2',
-	        null,
+	        { className: 'unsel' },
 	        'Unlimited Levels'
 	      ),
 	      React.createElement(
@@ -27262,7 +27287,7 @@
 	var BoardDisplay = __webpack_require__(253);
 	var hashHistory = __webpack_require__(1).hashHistory;
 	var BoardLevels = __webpack_require__(405);
-	var Goals = __webpack_require__(407);
+	var Goals = __webpack_require__(406);
 	
 	var Game = React.createClass({
 	  displayName: 'Game',
@@ -28283,6 +28308,8 @@
 	    // this.windowListenerResize = window.addEventListener('resize', this.updateOffset);
 	    window.addEventListener('resize', this.updateOffset);
 	    this.updateOffset();
+	    this.updateOffsetTimeout = setTimeout(this.updateOffset, 1000);
+	    // this.updateOffsetInterval = setInterval(this.updateOffset, 5000);
 	  },
 	  updateOffset: function updateOffset() {
 	    var boxResize = this.sizeOfGrids / 2.0;
@@ -28301,7 +28328,17 @@
 	    // removeEventListener('resize', this.windowListenerResize);
 	    removeEventListener('resize', this.updateOffset);
 	    Liaison.removeListener(this.dotListener);
+	    // clearInterval(this.updateOffsetInterval);
+	    clearTimeout(this.updateOffsetTimeout);
 	  },
+	
+	
+	  // componentDidUpdate () {
+	  //   this.updateOffset();
+	  //
+	  // },
+	
+	
 	  render: function render() {
 	    var _this = this;
 	
@@ -36363,6 +36400,115 @@
 	'use strict';
 	
 	var React = __webpack_require__(3);
+	var Liaison = __webpack_require__(240);
+	
+	var Goals = React.createClass({
+	  displayName: 'Goals',
+	  getInitialState: function getInitialState() {
+	    return {
+	      levelStatus: Liaison.levelStatus()
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.scoreListener = Liaison.addListener(this.updateGoals);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.setState({ levelStatus: {} });
+	    Liaison.removeListener(this.scoreListener);
+	  },
+	  updateGoals: function updateGoals() {
+	    this.setState({
+	      levelStatus: Liaison.levelStatus()
+	
+	    });
+	  },
+	  renderCheck: function renderCheck(kind) {
+	    if (this.state.levelStatus[kind] === 0) {
+	      return '✔';
+	    } else {
+	      return this.state.levelStatus[kind];
+	    }
+	  },
+	  goalsRender: function goalsRender() {
+	    if (this.state.levelStatus.levelCompleted) {
+	      return React.createElement(
+	        'div',
+	        { style: { width: '140px' } },
+	        'LEVEL COMPLETE!'
+	      );
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      this.state.levelStatus.triangle !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-geo-triangle' }),
+	        ': ',
+	        this.renderCheck('triangle')
+	      ) : '',
+	      this.state.levelStatus.square !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-geo-square' }),
+	        ': ',
+	        this.renderCheck('square')
+	      ) : '',
+	      this.state.levelStatus.heart !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-like-3' }),
+	        ': ',
+	        this.renderCheck('heart')
+	      ) : '',
+	      this.state.levelStatus.star !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-star' }),
+	        ': ',
+	        this.renderCheck('star')
+	      ) : '',
+	      this.state.levelStatus.asterisk !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-asterisk' }),
+	        ': ',
+	        this.renderCheck('asterisk')
+	      ) : ''
+	    );
+	  },
+	  render: function render() {
+	
+	    var movesStyle = this.state.levelStatus.movesLeft !== undefined ? {} : { display: 'none' };
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'goals-cont clearfix unsel', style: movesStyle },
+	      React.createElement(
+	        'div',
+	        { className: 'moves-left-cont' },
+	        'Moves: ',
+	        this.state.levelStatus.movesLeft && this.state.levelStatus.movesLeft > 0 ? this.state.levelStatus.movesLeft : 'No more moves left!'
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'goals-left-cont' },
+	        this.goalsRender()
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = Goals;
+
+/***/ },
+/* 407 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(3);
 	var hashHistory = __webpack_require__(1).hashHistory;
 	
 	var Game = React.createClass({
@@ -36480,115 +36626,6 @@
 	});
 	
 	module.exports = Game;
-
-/***/ },
-/* 407 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var React = __webpack_require__(3);
-	var Liaison = __webpack_require__(240);
-	
-	var Goals = React.createClass({
-	  displayName: 'Goals',
-	  getInitialState: function getInitialState() {
-	    return {
-	      levelStatus: Liaison.levelStatus()
-	    };
-	  },
-	  componentDidMount: function componentDidMount() {
-	    this.scoreListener = Liaison.addListener(this.updateGoals);
-	  },
-	  componentWillUnmount: function componentWillUnmount() {
-	    this.setState({ levelStatus: {} });
-	    Liaison.removeListener(this.scoreListener);
-	  },
-	  updateGoals: function updateGoals() {
-	    this.setState({
-	      levelStatus: Liaison.levelStatus()
-	
-	    });
-	  },
-	  renderCheck: function renderCheck(kind) {
-	    if (this.state.levelStatus[kind] === 0) {
-	      return '✔';
-	    } else {
-	      return this.state.levelStatus[kind];
-	    }
-	  },
-	  goalsRender: function goalsRender() {
-	    if (this.state.levelStatus.levelCompleted) {
-	      return React.createElement(
-	        'div',
-	        { style: { width: '140px' } },
-	        'LEVEL COMPLETE!'
-	      );
-	    }
-	
-	    return React.createElement(
-	      'div',
-	      null,
-	      this.state.levelStatus.triangle !== undefined ? React.createElement(
-	        'div',
-	        null,
-	        React.createElement('span', { className: 'icon-geo-triangle' }),
-	        ': ',
-	        this.renderCheck('triangle')
-	      ) : '',
-	      this.state.levelStatus.square !== undefined ? React.createElement(
-	        'div',
-	        null,
-	        React.createElement('span', { className: 'icon-geo-square' }),
-	        ': ',
-	        this.renderCheck('square')
-	      ) : '',
-	      this.state.levelStatus.heart !== undefined ? React.createElement(
-	        'div',
-	        null,
-	        React.createElement('span', { className: 'icon-like-3' }),
-	        ': ',
-	        this.renderCheck('heart')
-	      ) : '',
-	      this.state.levelStatus.star !== undefined ? React.createElement(
-	        'div',
-	        null,
-	        React.createElement('span', { className: 'icon-star' }),
-	        ': ',
-	        this.renderCheck('star')
-	      ) : '',
-	      this.state.levelStatus.asterisk !== undefined ? React.createElement(
-	        'div',
-	        null,
-	        React.createElement('span', { className: 'icon-asterisk' }),
-	        ': ',
-	        this.renderCheck('asterisk')
-	      ) : ''
-	    );
-	  },
-	  render: function render() {
-	
-	    var movesStyle = this.state.levelStatus.movesLeft !== undefined ? {} : { display: 'none' };
-	
-	    return React.createElement(
-	      'div',
-	      { className: 'goals-cont clearfix unsel', style: movesStyle },
-	      React.createElement(
-	        'div',
-	        { className: 'moves-left-cont' },
-	        'Moves: ',
-	        this.state.levelStatus.movesLeft && this.state.levelStatus.movesLeft > 0 ? this.state.levelStatus.movesLeft : 'No more moves left!'
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'goals-left-cont' },
-	        this.goalsRender()
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = Goals;
 
 /***/ }
 /******/ ]);

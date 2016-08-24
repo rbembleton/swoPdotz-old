@@ -1,6 +1,9 @@
 const React = require('react');
 const DotsDivider = require('./dots/dots_divider');
 
+// <span className="logo-dot1">{"•"}</span>
+// <span className="logo-pd">{"Pd"}</span>
+// <span className="logo-dot2">{"•"}</span>
 
 const Main = React.createClass({
 
@@ -9,7 +12,13 @@ const Main = React.createClass({
     return (
       <div className="main-page clearfix">
         <header className="clearfix unsel">
-          {"sw•Pd•tz"}
+          {"sw"}
+          <div className="logo-swap">
+            <div className="logo-ball1">{"•"}</div>
+            P<span className="logo-ud-p">P</span>
+            <div className="logo-ball2">{"•"}</div>
+          </div>
+          {"tz"}
         </header>
         <div className="screen-holder clearfix">
           {this.props.children}
