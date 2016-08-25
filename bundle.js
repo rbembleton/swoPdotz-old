@@ -36779,6 +36779,54 @@
 	        React.createElement(
 	          'div',
 	          { className: 'rule' },
+	          React.createElement(
+	            'span',
+	            { className: 'make-square', style: { textAlign: 'left' } },
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('br', null),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('br', null),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' })
+	          ),
+	          'or',
+	          React.createElement(
+	            'span',
+	            { className: 'make-square' },
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('br', null),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('br', null),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' })
+	          ),
+	          'or',
+	          React.createElement(
+	            'span',
+	            { className: 'make-square' },
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('br', null),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' }),
+	            React.createElement('br', null),
+	            React.createElement('span', { className: 'icon-geo-circle aqua' })
+	          ),
+	          " = ",
+	          React.createElement('span', { className: 'icon-plus aqua' }),
+	          React.createElement(
+	            'div',
+	            { className: 'description' },
+	            "Exploding pluses destroy all dots",
+	            React.createElement('br', null),
+	            "in both diagonals from them"
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'rule' },
 	          React.createElement('span', { className: 'icon-geo-circle indigo' }),
 	          React.createElement('span', { className: 'icon-geo-circle indigo' }),
 	          React.createElement('span', { className: 'icon-geo-circle indigo' }),

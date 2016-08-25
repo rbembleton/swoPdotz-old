@@ -300,8 +300,8 @@ input[type="submit"] {
 
 .how-to {
   width: 400px;
-  height: 600px;
   margin: auto;
+  margin-bottom: 200px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -319,7 +319,7 @@ input[type="submit"] {
     margin: 20px auto 10px auto;
     text-align: center; }
     .how-to .rule .make-square {
-      text-align: left;
+      text-align: center;
       display: inline-block; }
     .how-to .rule .description {
       margin-top: 10px; }

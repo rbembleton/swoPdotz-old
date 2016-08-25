@@ -61,12 +61,45 @@ const Game = React.createClass({
             <span className="icon-geo-circle teal"/>
             <span className="icon-geo-circle teal"/>
             <span className="icon-geo-circle teal"/>{" = "}
-            <span className="icon-star teal"/>
+              <span className="icon-star teal"/>
+              <div className="description">
+                {"Exploding stars destroy all dots"}
+                <br/>{"on the board of their color"}
+              </div>
+          </div>
+
+          <div className="rule">
+            <span className="make-square" style={{textAlign: 'left'}}>
+              <span className="icon-geo-circle aqua"/><br/>
+              <span className="icon-geo-circle aqua"/><br/>
+              <span className="icon-geo-circle aqua"/>
+              <span className="icon-geo-circle aqua"/>
+              <span className="icon-geo-circle aqua"/>
+            </span>
+            or
+            <span className="make-square">
+              <span className="icon-geo-circle aqua"/><br/>
+              <span className="icon-geo-circle aqua"/>
+              <span className="icon-geo-circle aqua"/>
+              <span className="icon-geo-circle aqua"/><br/>
+              <span className="icon-geo-circle aqua"/>
+            </span>
+            or
+            <span className="make-square">
+              <span className="icon-geo-circle aqua"/>
+              <span className="icon-geo-circle aqua"/>
+              <span className="icon-geo-circle aqua"/><br/>
+              <span className="icon-geo-circle aqua"/><br/>
+              <span className="icon-geo-circle aqua"/>
+            </span>
+            {" = "}
+            <span className="icon-plus aqua"/>
             <div className="description">
-              {"Exploding stars destroy all dots"}
-              <br/>{"on the board of their color"}
+              {"Exploding pluses destroy all dots"}
+              <br/>{"in both diagonals from them"}
             </div>
           </div>
+
 
           <div className="rule">
             <span className="icon-geo-circle indigo"/>

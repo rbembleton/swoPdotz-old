@@ -347,8 +347,9 @@ input[type="submit"] {
 
 .how-to {
   width: 400px;
-  height: 600px;
+  // height: 600px;
   margin: auto;
+  margin-bottom: 200px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -374,7 +375,7 @@ input[type="submit"] {
     text-align: center;
 
     .make-square {
-      text-align: left;
+      text-align: center;
       display: inline-block;
     }
 
