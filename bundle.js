@@ -27067,10 +27067,10 @@
 	    var that = this;
 	    setTimeout(function () {
 	      that.setState({ renderLogo: true });
-	    }, 1);
+	    }, 10);
 	  },
 	
-	  // 
+	  //
 	  // componentDidMount() {
 	  //   setTimeout(() => {
 	  //     this.setState({ paused: true });
@@ -27105,7 +27105,18 @@
 	        )
 	      ),
 	      "tz"
-	    ) : React.createElement('div', { className: 'logo-placeholder' });
+	    ) : React.createElement(
+	      'div',
+	      { className: 'logo-placeholder' },
+	      "sw•",
+	      'P',
+	      React.createElement(
+	        'span',
+	        { className: 'logo-ud-p' },
+	        'P'
+	      ),
+	      "•tz"
+	    );
 	
 	    return React.createElement(
 	      'div',

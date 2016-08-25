@@ -16,9 +16,9 @@ const Main = React.createClass({
     e.preventDefault();
     this.setState({ renderLogo: false });
     const that = this;
-    setTimeout(() => { that.setState({renderLogo: true}); }, 1);
+    setTimeout(() => { that.setState({renderLogo: true}); }, 10);
   },
-  // 
+  //
   // componentDidMount() {
   //   setTimeout(() => {
   //     this.setState({ paused: true });
@@ -38,7 +38,9 @@ const Main = React.createClass({
         </div>
         {"tz"}
       </div>
-    ) : (<div className="logo-placeholder"></div>);
+    ) : (<div className="logo-placeholder">{"sw•"}
+      P<span className="logo-ud-p">P</span>
+      {"•tz"}</div>);
 
     return (
       <div className="main-page clearfix">
