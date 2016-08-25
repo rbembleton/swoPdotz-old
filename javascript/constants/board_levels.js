@@ -49,5 +49,16 @@ module.exports = {
       star: 3
     },
     moves: 20
+  },
+  'bonus': {
+    isGoalBased: true,
+    size: 16,
+    colors: [0,1,2,3,4,7,9],
+    goals: {
+      star: 5,
+      asterisk: 1
+    },
+    moves: 20,
+    fruitify: true
   }
 };

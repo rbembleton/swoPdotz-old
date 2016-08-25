@@ -6,7 +6,8 @@ const explosionCallbacks = {
   square: explodeSquare,
   triangle: explodeTriangle,
   heart: explodeHeart,
-  asterisk: explodeAsterisk
+  asterisk: explodeAsterisk,
+  plus: explodePlus
 };
 
 let _board = new Board({ callbacks: explosionCallbacks });
@@ -57,7 +58,8 @@ function resetDots (options) {
   _board = new Board({
     callbacks: explosionCallbacks,
     size: options.size,
-    colors: options.colors
+    colors: options.colors,
+    fruitify: options.fruitify || false
   });
   _board.placeDots();
 
@@ -88,7 +90,8 @@ function resetNumOfType () {
     square: 0,
     heart: 0,
     star: 0,
-    asterisk: 0
+    asterisk: 0,
+    plus: 0
   };
 }
 
@@ -110,6 +113,10 @@ function explodeSquare(x, y) {
 
 function explodeHeart(x, y) {
   _numOfType.heart ++;
+}
+
+function explodePlus(x, y) {
+  _numOfType.plus ++;
 }
 
 function switchDots(dots) {
@@ -251,6 +258,7 @@ Liaison.levelStatus = function () {
     triangle: levelStatusHelper('triangle'),
     square: levelStatusHelper('square'),
     asterisk: levelStatusHelper('asterisk'),
+    plus: levelStatusHelper('plus'),
     heart: levelStatusHelper('heart'),
     levelCompleted: completedHelper()
   };

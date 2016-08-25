@@ -1,3 +1,4 @@
+
 let Dot = function (options) {
   this.pos = options.pos;
   this.color = options.color;
@@ -5,6 +6,7 @@ let Dot = function (options) {
   this.icon = '-';
   this.iconClass = ' ';
   this.id = options.id;
+  this.isFruit = false;
 };
 
 

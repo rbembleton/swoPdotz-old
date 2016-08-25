@@ -357,9 +357,18 @@ input[type="submit"] {
   background-color: white;
   opacity: 1; }
 
-@keyframes pound {
+@keyframes grow {
   50% {
     transform: scale(1.2); } }
+@keyframes pound {
+  8% {
+    transform: scale(1.2); }
+  16% {
+    transform: scale(1); }
+  24% {
+    transform: scale(1.4); }
+  32% {
+    transform: scale(1); } }
 @keyframes wiggle {
   25% {
     transform: rotate(4deg); }
@@ -392,13 +401,20 @@ input[type="submit"] {
   font-size: 14.5px;
   top: 1.5px;
   left: 5.3px;
-  animation: pound .6s infinite;
+  animation: pound 2s infinite;
   transform-origin: center; }
 
 .circle {
   font-size: 13px;
   top: 2.5px;
   left: 6px; }
+
+.fruit {
+  font-size: 18px;
+  top: -1.3px;
+  left: 4px;
+  animation: wiggle .5s infinite;
+  transform-origin: center; }
 
 .triangle {
   font-size: 15px;
@@ -410,6 +426,13 @@ input[type="submit"] {
   top: 2.5px;
   left: 6px;
   animation: spin 2s infinite;
+  transform-origin: center; }
+
+.plus {
+  font-size: 15px;
+  top: 1.5px;
+  left: 5px;
+  animation: grow 2s infinite;
   transform-origin: center; }
 
 .star {

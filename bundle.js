@@ -27260,6 +27260,12 @@
 	          'button',
 	          { id: 'three', onClick: this.playGame },
 	          'three'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'bonus', onClick: this.playGame },
+	          'bonus'
 	        )
 	      ),
 	      React.createElement(DotsDivider, null),
@@ -27439,7 +27445,8 @@
 	  square: explodeSquare,
 	  triangle: explodeTriangle,
 	  heart: explodeHeart,
-	  asterisk: explodeAsterisk
+	  asterisk: explodeAsterisk,
+	  plus: explodePlus
 	};
 	
 	var _board = new Board({ callbacks: explosionCallbacks });
@@ -27490,7 +27497,8 @@
 	  _board = new Board({
 	    callbacks: explosionCallbacks,
 	    size: options.size,
-	    colors: options.colors
+	    colors: options.colors,
+	    fruitify: options.fruitify || false
 	  });
 	  _board.placeDots();
 	
@@ -27523,7 +27531,8 @@
 	    square: 0,
 	    heart: 0,
 	    star: 0,
-	    asterisk: 0
+	    asterisk: 0,
+	    plus: 0
 	  };
 	}
 	
@@ -27545,6 +27554,10 @@
 	
 	function explodeHeart(x, y) {
 	  _numOfType.heart++;
+	}
+	
+	function explodePlus(x, y) {
+	  _numOfType.plus++;
 	}
 	
 	function switchDots(dots) {
@@ -27689,6 +27702,7 @@
 	    triangle: levelStatusHelper('triangle'),
 	    square: levelStatusHelper('square'),
 	    asterisk: levelStatusHelper('asterisk'),
+	    plus: levelStatusHelper('plus'),
 	    heart: levelStatusHelper('heart'),
 	    levelCompleted: completedHelper()
 	  };
@@ -27776,6 +27790,7 @@
 	  this.explodedSpaces = initializeGrid(this.size, ' ');
 	  this.explosionCallbacks = options.callbacks || {};
 	  this.scoreMultiplier = 0;
+	  this.fruitify = options.fruitify === true ? true : false;
 	};
 	
 	var scoreConv = {
@@ -27830,6 +27845,8 @@
 	    id: this.dotIdentifier
 	  });
 	
+	  if (this.fruitify && Math.floor(Math.random() * 10) === 0) newDot.fruitify();
+	
 	  this.grid[x][y] = newDot;
 	  this.dotsById[this.dotIdentifier] = newDot;
 	  this.dotIdentifier++;
@@ -27872,6 +27889,7 @@
 	    for (var iy = 0; iy < this.size; iy++) {
 	
 	      this.checkClusters(ix, iy);
+	      this.checkTnLz(ix, iy);
 	      this.checkNumInDelta(ix, iy, 6, [0, 1], update);
 	      this.checkNumInDelta(ix, iy, 6, [1, 0], update);
 	      this.checkNumInDelta(ix, iy, 5, [0, 1], update);
@@ -27921,6 +27939,18 @@
 	  }
 	};
 	
+	Board.prototype.killBigX = function (x, y) {
+	  var _this = this;
+	
+	  [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function (deltaPos) {
+	    var dx = deltaPos[0];
+	    var dy = deltaPos[1];
+	    for (var i = 0; x + i * dx >= 0 && x + i * dx < _this.size && y + i * dy >= 0 && y + i * dy < _this.size; i++) {
+	      _this.removeDot(x + i * dx, y + i * dy);
+	    }
+	  });
+	};
+	
 	Board.prototype.killTri = function (x, y) {
 	  if (y < this.size - 1 && this.grid[x][y + 1]) {
 	    this.removeDot(x, y + 1);
@@ -27949,6 +27979,8 @@
 	  }
 	  var oldDot = this.grid[x][y];
 	
+	  if (this.fruitify && oldDot.isFruit) this.score += 1000 * this.scoreMultiplier;
+	
 	  oldDot.isKilled = true;
 	  this.grid[x][y] = null;
 	  this.explodedSpaces[x][y] = oldDot.color;
@@ -27959,6 +27991,9 @@
 	  } else if (oldDot instanceof Dots.square) {
 	    this.explosionCallbacks.square();
 	    this.killCross(x, y);
+	  } else if (oldDot instanceof Dots.plus) {
+	    this.explosionCallbacks.plus();
+	    this.killBigX(x, y);
 	  } else if (oldDot instanceof Dots.triangle) {
 	    this.explosionCallbacks.triangle();
 	    this.killTri(x, y);
@@ -27983,6 +28018,9 @@
 	    pos: oldDot.pos,
 	    id: this.dotIdentifier
 	  });
+	
+	  // if (this.fruitify) this.grid[x][y].fruitify();
+	
 	  this.dotsById[this.dotIdentifier] = this.grid[x][y];
 	  this.dotIdentifier++;
 	};
@@ -28002,6 +28040,71 @@
 	
 	    this.score += scoreConv[4] * this.scoreMultiplier;
 	  }
+	};
+	
+	Board.prototype.checkTnLz = function (x, y) {
+	  if (x + 2 >= this.size || y + 2 >= this.size) {
+	    return;
+	  }
+	
+	  for (var dy = 0; dy < 3; dy++) {
+	    if (this.grid[x][y + dy] && this.grid[x + 1][y + dy] && this.grid[x + 2][y + dy]) {
+	      var thisColor = this.grid[x][y + dy].color;
+	      if (this.grid[x + 1][y + dy].color === thisColor && this.grid[x + 2][y + dy].color === thisColor) {
+	        for (var dx = 0; dx < 3; dx++) {
+	          if (this.grid[x + dx][y] && this.grid[x + dx][y + 1] && this.grid[x + dx][y + 2]) {
+	            if (this.grid[x + dx][y].color === thisColor && this.grid[x + dx][y + 1].color === thisColor && this.grid[x + dx][y + 2].color === thisColor) {
+	
+	              this.removeDot(x, y + dy);
+	              this.removeDot(x + 1, y + dy);
+	              this.removeDot(x + 2, y + dy);
+	
+	              this.removeDot(x + dx, y);
+	              this.removeDot(x + dx, y + 1);
+	              this.removeDot(x + dx, y + 2);
+	
+	              this.grid[x + dx][y + dy] = new Dots.plus({
+	                color: thisColor,
+	                pos: [x + dx, y + dy],
+	                id: this.dotIdentifier
+	              });
+	
+	              this.dotsById[this.dotIdentifier] = this.grid[x + dx][y + dy];
+	              this.dotIdentifier++;
+	
+	              this.score += scoreConv[5] * this.scoreMultiplier;
+	            }
+	          }
+	        }
+	      }
+	    }
+	  }
+	
+	  // for (var dx = 0; dx < 3; dx++) {
+	  //   if (this.grid[x + dx][y] && this.grid[x + dx][y + 1] && this.grid[x + dx][y + 2]) {
+	  //     const thisColor = this.grid[x + dx][y].color;
+	  //     if (this.grid[x + dx][y + 1] === thisColor && this.grid[x + dx][y + 2] === thisColor)
+	  //       for (var dy = 1; dy < 3; dy++) {
+	  //         if (this.grid[x + dx][y + dy] && this.grid[x + dx][y + dy])
+	  //
+	  //
+	  //       }
+	  //     }
+	  //   }
+	  // }
+	
+	  // if ((this.grid[x + 1][y].color === thisColor) &&
+	  //     (this.grid[x + 1][y + 1].color === thisColor) &&
+	  //     (this.grid[x][y + 1].color === thisColor)) {
+	  //
+	  //   const thisColor = this.grid[x][y].color;
+	  //   this.removeDot(x, y + 1);
+	  //   this.removeDot(x + 1, y);
+	  //   this.removeDot(x + 1, y + 1);
+	  //   this.replaceDot(x, y, Dots.heart);
+	  //
+	  //   this.score += scoreConv[4] * this.scoreMultiplier;
+	  // }
 	};
 	
 	Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
@@ -28082,6 +28185,7 @@
 	var StarDot = __webpack_require__(248);
 	var TriangleDot = __webpack_require__(249);
 	var AsteriskDot = __webpack_require__(250);
+	var PlusDot = __webpack_require__(409);
 	
 	module.exports = {
 	  circle: CircleDot,
@@ -28089,7 +28193,8 @@
 	  square: SquareDot,
 	  star: StarDot,
 	  triangle: TriangleDot,
-	  asterisk: AsteriskDot
+	  asterisk: AsteriskDot,
+	  plus: PlusDot
 	};
 
 /***/ },
@@ -28100,6 +28205,7 @@
 	
 	var Util = __webpack_require__(244);
 	var Dot = __webpack_require__(245);
+	var FruitDotConstants = __webpack_require__(408);
 	
 	var CircleDot = function CircleDot(options) {
 	  Dot.call(this, {
@@ -28113,6 +28219,15 @@
 	};
 	
 	Util.inherits(CircleDot, Dot);
+	
+	CircleDot.prototype.fruitify = function () {
+	  this.iconClass = FruitDotConstants.fruitify[Math.floor(Math.random() * 6)];
+	  this.isFruit = true;
+	};
+	
+	CircleDot.prototype.defruitify = function () {
+	  this.iconClass = 'icon-geo-circle';
+	};
 	
 	module.exports = CircleDot;
 
@@ -28146,6 +28261,7 @@
 	  this.icon = '-';
 	  this.iconClass = ' ';
 	  this.id = options.id;
+	  this.isFruit = false;
 	};
 	
 	module.exports = Dot;
@@ -36364,7 +36480,7 @@
 	      React.createElement(
 	        'div',
 	        {
-	          className: this.props.dot.color + " " + this.props.dot.shape,
+	          className: this.props.dot.color + " " + (this.props.dot.isFruit ? "fruit" : this.props.dot.shape),
 	          style: margin },
 	        React.createElement('span', { className: this.props.dot.iconClass })
 	      )
@@ -36436,6 +36552,17 @@
 	      star: 3
 	    },
 	    moves: 20
+	  },
+	  'bonus': {
+	    isGoalBased: true,
+	    size: 16,
+	    colors: [0, 1, 2, 3, 4, 7, 9],
+	    goals: {
+	      star: 5,
+	      asterisk: 1
+	    },
+	    moves: 20,
+	    fruitify: true
 	  }
 	};
 
@@ -36672,6 +36799,40 @@
 	});
 	
 	module.exports = Game;
+
+/***/ },
+/* 408 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = {
+	  fruitify: ['icon-apple', 'icon-melon-slice', 'icon-bananas', 'icon-lemon', 'icon-sberry', 'icon-cherry']
+	};
+
+/***/ },
+/* 409 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(244);
+	var Dot = __webpack_require__(245);
+	
+	var PlusDot = function PlusDot(options) {
+	  Dot.call(this, {
+	    color: options.color,
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'plus';
+	  this.icon = '+';
+	  this.iconClass = 'icon-plus';
+	};
+	
+	Util.inherits(PlusDot, Dot);
+	
+	module.exports = PlusDot;
 
 /***/ }
 /******/ ]);
