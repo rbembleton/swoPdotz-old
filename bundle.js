@@ -27058,7 +27058,54 @@
 	
 	var Main = React.createClass({
 	  displayName: 'Main',
+	  getInitialState: function getInitialState() {
+	    return { renderLogo: true };
+	  },
+	  handleLogoClick: function handleLogoClick(e) {
+	    e.preventDefault();
+	    this.setState({ renderLogo: false });
+	    var that = this;
+	    setTimeout(function () {
+	      that.setState({ renderLogo: true });
+	    }, 1);
+	  },
+	
+	  // 
+	  // componentDidMount() {
+	  //   setTimeout(() => {
+	  //     this.setState({ paused: true });
+	  //   }, 4000);
+	  // },
+	
+	
 	  render: function render() {
+	
+	    var thisLogo = this.state.renderLogo ? React.createElement(
+	      'div',
+	      { className: 'logo', onClick: this.handleLogoClick },
+	      "sw",
+	      React.createElement(
+	        'div',
+	        { className: 'logo-swap' },
+	        React.createElement(
+	          'div',
+	          { className: 'logo-ball1' },
+	          "•"
+	        ),
+	        'P',
+	        React.createElement(
+	          'span',
+	          { className: 'logo-ud-p' },
+	          'P'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'logo-ball2' },
+	          "•"
+	        )
+	      ),
+	      "tz"
+	    ) : React.createElement('div', { className: 'logo-placeholder' });
 	
 	    return React.createElement(
 	      'div',
@@ -27066,28 +27113,7 @@
 	      React.createElement(
 	        'header',
 	        { className: 'clearfix unsel' },
-	        "sw",
-	        React.createElement(
-	          'div',
-	          { className: 'logo-swap' },
-	          React.createElement(
-	            'div',
-	            { className: 'logo-ball1' },
-	            "•"
-	          ),
-	          'P',
-	          React.createElement(
-	            'span',
-	            { className: 'logo-ud-p' },
-	            'P'
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'logo-ball2' },
-	            "•"
-	          )
-	        ),
-	        "tz"
+	        thisLogo
 	      ),
 	      React.createElement(
 	        'div',
@@ -27411,6 +27437,7 @@
 	var _moves = void 0;
 	var _numOfType = resetNumOfType();
 	var _levelGoals = resetLevelGoals();
+	var _boardTimeouts = [];
 	var Liaison = function Liaison() {};
 	
 	Liaison.addListener = function (callback) {
@@ -27439,6 +27466,13 @@
 	  _moves = undefined;
 	  _levelGoals = resetLevelGoals();
 	  _numOfType = resetNumOfType();
+	  clearBoardTimeouts();
+	}
+	
+	function clearBoardTimeouts() {
+	  while (_boardTimeouts.length !== 0) {
+	    clearTimeout(_boardTimeouts.pop());
+	  }
 	}
 	
 	function resetDots(options) {
@@ -27454,10 +27488,10 @@
 	  _levelGoals = resetLevelGoals(options.goals);
 	
 	  Liaison.broadcastChanges();
-	  setTimeout(function () {
+	  _boardTimeouts.push(setTimeout(function () {
 	    _board.resetExplodedSpaces();
 	    removeGroups();
-	  }, 200);
+	  }, 200));
 	}
 	
 	function resetLevelGoals() {
@@ -27516,10 +27550,10 @@
 	  _moves--;
 	
 	  Liaison.broadcastChanges();
-	  setTimeout(function () {
+	  _boardTimeouts.push(setTimeout(function () {
 	    _board.resetExplodedSpaces();
 	    removeGroups();
-	  }, 200);
+	  }, 200));
 	}
 	
 	function snapDot(dot) {
@@ -27559,36 +27593,37 @@
 	// second callback
 	function boardDrop() {
 	  Liaison.broadcastChanges();
-	  setTimeout(function () {
+	  _boardTimeouts.push(setTimeout(function () {
 	    _board.resetExplodedSpaces();
 	    _board.columnsDrop(updateDisplay);
-	  }, 400);
+	  }, 400));
 	}
 	
 	// third callback
 	function updateDisplay() {
 	  Liaison.broadcastChanges();
-	  setTimeout(function () {
+	  _boardTimeouts.push(setTimeout(function () {
 	    _board.resetExplodedSpaces();
 	    fillInTop();
-	  }, 400);
+	  }, 400));
 	}
 	
 	function fillInTop() {
 	  var noFills = _board.fillInTop();
 	
 	  if (noFills) {
-	    setTimeout(function () {
+	    _boardTimeouts.push(setTimeout(function () {
 	      _preventMove = false;
 	      _board.scoreMultiplier = 0;
 	      Liaison.broadcastChanges();
-	    }, 400);
+	      clearBoardTimeouts();
+	    }, 400));
 	  } else {
 	    Liaison.broadcastChanges();
-	    setTimeout(function () {
+	    _boardTimeouts.push(setTimeout(function () {
 	      _board.resetExplodedSpaces();
 	      removeGroups();
-	    }, 400);
+	    }, 400));
 	  }
 	}
 	
@@ -36118,7 +36153,7 @@
 	    };
 	
 	    if (this.state.animate !== ' ') {
-	      for (var i = 0; i < 4; i++) {
+	      for (var i = 0; i < 6; i++) {
 	        explosion.push(React.createElement(Particle, { key: i, color: this.state.animate }));
 	      }
 	    }

@@ -7,18 +7,43 @@ const DotsDivider = require('./dots/dots_divider');
 
 const Main = React.createClass({
 
+  getInitialState () {
+    return({renderLogo: true});
+  },
+
+
+  handleLogoClick(e) {
+    e.preventDefault();
+    this.setState({ renderLogo: false });
+    const that = this;
+    setTimeout(() => { that.setState({renderLogo: true}); }, 1);
+  },
+  // 
+  // componentDidMount() {
+  //   setTimeout(() => {
+  //     this.setState({ paused: true });
+  //   }, 4000);
+  // },
+
+
   render () {
+
+    const thisLogo = this.state.renderLogo ? (
+      <div className="logo" onClick={this.handleLogoClick}>
+        {"sw"}
+        <div className="logo-swap">
+          <div className="logo-ball1">{"•"}</div>
+          P<span className="logo-ud-p">P</span>
+          <div className="logo-ball2">{"•"}</div>
+        </div>
+        {"tz"}
+      </div>
+    ) : (<div className="logo-placeholder"></div>);
 
     return (
       <div className="main-page clearfix">
         <header className="clearfix unsel">
-          {"sw"}
-          <div className="logo-swap">
-            <div className="logo-ball1">{"•"}</div>
-            P<span className="logo-ud-p">P</span>
-            <div className="logo-ball2">{"•"}</div>
-          </div>
-          {"tz"}
+          {thisLogo}
         </header>
         <div className="screen-holder clearfix">
           {this.props.children}

@@ -15,6 +15,7 @@ let _preventMove = true;
 let _moves;
 let _numOfType = resetNumOfType();
 let _levelGoals = resetLevelGoals();
+let _boardTimeouts = [];
 let Liaison = function () {
 };
 
@@ -43,6 +44,13 @@ function clearBoard () {
   _moves = undefined;
   _levelGoals = resetLevelGoals();
   _numOfType = resetNumOfType();
+  clearBoardTimeouts();
+}
+
+function clearBoardTimeouts () {
+  while (_boardTimeouts.length !== 0) {
+    clearTimeout(_boardTimeouts.pop());
+  }
 }
 
 function resetDots (options) {
@@ -58,10 +66,10 @@ function resetDots (options) {
   _levelGoals = resetLevelGoals(options.goals);
 
   Liaison.broadcastChanges();
-  setTimeout((() => {
+  _boardTimeouts.push(setTimeout((() => {
     _board.resetExplodedSpaces();
     removeGroups();
-  }), 200);
+  }), 200));
 }
 
 function resetLevelGoals (goalsObj = {}) {
@@ -118,10 +126,10 @@ function switchDots(dots) {
   _moves --;
 
   Liaison.broadcastChanges();
-  setTimeout((() => {
+  _boardTimeouts.push(setTimeout((() => {
     _board.resetExplodedSpaces();
     removeGroups();
-  }), 200);
+  }), 200));
 }
 
 function snapDot(dot) {
@@ -160,36 +168,37 @@ function removeGroups() {
 // second callback
 function boardDrop() {
   Liaison.broadcastChanges();
-  setTimeout((() => {
+  _boardTimeouts.push(setTimeout((() => {
     _board.resetExplodedSpaces();
     _board.columnsDrop(updateDisplay);
-  }), 400);
+  }), 400));
 }
 
 // third callback
 function updateDisplay () {
   Liaison.broadcastChanges();
-  setTimeout((() => {
+  _boardTimeouts.push(setTimeout((() => {
     _board.resetExplodedSpaces();
     fillInTop();
-  }), 400);
+  }), 400));
 }
 
 function fillInTop() {
   const noFills = _board.fillInTop();
 
   if (noFills) {
-    setTimeout((() => {
+    _boardTimeouts.push(setTimeout((() => {
       _preventMove = false;
       _board.scoreMultiplier = 0;
       Liaison.broadcastChanges();
-    }), 400);
+      clearBoardTimeouts();
+    }), 400));
   } else {
     Liaison.broadcastChanges();
-    setTimeout((() => {
+    _boardTimeouts.push(setTimeout((() => {
       _board.resetExplodedSpaces();
       removeGroups();
-    }), 400);
+    }), 400));
   }
 }
 

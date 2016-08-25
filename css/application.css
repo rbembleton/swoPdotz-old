@@ -127,11 +127,21 @@ input[type="submit"] {
   75% {
     transform: rotate(360deg); }
   75.0001% {
-    transform: rotate(0deg); }
-  85% {
-    color: black; }
-  95% {
-    color: #8787ff; } }
+    transform: rotate(0deg); } }
+@keyframes glow {
+  25% {
+    text-shadow: 0px 0px 25px #8787ff;
+    color: white; }
+  75% {
+    text-shadow: 0px 0px 25px #8787ff;
+    color: white; } }
+@keyframes glow2 {
+  25% {
+    text-shadow: 0px 0px 25px #8787ff;
+    color: white; }
+  75% {
+    text-shadow: 0px 0px 25px #8787ff;
+    color: white; } }
 @keyframes bounceyball {
   10% {
     transform: scaleY(0.2);
@@ -164,6 +174,15 @@ input[type="submit"] {
     letter-spacing: .2px;
     font-family: "Francois One", sans-serif;
     color: #3e3f50; }
+    .main-page header .logo {
+      animation-delay: 3s;
+      animation-name: glow;
+      animation-iteration-count: 1;
+      animation-timing-function: ease-in-out;
+      animation-duration: 2s;
+      min-height: 50px; }
+    .main-page header .logo-placeholder {
+      min-height: 50px; }
     .main-page header .logo-swap {
       display: inline-block;
       animation-name: flipflop;

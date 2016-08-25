@@ -57,7 +57,7 @@ const DropGrid = React.createClass({
     };
 
     if (this.state.animate !== ' ') {
-      for (var i = 0; i < 4; i++) {
+      for (var i = 0; i < 6; i++) {
         explosion.push(
           <Particle key={i} color={this.state.animate}/>
 

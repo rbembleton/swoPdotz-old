@@ -119,9 +119,20 @@ input[type="submit"] {
   60% { transform: rotate(180deg);}
   75% { transform: rotate(360deg);}
   75.0001% { transform: rotate(0deg);}
-  85% { color: black; }
-  95% { color: $indigo;}
 }
+// 85% { text-shadow: none; color: black; }
+// 95% { text-shadow: 0px 0px 20px $indigo; color: white;}
+
+@keyframes glow {
+  25% { text-shadow: 0px 0px 25px $indigo; color: white;}
+  75% { text-shadow: 0px 0px 25px $indigo; color: white;}
+}
+
+@keyframes glow2 {
+  25% { text-shadow: 0px 0px 25px $indigo; color: white;}
+  75% { text-shadow: 0px 0px 25px $indigo; color: white;}
+}
+
 
 @keyframes bounceyball {
   10% { transform: scaleY(0.2); transform: translateY(10px); }
@@ -152,6 +163,27 @@ input[type="submit"] {
     letter-spacing: .2px;
     font-family: $header-font;
     color: $dark-grey;
+
+    .logo {
+      animation-delay: 3s;
+      animation-name: glow;
+      animation-iteration-count: 1;
+      animation-timing-function: ease-in-out;
+      animation-duration: 2s;
+      min-height: 50px;
+    }
+
+    .logo-placeholder {
+      min-height: 50px;
+    }
+
+    // .logo:hover {
+    //   animation-delay: 0s;
+    //   animation-name: flipflop-n-glow;
+    //   animation-iteration-count: 1;
+    //   animation-timing-function: ease-in-out;
+    //   animation-duration: 5s;
+    // }
 
 
     .logo-swap {
