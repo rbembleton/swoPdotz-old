@@ -68,6 +68,10 @@ const Goals = React.createClass({
           <div>
             <span className="icon-asterisk"/>: {this.renderCheck('asterisk')}
           </div> : ''}
+        {this.state.levelStatus.sphere !== undefined ?
+          <div>
+            <span className="icon-geo-sphere"/>: {this.renderCheck('sphere')}
+          </div> : ''}
       </div>
     );
   },

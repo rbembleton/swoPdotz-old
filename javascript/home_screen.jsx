@@ -14,10 +14,25 @@ const HomeScreen = React.createClass({
     hashHistory.push(`how`);
   },
 
-  // <span className="icon-geo-circle teal-hover"/>
-  // <button id="bonus" onClick={this.playGame}>bonus</button>
 
   render () {
+    const bonusShow = (
+      localStorage.one === 'true' && localStorage.two === 'true' && localStorage.three === 'true' ?
+      <div style={{display: 'inline'}}>
+        <span className="icon-geo-circle teal-hover"/>
+        <button id="bonus" onClick={this.playGame}>bonus</button>
+      </div>
+      : ""
+    );
+
+    const bonus2Show = (
+      localStorage.four === 'true' && localStorage.five === 'true' && localStorage.six === 'true' && localStorage.seven === 'true' ?
+      <div style={{display: 'inline'}}>
+        <span className="icon-geo-circle teal-hover"/>
+        <button id="bonus2" onClick={this.playGame}>bonus</button>
+      </div>
+      : ""
+    );
 
     return (
       <div className="levels-select">
@@ -31,6 +46,15 @@ const HomeScreen = React.createClass({
           <button id="two" onClick={this.playGame}>two</button>
             <span className="icon-geo-circle teal-hover"/>
           <button id="three" onClick={this.playGame}>three</button>
+          {bonusShow}<br/>
+          <button id="four" onClick={this.playGame}>four</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="five" onClick={this.playGame}>five</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="six" onClick={this.playGame}>six</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="seven" onClick={this.playGame}>seven</button>
+          {bonus2Show}
         </div>
         <DotsDivider />
         <h2 className="unsel">Unlimited Levels</h2>

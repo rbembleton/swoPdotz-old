@@ -212,6 +212,7 @@ function fillInTop() {
           Liaison.broadcastChanges();
         }), 100));
       }
+
       _boardTimeouts.push(setTimeout((() => {
         _preventMove = false;
         _board.scoreMultiplier = 0;
@@ -290,7 +291,7 @@ Liaison.levelStatus = function () {
 
 function completedHelper () {
   let allTrue = true;
-  ['star', 'heart', 'triangle', 'square', 'asterisk'].forEach((el) => {
+  ['star', 'heart', 'triangle', 'square', 'asterisk', 'plus', 'sphere'].forEach((el) => {
     if (_levelGoals[el] && _levelGoals[el] !== 'completed') {
       allTrue = false;
     }

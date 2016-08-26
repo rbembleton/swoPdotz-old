@@ -117,6 +117,7 @@ Board.prototype.sphereExplode = function (startCallback, endCallback) {
         oldDot.isKilled = true;
         this.grid[ix][iy] = null;
         this.explodedSpaces[ix][iy] = 'rainbow-explosion';
+        this.runDotCallbacks(ix, iy, oldDot);
         this.score += 314 * this.scoreMultiplier;
       }
     }
@@ -280,31 +281,45 @@ Board.prototype.removeDot = function (x, y) {
     this.explodedSpaces[x][y] = oldDot.color;
   }
 
+  this.runDotCallbacks(x, y, oldDot);
+  this.runDotExplosions(x, y, oldDot);
+};
 
-  if (oldDot instanceof Dots.star) {
+Board.prototype.runDotCallbacks = function(x, y, dot) {
+  if (dot instanceof Dots.star) {
     this.explosionCallbacks.star();
-    this.killColor(oldDot.color);
-  } else if (oldDot instanceof Dots.square) {
+  } else if (dot instanceof Dots.square) {
     this.explosionCallbacks.square();
-    this.killCross(x, y);
-  } else if (oldDot instanceof Dots.plus) {
+  } else if (dot instanceof Dots.plus) {
     this.explosionCallbacks.plus();
-    this.killBigX(x, y);
-  } else if (oldDot instanceof Dots.triangle) {
+  } else if (dot instanceof Dots.triangle) {
     this.explosionCallbacks.triangle();
-    this.killTri(x, y);
-  } else if (oldDot instanceof Dots.heart) {
+  } else if (dot instanceof Dots.heart) {
     this.explosionCallbacks.heart();
-    this.killSquare(x, y);
-  } else if (oldDot instanceof Dots.asterisk) {
+  } else if (dot instanceof Dots.asterisk) {
     this.explosionCallbacks.asterisk();
-    this.changeColors(oldDot.color);
-  } else if (oldDot instanceof Dots.sphere) {
+  } else if (dot instanceof Dots.sphere) {
     this.explosionCallbacks.sphere();
-    oldDot.color = 'grey-out';
-    this.spheresToExplode.push(oldDot);
   }
+};
 
+Board.prototype.runDotExplosions = function(x, y, dot) {
+  if (dot instanceof Dots.star) {
+    this.killColor(dot.color);
+  } else if (dot instanceof Dots.square) {
+    this.killCross(x, y);
+  } else if (dot instanceof Dots.plus) {
+    this.killBigX(x, y);
+  } else if (dot instanceof Dots.triangle) {
+    this.killTri(x, y);
+  } else if (dot instanceof Dots.heart) {
+    this.killSquare(x, y);
+  } else if (dot instanceof Dots.asterisk) {
+    this.changeColors(dot.color);
+  } else if (dot instanceof Dots.sphere) {
+    dot.color = 'grey-out';
+    this.spheresToExplode.push(dot);
+  }
 };
 
 Board.prototype.replaceDot = function (x, y, dotConstructor) {

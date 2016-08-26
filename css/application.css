@@ -666,27 +666,31 @@ input[type="submit"] {
   opacity: 1;
   margin: auto;
   color: black;
-  left: 40%;
+  left: 38%;
   top: 300px;
-  right: 40%;
+  right: 38%;
   width: 20%;
-  min-width: 200px;
-  height: 200px;
+  min-width: 260px;
+  height: 300px;
   border-radius: 20px;
   text-align: center; }
   .modal-content h2 {
-    margin: 20px; }
+    margin: 20px;
+    font-family: "Francois One", sans-serif;
+    font-size: 20px; }
   .modal-content div {
     margin: auto;
-    width: 180px;
+    width: 220px;
     text-align: center; }
   .modal-content .back-to-levels:hover {
     color: #8787ff;
     cursor: pointer; }
   .modal-content .try-again {
-    margin-top: 40px; }
+    margin-top: 5px; }
   .modal-content .try-again:hover {
     color: #8787ff;
     cursor: pointer; }
+  .modal-content .final-score {
+    margin-top: 20px; }
 
 /*# sourceMappingURL=application.css.map */

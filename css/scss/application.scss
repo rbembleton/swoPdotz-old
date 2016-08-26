@@ -752,22 +752,24 @@ input[type="submit"] {
   opacity: 1;
   margin: auto;
   color: black;
-  left: 40%;
+  left: 38%;
   top: 300px;
-  right: 40%;
+  right: 38%;
   width: 20%;
-  min-width: 200px;
-  height: 200px;
+  min-width: 260px;
+  height: 300px;
   border-radius: 20px;
   text-align: center;
 
   h2 {
     margin: 20px;
+    font-family: $header-font;
+    font-size: 20px;
   }
 
   div {
     margin: auto;
-    width: 180px;
+    width: 220px;
     text-align: center;
   }
 
@@ -777,12 +779,16 @@ input[type="submit"] {
   }
 
   .try-again {
-    margin-top: 40px;
+    margin-top: 5px;
   }
 
   .try-again:hover {
     color: $indigo;
     cursor: pointer;
+  }
+
+  .final-score {
+    margin-top: 20px;
   }
 
 }
