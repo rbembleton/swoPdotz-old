@@ -36763,7 +36763,7 @@
 	    size: 12,
 	    colors: [1, 2, 3, 4, 7],
 	    goals: {
-	      asterisk: 3
+	      asterisk: 2
 	    },
 	    moves: 30,
 	    nextLevel: 'bonus2'
