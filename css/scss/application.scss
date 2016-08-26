@@ -101,6 +101,15 @@ input[type="submit"] {
 .indigo { color: $indigo; }
 .purple { color: $purple; }
 
+.rainbow {
+  color: $pink;
+  text-shadow: 0px 0px 4px #9a9a9a !important;
+  animation-name: cycle-colors;
+  animation-duration: 3s;
+  animation-timing-function: ease;
+  animation-iteration-count: infinite;
+}
+
 .pink-hover:hover { color: $pink; }
 .red-hover:hover { color: $red; }
 .orange-hover:hover { color: $orange; }
@@ -112,6 +121,20 @@ input[type="submit"] {
 .indigo-hover:hover { color: $indigo; }
 .purple-hover:hover { color: $purple; }
 
+
+@keyframes cycle-colors {
+  10% {color: $red}
+  20% {color: $orange}
+  25% {transform: scale(1.12);}
+  30% {color: $yellow}
+  40% {color: $green}
+  50% {color: $teal; transform: scale(1);}
+  60% {color: $aqua}
+  70% {color: $blue}
+  75% {transform: scale(1.13);}
+  80% {color: $indigo}
+  90% {color: $purple}
+}
 
 
 @keyframes flipflop {
@@ -488,6 +511,13 @@ input[type="submit"] {
   font-size: 13px;
   top: 2.5px;
   left: 6px;
+
+}
+
+.sphere {
+  font-size: 16px;
+  top: 0.5px;
+  left: 5px;
 }
 
 .fruit {
@@ -562,7 +592,7 @@ input[type="submit"] {
 
 
 .particle.finish {
-  transition: all .6s linear, background-color .01s linear;
+  transition: all .6s linear, background-color .001s linear;
   width: 10px;
   height: 10px;
   opacity: 0;
@@ -575,6 +605,20 @@ input[type="submit"] {
   background-color: white;
 }
 
+
+@keyframes cycle-bg-colors {
+  10% {background-color: $red}
+  20% {background-color: $orange}
+  30% {background-color: $yellow}
+  40% {background-color: $green}
+  50% {background-color: $teal;}
+  60% {background-color: $aqua}
+  70% {background-color: $blue}
+  80% {background-color: $indigo}
+  90% {background-color: $purple}
+}
+
+.particle.rainbow.finish { animation-name: cycle-bg-colors; animation-duration: .6s; animation-timing-function: ease;}
 .particle.pink.finish { background-color: $pink; }
 .particle.red.finish { background-color: $red; }
 .particle.orange.finish { background-color: $orange; }
@@ -648,4 +692,45 @@ input[type="submit"] {
     font-size: 10px;
     margin: 0px 10px 0px 10px;
   }
+}
+
+
+.win-lose-modal {
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.3;
+  z-index: 100;
+  left: 0px;
+  top: 0px;
+}
+
+.modal-content {
+  background-color: white;
+  z-index: 102;
+  position: fixed;
+  opacity: 1;
+  margin: auto;
+  color: #8787ff;
+  left: 40%;
+  top: 300px;
+  right: 40%;
+  width: 20%;
+  min-width: 200px;
+  height: 200px;
+  border-radius: 20px;
+  text-align: center;
+
+  h2 {
+    margin: 20px;
+  }
+
+  div {
+    margin: auto;
+    width: 180px;
+    text-align: center;
+  }
+
 }

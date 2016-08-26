@@ -7,7 +7,8 @@ const explosionCallbacks = {
   triangle: explodeTriangle,
   heart: explodeHeart,
   asterisk: explodeAsterisk,
-  plus: explodePlus
+  plus: explodePlus,
+  sphere: explodeSphere
 };
 
 let _board = new Board({ callbacks: explosionCallbacks });
@@ -81,6 +82,8 @@ function resetLevelGoals (goalsObj = {}) {
     star: goalsObj.star || undefined,
     heart: goalsObj.heart || undefined,
     asterisk: goalsObj.asterisk || undefined,
+    plus: goalsObj.plus || undefined,
+    sphere: goalsObj.sphere || undefined
   };
 }
 
@@ -91,7 +94,8 @@ function resetNumOfType () {
     heart: 0,
     star: 0,
     asterisk: 0,
-    plus: 0
+    plus: 0,
+    sphere: 0
   };
 }
 
@@ -117,6 +121,10 @@ function explodeHeart(x, y) {
 
 function explodePlus(x, y) {
   _numOfType.plus ++;
+}
+
+function explodeSphere(x, y) {
+  _numOfType.sphere ++;
 }
 
 function switchDots(dots) {
@@ -194,12 +202,16 @@ function fillInTop() {
   const noFills = _board.fillInTop();
 
   if (noFills) {
-    _boardTimeouts.push(setTimeout((() => {
-      _preventMove = false;
-      _board.scoreMultiplier = 0;
-      Liaison.broadcastChanges();
-      clearBoardTimeouts();
-    }), 400));
+    if (_board.spheresToExplode.length > 0) {
+      _board.sphereExplode(Liaison.broadcastChanges, removeGroups);
+    } else {
+      _boardTimeouts.push(setTimeout((() => {
+        _preventMove = false;
+        _board.scoreMultiplier = 0;
+        Liaison.broadcastChanges();
+        clearBoardTimeouts();
+      }), 400));
+    }
   } else {
     Liaison.broadcastChanges();
     _boardTimeouts.push(setTimeout((() => {
@@ -210,6 +222,10 @@ function fillInTop() {
 }
 
 //    STORE FUNCTIONS
+
+Liaison.isOver = function () {
+  return completedHelper() ? 'won' : undefined;
+};
 
 Liaison.explosions = function () {
   return _board.explodedSpaces;
@@ -259,6 +275,7 @@ Liaison.levelStatus = function () {
     square: levelStatusHelper('square'),
     asterisk: levelStatusHelper('asterisk'),
     plus: levelStatusHelper('plus'),
+    sphere: levelStatusHelper('sphere'),
     heart: levelStatusHelper('heart'),
     levelCompleted: completedHelper()
   };
@@ -290,6 +307,7 @@ function levelStatusHelper (kind) {
       return undefined;
     }
 }
+
 
 // ACTIONS FUNCTIONS
 

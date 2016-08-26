@@ -5,7 +5,7 @@ const StarDot = require('./star_dot');
 const TriangleDot = require('./triangle_dot');
 const AsteriskDot = require('./asterisk_dot');
 const PlusDot = require('./plus_dot');
-
+const SphereDot = require('./sphere_dot');
 
 module.exports = {
   circle: CircleDot,
@@ -14,5 +14,6 @@ module.exports = {
   star: StarDot,
   triangle: TriangleDot,
   asterisk: AsteriskDot,
-  plus: PlusDot
+  plus: PlusDot,
+  sphere: SphereDot
 };

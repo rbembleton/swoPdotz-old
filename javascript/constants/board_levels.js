@@ -56,7 +56,7 @@ module.exports = {
     colors: [0,1,2,3,4,7,9],
     goals: {
       star: 5,
-      asterisk: 1
+      plus: 5
     },
     moves: 20,
     fruitify: true

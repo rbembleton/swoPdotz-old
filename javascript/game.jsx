@@ -4,6 +4,7 @@ const BoardDisplay = require('./board_display');
 const hashHistory = require('react-router').hashHistory;
 const BoardLevels = require('./constants/board_levels');
 const Goals = require('./goals');
+const GameOverModal = require('./game_over_modal');
 
 const Game = React.createClass({
 
@@ -27,6 +28,7 @@ const Game = React.createClass({
           <BoardDisplay board={BoardLevels[this.props.params.gameType]}/>
         </div>
         <Score />
+        <GameOverModal />
       </div>
     );
   }

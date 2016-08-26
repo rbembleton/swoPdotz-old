@@ -89,6 +89,14 @@ input[type="submit"] {
 .purple {
   color: #c18be2; }
 
+.rainbow {
+  color: #ff66c2;
+  text-shadow: 0px 0px 4px #9a9a9a !important;
+  animation-name: cycle-colors;
+  animation-duration: 3s;
+  animation-timing-function: ease;
+  animation-iteration-count: infinite; }
+
 .pink-hover:hover {
   color: #ff66c2; }
 
@@ -119,6 +127,30 @@ input[type="submit"] {
 .purple-hover:hover {
   color: #c18be2; }
 
+@keyframes cycle-colors {
+  10% {
+    color: #ec5151; }
+  20% {
+    color: #fab54e; }
+  25% {
+    transform: scale(1.12); }
+  30% {
+    color: #faed4e; }
+  40% {
+    color: #49e46b; }
+  50% {
+    color: #2dc377;
+    transform: scale(1); }
+  60% {
+    color: #4bedee; }
+  70% {
+    color: #34b3ff; }
+  75% {
+    transform: scale(1.13); }
+  80% {
+    color: #8787ff; }
+  90% {
+    color: #c18be2; } }
 @keyframes flipflop {
   30% {
     transform: rotate(180deg); }
@@ -409,6 +441,11 @@ input[type="submit"] {
   top: 2.5px;
   left: 6px; }
 
+.sphere {
+  font-size: 16px;
+  top: 0.5px;
+  left: 5px; }
+
 .fruit {
   font-size: 18px;
   top: -1.3px;
@@ -461,7 +498,7 @@ input[type="submit"] {
   box-shadow: 1px 1px 2px white; }
 
 .particle.finish {
-  transition: all .6s linear, background-color .01s linear;
+  transition: all .6s linear, background-color .001s linear;
   width: 10px;
   height: 10px;
   opacity: 0; }
@@ -471,6 +508,30 @@ input[type="submit"] {
   height: 2px;
   opacity: 1;
   background-color: white; }
+
+@keyframes cycle-bg-colors {
+  10% {
+    background-color: #ec5151; }
+  20% {
+    background-color: #fab54e; }
+  30% {
+    background-color: #faed4e; }
+  40% {
+    background-color: #49e46b; }
+  50% {
+    background-color: #2dc377; }
+  60% {
+    background-color: #4bedee; }
+  70% {
+    background-color: #34b3ff; }
+  80% {
+    background-color: #8787ff; }
+  90% {
+    background-color: #c18be2; } }
+.particle.rainbow.finish {
+  animation-name: cycle-bg-colors;
+  animation-duration: .6s;
+  animation-timing-function: ease; }
 
 .particle.pink.finish {
   background-color: #ff66c2; }
@@ -542,5 +603,38 @@ input[type="submit"] {
 .play-button span {
   font-size: 10px;
   margin: 0px 10px 0px 10px; }
+
+.win-lose-modal {
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.3;
+  z-index: 100;
+  left: 0px;
+  top: 0px; }
+
+.modal-content {
+  background-color: white;
+  z-index: 102;
+  position: fixed;
+  opacity: 1;
+  margin: auto;
+  color: #8787ff;
+  left: 40%;
+  top: 300px;
+  right: 40%;
+  width: 20%;
+  min-width: 200px;
+  height: 200px;
+  border-radius: 20px;
+  text-align: center; }
+  .modal-content h2 {
+    margin: 20px; }
+  .modal-content div {
+    margin: auto;
+    width: 180px;
+    text-align: center; }
 
 /*# sourceMappingURL=application.css.map */

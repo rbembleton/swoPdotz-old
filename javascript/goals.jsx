@@ -56,6 +56,10 @@ const Goals = React.createClass({
           <div>
             <span className="icon-like-3"/>: {this.renderCheck('heart')}
           </div> : ''}
+        {this.state.levelStatus.plus !== undefined ?
+          <div>
+            <span className="icon-plus"/>: {this.renderCheck('plus')}
+          </div> : ''}
         {this.state.levelStatus.star !== undefined ?
           <div>
             <span className="icon-star"/>: {this.renderCheck('star')}

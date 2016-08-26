@@ -16,7 +16,7 @@ let Board = function (options) {
   this.explosionCallbacks = options.callbacks || {};
   this.scoreMultiplier = 0;
   this.fruitify = options.fruitify === true ? true : false;
-
+  this.spheresToExplode = [];
 };
 
 const scoreConv = {
@@ -59,6 +59,30 @@ function initializeGrid(size, placeholder) {
 
 Board.prototype.resetExplodedSpaces = function () {
   this.explodedSpaces = initializeGrid(this.size, ' ');
+};
+
+Board.prototype.sphereExplode = function (startCallback, endCallback) {
+  for (var ix = 0; ix < this.size; ix++) {
+    for (var iy = 0; iy < this.size; iy++) {
+      this.grid[ix][iy].color = 'rainbow';
+    }
+  }
+
+  startCallback();
+
+  setTimeout(() => {
+    for (var ix = 0; ix < this.size; ix++) {
+      for (var iy = 0; iy < this.size; iy++) {
+        let oldDot = this.grid[ix][iy];
+        oldDot.isKilled = true;
+        this.grid[ix][iy] = null;
+        this.explodedSpaces[ix][iy] = 'rainbow';
+        this.score += 1000 * this.scoreMultiplier;
+      }
+    }
+    this.spheresToExplode = [];
+    endCallback();
+  }, 4000);
 };
 
 Board.prototype.placeRandomDot = function (x, y) {
@@ -114,6 +138,7 @@ Board.prototype.checkInARows = function (callback, update) {
   for (var ix = 0; ix < this.size; ix++) {
     for (var iy = 0; iy < this.size; iy++) {
 
+      this.checkStarsAndAsterisks(ix, iy);
       this.checkClusters(ix, iy);
       this.checkTnLz(ix,iy);
       this.checkNumInDelta(ix, iy, 6, [0, 1], update);
@@ -209,9 +234,11 @@ Board.prototype.removeDot = function (x, y) {
 
   if (this.fruitify && oldDot.isFruit)  this.score += 1000 * this.scoreMultiplier;
 
-  oldDot.isKilled = true;
-  this.grid[x][y] = null;
-  this.explodedSpaces[x][y] = oldDot.color;
+  if (!(oldDot instanceof Dots.sphere)) {
+    oldDot.isKilled = true;
+    this.grid[x][y] = null;
+    this.explodedSpaces[x][y] = oldDot.color;
+  }
 
 
   if (oldDot instanceof Dots.star) {
@@ -232,6 +259,9 @@ Board.prototype.removeDot = function (x, y) {
   } else if (oldDot instanceof Dots.asterisk) {
     this.explosionCallbacks.asterisk();
     this.changeColors(oldDot.color);
+  } else if (oldDot instanceof Dots.sphere) {
+    this.explosionCallbacks.sphere();
+    this.spheresToExplode.push(oldDot);
   }
 
 };
@@ -314,33 +344,6 @@ Board.prototype.checkTnLz = function (x, y) {
     }
   }
 
-
-  // for (var dx = 0; dx < 3; dx++) {
-  //   if (this.grid[x + dx][y] && this.grid[x + dx][y + 1] && this.grid[x + dx][y + 2]) {
-  //     const thisColor = this.grid[x + dx][y].color;
-  //     if (this.grid[x + dx][y + 1] === thisColor && this.grid[x + dx][y + 2] === thisColor)
-  //       for (var dy = 1; dy < 3; dy++) {
-  //         if (this.grid[x + dx][y + dy] && this.grid[x + dx][y + dy])
-  //
-  //
-  //       }
-  //     }
-  //   }
-  // }
-
-  // if ((this.grid[x + 1][y].color === thisColor) &&
-  //     (this.grid[x + 1][y + 1].color === thisColor) &&
-  //     (this.grid[x][y + 1].color === thisColor)) {
-  //
-  //   const thisColor = this.grid[x][y].color;
-  //   this.removeDot(x, y + 1);
-  //   this.removeDot(x + 1, y);
-  //   this.removeDot(x + 1, y + 1);
-  //   this.replaceDot(x, y, Dots.heart);
-  //
-  //   this.score += scoreConv[4] * this.scoreMultiplier;
-  // }
-
 };
 
 
@@ -372,6 +375,21 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
       // callback();
     }
   }
+};
+
+Board.prototype.checkStarsAndAsterisks = function (x, y) {
+  if (this.grid[x][y] instanceof Dots.star || this.grid[x][y] instanceof Dots.asterisk) {
+    if (x + 1 < this.size && (this.grid[x + 1][y] instanceof Dots.star || this.grid[x + 1][y] instanceof Dots.asterisk))  {
+      this.replaceDot(x, y, Dots.sphere);
+      this.removeDot(x + 1, y);
+    }
+    else if (y + 1 < this.size && (this.grid[x][y + 1] instanceof Dots.star || this.grid[x][y + 1] instanceof Dots.asterisk))  {
+      this.replaceDot(x, y, Dots.sphere);
+      this.removeDot(x, y + 1);
+    }
+  }
+
+
 };
 
 

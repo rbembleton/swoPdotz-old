@@ -27331,6 +27331,7 @@
 	var hashHistory = __webpack_require__(1).hashHistory;
 	var BoardLevels = __webpack_require__(405);
 	var Goals = __webpack_require__(406);
+	var GameOverModal = __webpack_require__(410);
 	
 	var Game = React.createClass({
 	  displayName: 'Game',
@@ -27355,7 +27356,8 @@
 	        { className: 'screen' },
 	        React.createElement(BoardDisplay, { board: BoardLevels[this.props.params.gameType] })
 	      ),
-	      React.createElement(Score, null)
+	      React.createElement(Score, null),
+	      React.createElement(GameOverModal, null)
 	    );
 	  }
 	});
@@ -27446,7 +27448,8 @@
 	  triangle: explodeTriangle,
 	  heart: explodeHeart,
 	  asterisk: explodeAsterisk,
-	  plus: explodePlus
+	  plus: explodePlus,
+	  sphere: explodeSphere
 	};
 	
 	var _board = new Board({ callbacks: explosionCallbacks });
@@ -27521,7 +27524,9 @@
 	    square: goalsObj.square || undefined,
 	    star: goalsObj.star || undefined,
 	    heart: goalsObj.heart || undefined,
-	    asterisk: goalsObj.asterisk || undefined
+	    asterisk: goalsObj.asterisk || undefined,
+	    plus: goalsObj.plus || undefined,
+	    sphere: goalsObj.sphere || undefined
 	  };
 	}
 	
@@ -27532,7 +27537,8 @@
 	    heart: 0,
 	    star: 0,
 	    asterisk: 0,
-	    plus: 0
+	    plus: 0,
+	    sphere: 0
 	  };
 	}
 	
@@ -27558,6 +27564,10 @@
 	
 	function explodePlus(x, y) {
 	  _numOfType.plus++;
+	}
+	
+	function explodeSphere(x, y) {
+	  _numOfType.sphere++;
 	}
 	
 	function switchDots(dots) {
@@ -27636,12 +27646,16 @@
 	  var noFills = _board.fillInTop();
 	
 	  if (noFills) {
-	    _boardTimeouts.push(setTimeout(function () {
-	      _preventMove = false;
-	      _board.scoreMultiplier = 0;
-	      Liaison.broadcastChanges();
-	      clearBoardTimeouts();
-	    }, 400));
+	    if (_board.spheresToExplode.length > 0) {
+	      _board.sphereExplode(Liaison.broadcastChanges, removeGroups);
+	    } else {
+	      _boardTimeouts.push(setTimeout(function () {
+	        _preventMove = false;
+	        _board.scoreMultiplier = 0;
+	        Liaison.broadcastChanges();
+	        clearBoardTimeouts();
+	      }, 400));
+	    }
 	  } else {
 	    Liaison.broadcastChanges();
 	    _boardTimeouts.push(setTimeout(function () {
@@ -27652,6 +27666,10 @@
 	}
 	
 	//    STORE FUNCTIONS
+	
+	Liaison.isOver = function () {
+	  return completedHelper() ? 'won' : undefined;
+	};
 	
 	Liaison.explosions = function () {
 	  return _board.explodedSpaces;
@@ -27703,6 +27721,7 @@
 	    square: levelStatusHelper('square'),
 	    asterisk: levelStatusHelper('asterisk'),
 	    plus: levelStatusHelper('plus'),
+	    sphere: levelStatusHelper('sphere'),
 	    heart: levelStatusHelper('heart'),
 	    levelCompleted: completedHelper()
 	  };
@@ -27791,6 +27810,7 @@
 	  this.explosionCallbacks = options.callbacks || {};
 	  this.scoreMultiplier = 0;
 	  this.fruitify = options.fruitify === true ? true : false;
+	  this.spheresToExplode = [];
 	};
 	
 	var scoreConv = {
@@ -27833,6 +27853,32 @@
 	
 	Board.prototype.resetExplodedSpaces = function () {
 	  this.explodedSpaces = initializeGrid(this.size, ' ');
+	};
+	
+	Board.prototype.sphereExplode = function (startCallback, endCallback) {
+	  var _this = this;
+	
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      this.grid[ix][iy].color = 'rainbow';
+	    }
+	  }
+	
+	  startCallback();
+	
+	  setTimeout(function () {
+	    for (var ix = 0; ix < _this.size; ix++) {
+	      for (var iy = 0; iy < _this.size; iy++) {
+	        var oldDot = _this.grid[ix][iy];
+	        oldDot.isKilled = true;
+	        _this.grid[ix][iy] = null;
+	        _this.explodedSpaces[ix][iy] = 'rainbow';
+	        _this.score += 1000 * _this.scoreMultiplier;
+	      }
+	    }
+	    _this.spheresToExplode = [];
+	    endCallback();
+	  }, 4000);
 	};
 	
 	Board.prototype.placeRandomDot = function (x, y) {
@@ -27888,6 +27934,7 @@
 	  for (var ix = 0; ix < this.size; ix++) {
 	    for (var iy = 0; iy < this.size; iy++) {
 	
+	      this.checkStarsAndAsterisks(ix, iy);
 	      this.checkClusters(ix, iy);
 	      this.checkTnLz(ix, iy);
 	      this.checkNumInDelta(ix, iy, 6, [0, 1], update);
@@ -27940,13 +27987,13 @@
 	};
 	
 	Board.prototype.killBigX = function (x, y) {
-	  var _this = this;
+	  var _this2 = this;
 	
 	  [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function (deltaPos) {
 	    var dx = deltaPos[0];
 	    var dy = deltaPos[1];
-	    for (var i = 0; x + i * dx >= 0 && x + i * dx < _this.size && y + i * dy >= 0 && y + i * dy < _this.size; i++) {
-	      _this.removeDot(x + i * dx, y + i * dy);
+	    for (var i = 0; x + i * dx >= 0 && x + i * dx < _this2.size && y + i * dy >= 0 && y + i * dy < _this2.size; i++) {
+	      _this2.removeDot(x + i * dx, y + i * dy);
 	    }
 	  });
 	};
@@ -27981,9 +28028,11 @@
 	
 	  if (this.fruitify && oldDot.isFruit) this.score += 1000 * this.scoreMultiplier;
 	
-	  oldDot.isKilled = true;
-	  this.grid[x][y] = null;
-	  this.explodedSpaces[x][y] = oldDot.color;
+	  if (!(oldDot instanceof Dots.sphere)) {
+	    oldDot.isKilled = true;
+	    this.grid[x][y] = null;
+	    this.explodedSpaces[x][y] = oldDot.color;
+	  }
 	
 	  if (oldDot instanceof Dots.star) {
 	    this.explosionCallbacks.star();
@@ -28003,6 +28052,9 @@
 	  } else if (oldDot instanceof Dots.asterisk) {
 	    this.explosionCallbacks.asterisk();
 	    this.changeColors(oldDot.color);
+	  } else if (oldDot instanceof Dots.sphere) {
+	    this.explosionCallbacks.sphere();
+	    this.spheresToExplode.push(oldDot);
 	  }
 	};
 	
@@ -28079,32 +28131,6 @@
 	      }
 	    }
 	  }
-	
-	  // for (var dx = 0; dx < 3; dx++) {
-	  //   if (this.grid[x + dx][y] && this.grid[x + dx][y + 1] && this.grid[x + dx][y + 2]) {
-	  //     const thisColor = this.grid[x + dx][y].color;
-	  //     if (this.grid[x + dx][y + 1] === thisColor && this.grid[x + dx][y + 2] === thisColor)
-	  //       for (var dy = 1; dy < 3; dy++) {
-	  //         if (this.grid[x + dx][y + dy] && this.grid[x + dx][y + dy])
-	  //
-	  //
-	  //       }
-	  //     }
-	  //   }
-	  // }
-	
-	  // if ((this.grid[x + 1][y].color === thisColor) &&
-	  //     (this.grid[x + 1][y + 1].color === thisColor) &&
-	  //     (this.grid[x][y + 1].color === thisColor)) {
-	  //
-	  //   const thisColor = this.grid[x][y].color;
-	  //   this.removeDot(x, y + 1);
-	  //   this.removeDot(x + 1, y);
-	  //   this.removeDot(x + 1, y + 1);
-	  //   this.replaceDot(x, y, Dots.heart);
-	  //
-	  //   this.score += scoreConv[4] * this.scoreMultiplier;
-	  // }
 	};
 	
 	Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
@@ -28132,6 +28158,18 @@
 	      }
 	      this.score += scoreConv[num];
 	      // callback();
+	    }
+	  }
+	};
+	
+	Board.prototype.checkStarsAndAsterisks = function (x, y) {
+	  if (this.grid[x][y] instanceof Dots.star || this.grid[x][y] instanceof Dots.asterisk) {
+	    if (x + 1 < this.size && (this.grid[x + 1][y] instanceof Dots.star || this.grid[x + 1][y] instanceof Dots.asterisk)) {
+	      this.replaceDot(x, y, Dots.sphere);
+	      this.removeDot(x + 1, y);
+	    } else if (y + 1 < this.size && (this.grid[x][y + 1] instanceof Dots.star || this.grid[x][y + 1] instanceof Dots.asterisk)) {
+	      this.replaceDot(x, y, Dots.sphere);
+	      this.removeDot(x, y + 1);
 	    }
 	  }
 	};
@@ -28186,6 +28224,7 @@
 	var TriangleDot = __webpack_require__(249);
 	var AsteriskDot = __webpack_require__(250);
 	var PlusDot = __webpack_require__(409);
+	var SphereDot = __webpack_require__(411);
 	
 	module.exports = {
 	  circle: CircleDot,
@@ -28194,7 +28233,8 @@
 	  star: StarDot,
 	  triangle: TriangleDot,
 	  asterisk: AsteriskDot,
-	  plus: PlusDot
+	  plus: PlusDot,
+	  sphere: SphereDot
 	};
 
 /***/ },
@@ -36559,7 +36599,7 @@
 	    colors: [0, 1, 2, 3, 4, 7, 9],
 	    goals: {
 	      star: 5,
-	      asterisk: 1
+	      plus: 5
 	    },
 	    moves: 20,
 	    fruitify: true
@@ -36634,6 +36674,13 @@
 	        React.createElement('span', { className: 'icon-like-3' }),
 	        ': ',
 	        this.renderCheck('heart')
+	      ) : '',
+	      this.state.levelStatus.plus !== undefined ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('span', { className: 'icon-plus' }),
+	        ': ',
+	        this.renderCheck('plus')
 	      ) : '',
 	      this.state.levelStatus.star !== undefined ? React.createElement(
 	        'div',
@@ -36881,6 +36928,106 @@
 	Util.inherits(PlusDot, Dot);
 	
 	module.exports = PlusDot;
+
+/***/ },
+/* 410 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(3);
+	var Liaison = __webpack_require__(240);
+	var hashHistory = __webpack_require__(1).hashHistory;
+	
+	var GameOverModal = React.createClass({
+	  displayName: 'GameOverModal',
+	  getInitialState: function getInitialState() {
+	    return { isWon: false, isLost: false, showModal: false };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.scoreListener = Liaison.addListener(this.updateGameOverModal);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    Liaison.removeListener(this.scoreListener);
+	  },
+	  clickBack: function clickBack(e) {
+	    e.preventDefault();
+	    hashHistory.push('home');
+	  },
+	  getOutOfModal: function getOutOfModal(e) {
+	    e.preventDefault();
+	    this.setState({ showModal: false });
+	  },
+	  updateGameOverModal: function updateGameOverModal() {
+	    switch (Liaison.isOver()) {
+	      case 'won':
+	        this.setState({ isWon: true, showModal: true });
+	        break;
+	      case 'lost':
+	        this.setState({ isLost: true, showModal: true });
+	        break;
+	      case undefined:
+	        break;
+	    }
+	  },
+	  render: function render() {
+	    var modalToRender = void 0;
+	
+	    if ((this.state.isWon || this.state.isLost) && this.state.showModal === true) {
+	      modalToRender = React.createElement(
+	        'div',
+	        null,
+	        React.createElement('div', { className: 'win-lose-modal', onClick: this.getOutOfModal }),
+	        React.createElement(
+	          'div',
+	          { className: 'modal-content' },
+	          React.createElement(
+	            'h2',
+	            null,
+	            this.state.isWon ? " YOU WON! " : " YOU LOST! "
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'back-to-levels', onClick: this.clickBack },
+	            "<< Back to Main Screen"
+	          )
+	        )
+	      );
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      modalToRender
+	    );
+	  }
+	});
+	
+	module.exports = GameOverModal;
+
+/***/ },
+/* 411 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(244);
+	var Dot = __webpack_require__(245);
+	
+	var SphereDot = function SphereDot(options) {
+	  Dot.call(this, {
+	    color: 'rainbow',
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'sphere';
+	  this.icon = 'o';
+	  this.iconClass = 'icon-geo-sphere';
+	};
+	
+	Util.inherits(SphereDot, Dot);
+	
+	module.exports = SphereDot;
 
 /***/ }
 /******/ ]);
