@@ -14,6 +14,7 @@ module.exports = {
     colors: [5,6,7,8,9]
   },
   'intro': {
+    name: 'intro',
     isGoalBased: true,
     size: 12,
     colors: [1,3,5,7,8],
@@ -24,6 +25,7 @@ module.exports = {
     nextLevel: 'one'
   },
   'one': {
+    name: 'one',
     isGoalBased: true,
     size: 12,
     colors: [1,3,5,6,9],
@@ -34,6 +36,7 @@ module.exports = {
     nextLevel: 'two'
   },
   'two': {
+    name: 'two',
     isGoalBased: true,
     size: 14,
     colors: [1,2,3,4,7,8],
@@ -45,6 +48,7 @@ module.exports = {
     nextLevel: 'three'
   },
   'three': {
+    name: 'three',
     isGoalBased: true,
     size: 12,
     colors: [1,2,3,4,7],
@@ -55,6 +59,7 @@ module.exports = {
     nextLevel: 'bonus'
   },
   'bonus': {
+    name: 'bonus',
     isGoalBased: true,
     size: 16,
     colors: [0,1,2,3,4,7,9],

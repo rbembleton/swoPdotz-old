@@ -57,14 +57,54 @@ function initializeGrid(size, placeholder) {
   return newGrid;
 }
 
+Board.prototype.rainbowTiles = function () {
+  const ret_arr = [];
+  for (var ix = 0; ix < this.size; ix++) {
+    for (var iy = 0; iy < this.size; iy++) {
+      if (this.grid[ix][iy].color === 'rainbow') { ret_arr.push([ix, iy]); }
+    }
+  }
+  return ret_arr;
+};
+
+const rainbowDiseaseDirections = [
+  [0, 1],
+  [0, -1],
+  [1, 0],
+  [-1, 0]
+];
+
+Board.prototype.spreadRainbow = function (arr) {
+  arr.forEach((pos) => {
+    const randDelt = rainbowDiseaseDirections[Math.floor(Math.random() * 4)];
+    if ((pos[0] + randDelt[0] > 0) && (pos[0] + randDelt[0] < this.size) &&
+        (pos[1] + randDelt[1] > 0) && (pos[1] + randDelt[1] < this.size)) {
+          this.grid[(pos[0] + randDelt[0])][(pos[1] + randDelt[1])].color = 'rainbow';
+        }
+  });
+};
+
 Board.prototype.resetExplodedSpaces = function () {
   this.explodedSpaces = initializeGrid(this.size, ' ');
+};
+
+Board.prototype.sphereify = function () {
+  for (var ix = 0; ix < this.size; ix++) {
+    for (var iy = 0; iy < this.size; iy++) {
+      if (this.grid[ix][iy]) {
+        if (this.grid[ix][iy] instanceof Dots.asterisk ||
+          this.grid[ix][iy] instanceof Dots.plus ||
+          this.grid[ix][iy] instanceof Dots.star)
+          this.replaceDot(ix, iy, Dots.sphere);
+      }
+    }
+  }
 };
 
 Board.prototype.sphereExplode = function (startCallback, endCallback) {
   for (var ix = 0; ix < this.size; ix++) {
     for (var iy = 0; iy < this.size; iy++) {
-      this.grid[ix][iy].color = 'rainbow';
+      this.grid[ix][iy].color = 'black-out';
     }
   }
 
@@ -76,13 +116,13 @@ Board.prototype.sphereExplode = function (startCallback, endCallback) {
         let oldDot = this.grid[ix][iy];
         oldDot.isKilled = true;
         this.grid[ix][iy] = null;
-        this.explodedSpaces[ix][iy] = 'rainbow';
-        this.score += 1000 * this.scoreMultiplier;
+        this.explodedSpaces[ix][iy] = 'rainbow-explosion';
+        this.score += 314 * this.scoreMultiplier;
       }
     }
     this.spheresToExplode = [];
     endCallback();
-  }, 4000);
+  }, 1000);
 };
 
 Board.prototype.placeRandomDot = function (x, y) {
@@ -173,7 +213,7 @@ Board.prototype.changeColors = function (color) {
   for (var ix = 0; ix < this.size; ix++) {
     for (var iy = 0; iy < this.size; iy++) {
 
-      if (this.grid[ix][iy]) {
+      if (this.grid[ix][iy] && this.grid[ix][iy].color !== 'rainbow') {
         this.grid[ix][iy].color = color;
       }
 
@@ -261,6 +301,7 @@ Board.prototype.removeDot = function (x, y) {
     this.changeColors(oldDot.color);
   } else if (oldDot instanceof Dots.sphere) {
     this.explosionCallbacks.sphere();
+    oldDot.color = 'grey-out';
     this.spheresToExplode.push(oldDot);
   }
 
@@ -287,7 +328,8 @@ Board.prototype.checkClusters = function (x, y) {
   if (!this.grid[x][y] || (x === this.size - 1) || (y === this.size - 1) ||
     !this.grid[x + 1][y] ||
     !this.grid[x][y + 1] ||
-    !this.grid[x + 1][y + 1]) { return; }
+    !this.grid[x + 1][y + 1] ||
+    this.grid[x][y].color === 'rainbow') { return; }
 
   const thisColor = this.grid[x][y].color;
   if ((this.grid[x + 1][y].color === thisColor) &&
@@ -305,7 +347,8 @@ Board.prototype.checkClusters = function (x, y) {
 };
 
 Board.prototype.checkTnLz = function (x, y) {
-  if ((x + 2 >= this.size) || (y + 2 >= this.size)) {
+  if (((x + 2 >= this.size) || (y + 2 >= this.size)) ||
+    (this.grid[x][y] && this.grid[x][y].color === 'rainbow')) {
     return;
   }
 
@@ -352,7 +395,10 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
   const dy = dPos[1];
   const size = this.size;
 
-  if (this.grid[x][y] && this.grid[x][y].id && (x + ((num - 1) * dx) < size) && (y + ((num - 1) * dy) < size)) {
+  if (this.grid[x][y] && this.grid[x][y].id &&
+    (x + ((num - 1) * dx) < size) && (y + ((num - 1) * dy) < size) &&
+    this.grid[x][y].color !== 'rainbow') {
+
     const initColor = this.grid[x][y].color;
     let sameColor = true;
 
@@ -378,14 +424,16 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
 };
 
 Board.prototype.checkStarsAndAsterisks = function (x, y) {
-  if (this.grid[x][y] instanceof Dots.star || this.grid[x][y] instanceof Dots.asterisk) {
-    if (x + 1 < this.size && (this.grid[x + 1][y] instanceof Dots.star || this.grid[x + 1][y] instanceof Dots.asterisk))  {
+  if (this.grid[x][y] instanceof Dots.star || this.grid[x][y] instanceof Dots.asterisk || this.grid[x][y] instanceof Dots.plus) {
+    if (x + 1 < this.size && (this.grid[x + 1][y] instanceof Dots.star || this.grid[x + 1][y] instanceof Dots.asterisk || this.grid[x + 1][y] instanceof Dots.plus))  {
       this.replaceDot(x, y, Dots.sphere);
       this.removeDot(x + 1, y);
+      this.sphereify();
     }
-    else if (y + 1 < this.size && (this.grid[x][y + 1] instanceof Dots.star || this.grid[x][y + 1] instanceof Dots.asterisk))  {
+    else if (y + 1 < this.size && (this.grid[x][y + 1] instanceof Dots.star || this.grid[x][y + 1] instanceof Dots.asterisk ||  this.grid[x][y + 1] instanceof Dots.plus))  {
       this.replaceDot(x, y, Dots.sphere);
       this.removeDot(x, y + 1);
+      this.sphereify();
     }
   }
 

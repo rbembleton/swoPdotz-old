@@ -100,6 +100,18 @@ input[type="submit"] {
 .blue { color: $blue; }
 .indigo { color: $indigo; }
 .purple { color: $purple; }
+.grey-out { color: $light-grey; }
+
+.black-out {
+  color: white;
+  text-shadow: none !important;
+  // color: $dark-grey;
+  animation-name: black-out-anim !important;
+  animation-duration: 1.5s !important;
+  animation-timing-function: ease !important;
+  animation-iteration-count: 1 !important;
+  transition: .2s !important;
+}
 
 .rainbow {
   color: $pink;
@@ -121,6 +133,11 @@ input[type="submit"] {
 .indigo-hover:hover { color: $indigo; }
 .purple-hover:hover { color: $purple; }
 
+@keyframes black-out-anim {
+  15% {color: $dark-grey}
+  30% {color: white}
+  100% {color: white}
+}
 
 @keyframes cycle-colors {
   10% {color: $red}
@@ -173,6 +190,16 @@ input[type="submit"] {
   80% { transform: translateY(40px);}
 }
 
+// 32% { transform: scale(1.22, 1.22); transform-origin: top left}
+@keyframes magic-triangle {
+  10% { transform: scaleY(1.15); transform-origin: bottom;}
+  20% { transform: scaleY(1); transform-origin: center;}
+  22% { transform: scaleY(1); transform-origin: center;}
+  30% { transform: scaleX(1.05) scaleY(1.05) skew(2deg, 2deg); transform-origin: top left;}
+  40% { transform: scaleY(1); transform-origin: center;}
+  50% { transform: scaleX(1.05) scaleY(1.05) skew(-2deg, -2deg); transform-origin: top right;}
+  60% { transform: scaleY(1); transform-origin: center}
+}
 
 .main-page {
   width: 600px;
@@ -532,6 +559,7 @@ input[type="submit"] {
   font-size: 15px;
   top: 0.7px;
   left: 5px;
+  animation: magic-triangle 3.8s infinite ease-in-out;
 }
 
 .asterisk {
@@ -618,7 +646,17 @@ input[type="submit"] {
   90% {background-color: $purple}
 }
 
-.particle.rainbow.finish { animation-name: cycle-bg-colors; animation-duration: .6s; animation-timing-function: ease;}
+.particle.rainbow-explosion.finish {
+  background-color: $pink;
+  transition: all 1.2s linear, background-color .001s linear;
+  animation-name: cycle-bg-colors;
+  animation-duration: 1.1s;
+  animation-timing-function: ease;}
+// .particle.black.finish {
+//   transition: all 1.2s linear, background-color .001s linear;
+//   animation-name: cycle-bg-colors;
+//   animation-duration: 1.1s;
+//   animation-timing-function: ease;}
 .particle.pink.finish { background-color: $pink; }
 .particle.red.finish { background-color: $red; }
 .particle.orange.finish { background-color: $orange; }
@@ -713,7 +751,7 @@ input[type="submit"] {
   position: fixed;
   opacity: 1;
   margin: auto;
-  color: #8787ff;
+  color: black;
   left: 40%;
   top: 300px;
   right: 40%;
@@ -731,6 +769,20 @@ input[type="submit"] {
     margin: auto;
     width: 180px;
     text-align: center;
+  }
+
+  .back-to-levels:hover {
+    color: $indigo;
+    cursor: pointer;
+  }
+
+  .try-again {
+    margin-top: 40px;
+  }
+
+  .try-again:hover {
+    color: $indigo;
+    cursor: pointer;
   }
 
 }

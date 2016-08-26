@@ -56,10 +56,22 @@ const GameOverModal = React.createClass({
     let modalToRender;
 
     const nextLevel = (this.props.levelType.nextLevel ? (
+      <div>
         <div id={this.props.levelType.nextLevel} className="back-to-levels" onClick={this.clickNext}>
           {`Next Level: ${this.props.levelType.nextLevel} >>`}
         </div>
+      </div>
       ) : "" );
+
+    const retry = (this.state.isWon ?
+      <div id={this.props.levelType.name} className="try-again" onClick={this.clickNext}>
+        {`Try Again?`}
+      </div>
+      :
+      <div id={this.props.levelType.name} className="try-again" onClick={this.clickNext}>
+        {`Replay?`}
+      </div>
+    );
 
     if ((this.state.isWon || this.state.isLost) && this.state.showModal === true) {
       modalToRender = (
@@ -70,7 +82,8 @@ const GameOverModal = React.createClass({
             <div className="back-to-levels" onClick={this.clickBack}>
               {"<< Back to Main Screen"}
             </div>
-            {nextLevel}
+            {this.state.isWon ? nextLevel : ""}
+            {retry}
           </div>
         </div>
       );

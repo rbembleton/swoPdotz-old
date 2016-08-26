@@ -21,7 +21,7 @@ const Game = React.createClass({
             <span className="icon-geo-circle red"/>
             <span className="icon-geo-circle red"/>
             <span className="icon-geo-circle red"/>{" = "}
-            <span className="icon-geo-triangle red"/>
+            <span className="icon-geo-triangle triangle red"/>
             <div className="description">
               {"Exploding triangles destroy the three dots"}
               <br/>{"due north, south-west and south-east"}
@@ -36,7 +36,7 @@ const Game = React.createClass({
               <span className="icon-geo-circle orange"/>
             </span>
             {" = "}
-            <span className="icon-like-3 orange"/>
+            <span className="icon-like-3 orange heart"/>
             <div className="description">
               {"Exploding hearts destroy dots"}
               <br/>{"in the 5 x 5 square around them"}
@@ -48,7 +48,7 @@ const Game = React.createClass({
             <span className="icon-geo-circle yellow"/>
             <span className="icon-geo-circle yellow"/>
             <span className="icon-geo-circle yellow"/>{" = "}
-            <span className="icon-geo-square yellow"/>
+            <span className="icon-geo-square yellow square"/>
             <div className="description">
               {"Exploding squares destroy all dots"}
               <br/>{"in their row and column"}
@@ -61,7 +61,7 @@ const Game = React.createClass({
             <span className="icon-geo-circle teal"/>
             <span className="icon-geo-circle teal"/>
             <span className="icon-geo-circle teal"/>{" = "}
-              <span className="icon-star teal"/>
+              <span className="icon-star teal star"/>
               <div className="description">
                 {"Exploding stars destroy all dots"}
                 <br/>{"on the board of their color"}
@@ -93,7 +93,7 @@ const Game = React.createClass({
               <span className="icon-geo-circle aqua"/>
             </span>
             {" = "}
-            <span className="icon-plus aqua"/>
+            <span className="icon-plus aqua plus"/>
             <div className="description">
               {"Exploding pluses destroy all dots"}
               <br/>{"in both diagonals from them"}
@@ -108,9 +108,23 @@ const Game = React.createClass({
             <span className="icon-geo-circle indigo"/>
             <span className="icon-geo-circle indigo"/>
             <span className="icon-geo-circle indigo"/>{" = "}
-            <span className="icon-asterisk indigo"/>
+            <span className="icon-asterisk indigo asterisk"/>
             <div className="description">
               {"Exploding asterisks changes the color of all the dots on the board to that of the asterisk"}
+            </div>
+          </div>
+
+          <div className="rule">
+            {"Any combination of two "}
+            <span className="icon-plus purple plus"/>
+            {", "}
+            <span className="icon-star purple star"/>
+            {", or "}
+            <span className="icon-asterisk purple asterisk"/>
+            {" = "}
+            <span className="icon-geo-sphere rainbow"/>
+            <div className="description">
+              {"Spheres are powerful and provide large bonuses, but they can only be destroyed by exploding them with other dots, and will spread the 'rainbow' virus to nearby dots, rendering them unmatchable"}
             </div>
           </div>
 

@@ -89,6 +89,18 @@ input[type="submit"] {
 .purple {
   color: #c18be2; }
 
+.grey-out {
+  color: #b1b1bc; }
+
+.black-out {
+  color: white;
+  text-shadow: none !important;
+  animation-name: black-out-anim !important;
+  animation-duration: 1.5s !important;
+  animation-timing-function: ease !important;
+  animation-iteration-count: 1 !important;
+  transition: .2s !important; }
+
 .rainbow {
   color: #ff66c2;
   text-shadow: 0px 0px 4px #9a9a9a !important;
@@ -127,6 +139,13 @@ input[type="submit"] {
 .purple-hover:hover {
   color: #c18be2; }
 
+@keyframes black-out-anim {
+  15% {
+    color: #3e3f50; }
+  30% {
+    color: white; }
+  100% {
+    color: white; } }
 @keyframes cycle-colors {
   10% {
     color: #ec5151; }
@@ -199,6 +218,28 @@ input[type="submit"] {
     transform: translateY(0px); }
   80% {
     transform: translateY(40px); } }
+@keyframes magic-triangle {
+  10% {
+    transform: scaleY(1.15);
+    transform-origin: bottom; }
+  20% {
+    transform: scaleY(1);
+    transform-origin: center; }
+  22% {
+    transform: scaleY(1);
+    transform-origin: center; }
+  30% {
+    transform: scaleX(1.05) scaleY(1.05) skew(2deg, 2deg);
+    transform-origin: top left; }
+  40% {
+    transform: scaleY(1);
+    transform-origin: center; }
+  50% {
+    transform: scaleX(1.05) scaleY(1.05) skew(-2deg, -2deg);
+    transform-origin: top right; }
+  60% {
+    transform: scaleY(1);
+    transform-origin: center; } }
 .main-page {
   width: 600px;
   height: 600px;
@@ -456,7 +497,8 @@ input[type="submit"] {
 .triangle {
   font-size: 15px;
   top: 0.7px;
-  left: 5px; }
+  left: 5px;
+  animation: magic-triangle 3.8s infinite ease-in-out; }
 
 .asterisk {
   font-size: 13px;
@@ -528,9 +570,11 @@ input[type="submit"] {
     background-color: #8787ff; }
   90% {
     background-color: #c18be2; } }
-.particle.rainbow.finish {
+.particle.rainbow-explosion.finish {
+  background-color: #ff66c2;
+  transition: all 1.2s linear, background-color .001s linear;
   animation-name: cycle-bg-colors;
-  animation-duration: .6s;
+  animation-duration: 1.1s;
   animation-timing-function: ease; }
 
 .particle.pink.finish {
@@ -621,7 +665,7 @@ input[type="submit"] {
   position: fixed;
   opacity: 1;
   margin: auto;
-  color: #8787ff;
+  color: black;
   left: 40%;
   top: 300px;
   right: 40%;
@@ -636,5 +680,13 @@ input[type="submit"] {
     margin: auto;
     width: 180px;
     text-align: center; }
+  .modal-content .back-to-levels:hover {
+    color: #8787ff;
+    cursor: pointer; }
+  .modal-content .try-again {
+    margin-top: 40px; }
+  .modal-content .try-again:hover {
+    color: #8787ff;
+    cursor: pointer; }
 
 /*# sourceMappingURL=application.css.map */

@@ -205,6 +205,13 @@ function fillInTop() {
     if (_board.spheresToExplode.length > 0) {
       _board.sphereExplode(Liaison.broadcastChanges, removeGroups);
     } else {
+      const rainbows = _board.rainbowTiles();
+      if (rainbows.length > 0) {
+        _boardTimeouts.push(setTimeout((() => {
+          _board.spreadRainbow(rainbows);
+          Liaison.broadcastChanges();
+        }), 100));
+      }
       _boardTimeouts.push(setTimeout((() => {
         _preventMove = false;
         _board.scoreMultiplier = 0;
@@ -224,7 +231,7 @@ function fillInTop() {
 //    STORE FUNCTIONS
 
 Liaison.isOver = function () {
-  return completedHelper() ? 'won' : undefined;
+  return completedHelper();
 };
 
 Liaison.explosions = function () {
@@ -289,7 +296,7 @@ function completedHelper () {
     }
   });
 
-  return allTrue;
+  return allTrue ? 'won' : (_moves <= 0 ? 'lost' : undefined) ;
 }
 
 function levelStatusHelper (kind) {

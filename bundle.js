@@ -27651,12 +27651,21 @@
 	    if (_board.spheresToExplode.length > 0) {
 	      _board.sphereExplode(Liaison.broadcastChanges, removeGroups);
 	    } else {
-	      _boardTimeouts.push(setTimeout(function () {
-	        _preventMove = false;
-	        _board.scoreMultiplier = 0;
-	        Liaison.broadcastChanges();
-	        clearBoardTimeouts();
-	      }, 400));
+	      (function () {
+	        var rainbows = _board.rainbowTiles();
+	        if (rainbows.length > 0) {
+	          _boardTimeouts.push(setTimeout(function () {
+	            _board.spreadRainbow(rainbows);
+	            Liaison.broadcastChanges();
+	          }, 100));
+	        }
+	        _boardTimeouts.push(setTimeout(function () {
+	          _preventMove = false;
+	          _board.scoreMultiplier = 0;
+	          Liaison.broadcastChanges();
+	          clearBoardTimeouts();
+	        }, 400));
+	      })();
 	    }
 	  } else {
 	    Liaison.broadcastChanges();
@@ -27670,7 +27679,7 @@
 	//    STORE FUNCTIONS
 	
 	Liaison.isOver = function () {
-	  return completedHelper() ? 'won' : undefined;
+	  return completedHelper();
 	};
 	
 	Liaison.explosions = function () {
@@ -27737,7 +27746,7 @@
 	    }
 	  });
 	
-	  return allTrue;
+	  return allTrue ? 'won' : _moves <= 0 ? 'lost' : undefined;
 	}
 	
 	function levelStatusHelper(kind) {
@@ -27853,34 +27862,69 @@
 	  return newGrid;
 	}
 	
+	Board.prototype.rainbowTiles = function () {
+	  var ret_arr = [];
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      if (this.grid[ix][iy].color === 'rainbow') {
+	        ret_arr.push([ix, iy]);
+	      }
+	    }
+	  }
+	  return ret_arr;
+	};
+	
+	var rainbowDiseaseDirections = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+	
+	Board.prototype.spreadRainbow = function (arr) {
+	  var _this = this;
+	
+	  arr.forEach(function (pos) {
+	    var randDelt = rainbowDiseaseDirections[Math.floor(Math.random() * 4)];
+	    if (pos[0] + randDelt[0] > 0 && pos[0] + randDelt[0] < _this.size && pos[1] + randDelt[1] > 0 && pos[1] + randDelt[1] < _this.size) {
+	      _this.grid[pos[0] + randDelt[0]][pos[1] + randDelt[1]].color = 'rainbow';
+	    }
+	  });
+	};
+	
 	Board.prototype.resetExplodedSpaces = function () {
 	  this.explodedSpaces = initializeGrid(this.size, ' ');
 	};
 	
+	Board.prototype.sphereify = function () {
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      if (this.grid[ix][iy]) {
+	        if (this.grid[ix][iy] instanceof Dots.asterisk || this.grid[ix][iy] instanceof Dots.plus || this.grid[ix][iy] instanceof Dots.star) this.replaceDot(ix, iy, Dots.sphere);
+	      }
+	    }
+	  }
+	};
+	
 	Board.prototype.sphereExplode = function (startCallback, endCallback) {
-	  var _this = this;
+	  var _this2 = this;
 	
 	  for (var ix = 0; ix < this.size; ix++) {
 	    for (var iy = 0; iy < this.size; iy++) {
-	      this.grid[ix][iy].color = 'rainbow';
+	      this.grid[ix][iy].color = 'black-out';
 	    }
 	  }
 	
 	  startCallback();
 	
 	  setTimeout(function () {
-	    for (var ix = 0; ix < _this.size; ix++) {
-	      for (var iy = 0; iy < _this.size; iy++) {
-	        var oldDot = _this.grid[ix][iy];
+	    for (var ix = 0; ix < _this2.size; ix++) {
+	      for (var iy = 0; iy < _this2.size; iy++) {
+	        var oldDot = _this2.grid[ix][iy];
 	        oldDot.isKilled = true;
-	        _this.grid[ix][iy] = null;
-	        _this.explodedSpaces[ix][iy] = 'rainbow';
-	        _this.score += 1000 * _this.scoreMultiplier;
+	        _this2.grid[ix][iy] = null;
+	        _this2.explodedSpaces[ix][iy] = 'rainbow-explosion';
+	        _this2.score += 314 * _this2.scoreMultiplier;
 	      }
 	    }
-	    _this.spheresToExplode = [];
+	    _this2.spheresToExplode = [];
 	    endCallback();
-	  }, 4000);
+	  }, 1000);
 	};
 	
 	Board.prototype.placeRandomDot = function (x, y) {
@@ -27968,7 +28012,7 @@
 	  for (var ix = 0; ix < this.size; ix++) {
 	    for (var iy = 0; iy < this.size; iy++) {
 	
-	      if (this.grid[ix][iy]) {
+	      if (this.grid[ix][iy] && this.grid[ix][iy].color !== 'rainbow') {
 	        this.grid[ix][iy].color = color;
 	      }
 	    }
@@ -27989,13 +28033,13 @@
 	};
 	
 	Board.prototype.killBigX = function (x, y) {
-	  var _this2 = this;
+	  var _this3 = this;
 	
 	  [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function (deltaPos) {
 	    var dx = deltaPos[0];
 	    var dy = deltaPos[1];
-	    for (var i = 0; x + i * dx >= 0 && x + i * dx < _this2.size && y + i * dy >= 0 && y + i * dy < _this2.size; i++) {
-	      _this2.removeDot(x + i * dx, y + i * dy);
+	    for (var i = 0; x + i * dx >= 0 && x + i * dx < _this3.size && y + i * dy >= 0 && y + i * dy < _this3.size; i++) {
+	      _this3.removeDot(x + i * dx, y + i * dy);
 	    }
 	  });
 	};
@@ -28056,6 +28100,7 @@
 	    this.changeColors(oldDot.color);
 	  } else if (oldDot instanceof Dots.sphere) {
 	    this.explosionCallbacks.sphere();
+	    oldDot.color = 'grey-out';
 	    this.spheresToExplode.push(oldDot);
 	  }
 	};
@@ -28080,7 +28125,7 @@
 	};
 	
 	Board.prototype.checkClusters = function (x, y) {
-	  if (!this.grid[x][y] || x === this.size - 1 || y === this.size - 1 || !this.grid[x + 1][y] || !this.grid[x][y + 1] || !this.grid[x + 1][y + 1]) {
+	  if (!this.grid[x][y] || x === this.size - 1 || y === this.size - 1 || !this.grid[x + 1][y] || !this.grid[x][y + 1] || !this.grid[x + 1][y + 1] || this.grid[x][y].color === 'rainbow') {
 	    return;
 	  }
 	
@@ -28097,7 +28142,7 @@
 	};
 	
 	Board.prototype.checkTnLz = function (x, y) {
-	  if (x + 2 >= this.size || y + 2 >= this.size) {
+	  if (x + 2 >= this.size || y + 2 >= this.size || this.grid[x][y] && this.grid[x][y].color === 'rainbow') {
 	    return;
 	  }
 	
@@ -28140,7 +28185,8 @@
 	  var dy = dPos[1];
 	  var size = this.size;
 	
-	  if (this.grid[x][y] && this.grid[x][y].id && x + (num - 1) * dx < size && y + (num - 1) * dy < size) {
+	  if (this.grid[x][y] && this.grid[x][y].id && x + (num - 1) * dx < size && y + (num - 1) * dy < size && this.grid[x][y].color !== 'rainbow') {
+	
 	    var initColor = this.grid[x][y].color;
 	    var sameColor = true;
 	
@@ -28165,13 +28211,15 @@
 	};
 	
 	Board.prototype.checkStarsAndAsterisks = function (x, y) {
-	  if (this.grid[x][y] instanceof Dots.star || this.grid[x][y] instanceof Dots.asterisk) {
-	    if (x + 1 < this.size && (this.grid[x + 1][y] instanceof Dots.star || this.grid[x + 1][y] instanceof Dots.asterisk)) {
+	  if (this.grid[x][y] instanceof Dots.star || this.grid[x][y] instanceof Dots.asterisk || this.grid[x][y] instanceof Dots.plus) {
+	    if (x + 1 < this.size && (this.grid[x + 1][y] instanceof Dots.star || this.grid[x + 1][y] instanceof Dots.asterisk || this.grid[x + 1][y] instanceof Dots.plus)) {
 	      this.replaceDot(x, y, Dots.sphere);
 	      this.removeDot(x + 1, y);
-	    } else if (y + 1 < this.size && (this.grid[x][y + 1] instanceof Dots.star || this.grid[x][y + 1] instanceof Dots.asterisk)) {
+	      this.sphereify();
+	    } else if (y + 1 < this.size && (this.grid[x][y + 1] instanceof Dots.star || this.grid[x][y + 1] instanceof Dots.asterisk || this.grid[x][y + 1] instanceof Dots.plus)) {
 	      this.replaceDot(x, y, Dots.sphere);
 	      this.removeDot(x, y + 1);
+	      this.sphereify();
 	    }
 	  }
 	};
@@ -36322,7 +36370,7 @@
 	    };
 	
 	    if (this.state.animate !== ' ') {
-	      for (var i = 0; i < 6; i++) {
+	      for (var i = 0; i < 5; i++) {
 	        explosion.push(React.createElement(Particle, { key: i, color: this.state.animate }));
 	      }
 	    }
@@ -36559,6 +36607,7 @@
 	    colors: [5, 6, 7, 8, 9]
 	  },
 	  'intro': {
+	    name: 'intro',
 	    isGoalBased: true,
 	    size: 12,
 	    colors: [1, 3, 5, 7, 8],
@@ -36569,6 +36618,7 @@
 	    nextLevel: 'one'
 	  },
 	  'one': {
+	    name: 'one',
 	    isGoalBased: true,
 	    size: 12,
 	    colors: [1, 3, 5, 6, 9],
@@ -36579,6 +36629,7 @@
 	    nextLevel: 'two'
 	  },
 	  'two': {
+	    name: 'two',
 	    isGoalBased: true,
 	    size: 14,
 	    colors: [1, 2, 3, 4, 7, 8],
@@ -36590,6 +36641,7 @@
 	    nextLevel: 'three'
 	  },
 	  'three': {
+	    name: 'three',
 	    isGoalBased: true,
 	    size: 12,
 	    colors: [1, 2, 3, 4, 7],
@@ -36600,6 +36652,7 @@
 	    nextLevel: 'bonus'
 	  },
 	  'bonus': {
+	    name: 'bonus',
 	    isGoalBased: true,
 	    size: 16,
 	    colors: [0, 1, 2, 3, 4, 7, 9],
@@ -36763,7 +36816,7 @@
 	          React.createElement('span', { className: 'icon-geo-circle red' }),
 	          React.createElement('span', { className: 'icon-geo-circle red' }),
 	          " = ",
-	          React.createElement('span', { className: 'icon-geo-triangle red' }),
+	          React.createElement('span', { className: 'icon-geo-triangle triangle red' }),
 	          React.createElement(
 	            'div',
 	            { className: 'description' },
@@ -36785,7 +36838,7 @@
 	            React.createElement('span', { className: 'icon-geo-circle orange' })
 	          ),
 	          " = ",
-	          React.createElement('span', { className: 'icon-like-3 orange' }),
+	          React.createElement('span', { className: 'icon-like-3 orange heart' }),
 	          React.createElement(
 	            'div',
 	            { className: 'description' },
@@ -36802,7 +36855,7 @@
 	          React.createElement('span', { className: 'icon-geo-circle yellow' }),
 	          React.createElement('span', { className: 'icon-geo-circle yellow' }),
 	          " = ",
-	          React.createElement('span', { className: 'icon-geo-square yellow' }),
+	          React.createElement('span', { className: 'icon-geo-square yellow square' }),
 	          React.createElement(
 	            'div',
 	            { className: 'description' },
@@ -36820,7 +36873,7 @@
 	          React.createElement('span', { className: 'icon-geo-circle teal' }),
 	          React.createElement('span', { className: 'icon-geo-circle teal' }),
 	          " = ",
-	          React.createElement('span', { className: 'icon-star teal' }),
+	          React.createElement('span', { className: 'icon-star teal star' }),
 	          React.createElement(
 	            'div',
 	            { className: 'description' },
@@ -36868,7 +36921,7 @@
 	            React.createElement('span', { className: 'icon-geo-circle aqua' })
 	          ),
 	          " = ",
-	          React.createElement('span', { className: 'icon-plus aqua' }),
+	          React.createElement('span', { className: 'icon-plus aqua plus' }),
 	          React.createElement(
 	            'div',
 	            { className: 'description' },
@@ -36887,11 +36940,28 @@
 	          React.createElement('span', { className: 'icon-geo-circle indigo' }),
 	          React.createElement('span', { className: 'icon-geo-circle indigo' }),
 	          " = ",
-	          React.createElement('span', { className: 'icon-asterisk indigo' }),
+	          React.createElement('span', { className: 'icon-asterisk indigo asterisk' }),
 	          React.createElement(
 	            'div',
 	            { className: 'description' },
 	            "Exploding asterisks changes the color of all the dots on the board to that of the asterisk"
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'rule' },
+	          "Any combination of two ",
+	          React.createElement('span', { className: 'icon-plus purple plus' }),
+	          ", ",
+	          React.createElement('span', { className: 'icon-star purple star' }),
+	          ", or ",
+	          React.createElement('span', { className: 'icon-asterisk purple asterisk' }),
+	          " = ",
+	          React.createElement('span', { className: 'icon-geo-sphere rainbow' }),
+	          React.createElement(
+	            'div',
+	            { className: 'description' },
+	            "Spheres are powerful and provide large bonuses, but they can only be destroyed by exploding them with other dots, and will spread the 'rainbow' virus to nearby dots, rendering them unmatchable"
 	          )
 	        )
 	      )
@@ -36992,9 +37062,23 @@
 	
 	    var nextLevel = this.props.levelType.nextLevel ? React.createElement(
 	      'div',
-	      { id: this.props.levelType.nextLevel, className: 'back-to-levels', onClick: this.clickNext },
-	      'Next Level: ' + this.props.levelType.nextLevel + ' >>'
+	      null,
+	      React.createElement(
+	        'div',
+	        { id: this.props.levelType.nextLevel, className: 'back-to-levels', onClick: this.clickNext },
+	        'Next Level: ' + this.props.levelType.nextLevel + ' >>'
+	      )
 	    ) : "";
+	
+	    var retry = this.state.isWon ? React.createElement(
+	      'div',
+	      { id: this.props.levelType.name, className: 'try-again', onClick: this.clickNext },
+	      'Try Again?'
+	    ) : React.createElement(
+	      'div',
+	      { id: this.props.levelType.name, className: 'try-again', onClick: this.clickNext },
+	      'Replay?'
+	    );
 	
 	    if ((this.state.isWon || this.state.isLost) && this.state.showModal === true) {
 	      modalToRender = React.createElement(
@@ -37014,7 +37098,8 @@
 	            { className: 'back-to-levels', onClick: this.clickBack },
 	            "<< Back to Main Screen"
 	          ),
-	          nextLevel
+	          this.state.isWon ? nextLevel : "",
+	          retry
 	        )
 	      );
 	    }
