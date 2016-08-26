@@ -6,6 +6,7 @@ const hashHistory = require('react-router').hashHistory;
 const GameOverModal = React.createClass({
 
   getInitialState() {
+    this.modalFlag = 0;
     return({ isWon: false, isLost: false, showModal: false });
   },
 
@@ -22,6 +23,11 @@ const GameOverModal = React.createClass({
     hashHistory.push('home');
   },
 
+  clickNext (e) {
+    e.preventDefault();
+    hashHistory.push(`next_level/${e.target.id}`);
+  },
+
   getOutOfModal (e) {
     e.preventDefault();
     this.setState({ showModal: false });
@@ -30,18 +36,30 @@ const GameOverModal = React.createClass({
   updateGameOverModal () {
     switch (Liaison.isOver()) {
       case 'won':
-        this.setState({ isWon: true, showModal: true });
+        this.modalFlag ++;
+        this.setState({ isWon: true });
         break;
       case 'lost':
-        this.setState({ isLost: true, showModal: true });
+        this.modalFlag ++;
+        this.setState({ isLost: true });
         break;
       case undefined:
         break;
+    }
+
+    if (this.modalFlag === 1) {
+      this.setState({ showModal: true });
     }
   },
 
   render () {
     let modalToRender;
+
+    const nextLevel = (this.props.levelType.nextLevel ? (
+        <div id={this.props.levelType.nextLevel} className="back-to-levels" onClick={this.clickNext}>
+          {`Next Level: ${this.props.levelType.nextLevel} >>`}
+        </div>
+      ) : "" );
 
     if ((this.state.isWon || this.state.isLost) && this.state.showModal === true) {
       modalToRender = (
@@ -52,6 +70,7 @@ const GameOverModal = React.createClass({
             <div className="back-to-levels" onClick={this.clickBack}>
               {"<< Back to Main Screen"}
             </div>
+            {nextLevel}
           </div>
         </div>
       );

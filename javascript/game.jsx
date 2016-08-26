@@ -16,7 +16,8 @@ const Game = React.createClass({
 
   render () {
     const displayGoals = BoardLevels[this.props.params.gameType].isGoalBased ? <Goals /> : "";
-
+    const toDispModalOrNotThatIsTheQuestion = BoardLevels[this.props.params.gameType].isGoalBased ?
+      <GameOverModal levelType={BoardLevels[this.props.params.gameType]}/> : '';
 
     return (
       <div>
@@ -28,7 +29,7 @@ const Game = React.createClass({
           <BoardDisplay board={BoardLevels[this.props.params.gameType]}/>
         </div>
         <Score />
-        <GameOverModal />
+        {toDispModalOrNotThatIsTheQuestion}
       </div>
     );
   }

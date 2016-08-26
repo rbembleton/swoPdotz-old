@@ -14,6 +14,8 @@ const HomeScreen = React.createClass({
     hashHistory.push(`how`);
   },
 
+  // <span className="icon-geo-circle teal-hover"/>
+  // <button id="bonus" onClick={this.playGame}>bonus</button>
 
   render () {
 
@@ -29,8 +31,6 @@ const HomeScreen = React.createClass({
           <button id="two" onClick={this.playGame}>two</button>
             <span className="icon-geo-circle teal-hover"/>
           <button id="three" onClick={this.playGame}>three</button>
-            <span className="icon-geo-circle teal-hover"/>
-          <button id="bonus" onClick={this.playGame}>bonus</button>
         </div>
         <DotsDivider />
         <h2 className="unsel">Unlimited Levels</h2>

@@ -5,6 +5,7 @@ const Main = require('./main');
 const HomeScreen = require('./home_screen');
 const Game = require('./game');
 const HowTo = require('./how_to');
+const NextLevel = require('./next_level');
 
 const router = (
   <Router history={hashHistory}>
@@ -12,6 +13,7 @@ const router = (
       <IndexRoute component={HomeScreen}/>
       <Route path="home" component={HomeScreen}/>
       <Route path="game/:gameType" component={Game}/>
+      <Route path="next_level/:gameType" component={NextLevel}/>
       <Route path="how" component={HowTo}/>
     </Route>
   </Router>

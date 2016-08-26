@@ -20,7 +20,8 @@ module.exports = {
     goals: {
       triangle: 5
     },
-    moves: 10
+    moves: 10,
+    nextLevel: 'one'
   },
   'one': {
     isGoalBased: true,
@@ -29,7 +30,8 @@ module.exports = {
     goals: {
       triangle: 20,
     },
-    moves: 25
+    moves: 25,
+    nextLevel: 'two'
   },
   'two': {
     isGoalBased: true,
@@ -39,7 +41,8 @@ module.exports = {
       square: 10,
       heart: 10
     },
-    moves: 25
+    moves: 25,
+    nextLevel: 'three'
   },
   'three': {
     isGoalBased: true,
@@ -48,7 +51,8 @@ module.exports = {
     goals: {
       star: 3
     },
-    moves: 20
+    moves: 20,
+    nextLevel: 'bonus'
   },
   'bonus': {
     isGoalBased: true,
