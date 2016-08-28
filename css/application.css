@@ -102,12 +102,12 @@ input[type="submit"] {
   transition: .2s !important; }
 
 .rainbow {
-  color: #ff66c2;
+  color: #ff66c2 !important;
   text-shadow: 0px 0px 4px #9a9a9a !important;
-  animation-name: cycle-colors;
-  animation-duration: 3s;
-  animation-timing-function: ease;
-  animation-iteration-count: infinite; }
+  animation-name: cycle-colors !important;
+  animation-duration: 3s !important;
+  animation-timing-function: ease !important;
+  animation-iteration-count: infinite !important; }
 
 .pink-hover:hover {
   color: #ff66c2; }

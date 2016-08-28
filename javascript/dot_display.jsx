@@ -115,7 +115,7 @@ const DotDisplay = React.createClass({
     };
 
     let margin = {
-      margin: `${(this.props.sizeOfGrids - 25) / 2.0}px`
+      padding: `${(this.props.sizeOfGrids - 25) / 2.0}px`
     };
 
     var connectDragSource = this.props.connectDragSource;

@@ -27556,7 +27556,7 @@
 	  Liaison.broadcastChanges();
 	  _boardTimeouts.push(setTimeout(function () {
 	    _board.resetExplodedSpaces();
-	    removeGroups();
+	    checkGroups();
 	  }, 200));
 	}
 	
@@ -27630,7 +27630,7 @@
 	  Liaison.broadcastChanges();
 	  _boardTimeouts.push(setTimeout(function () {
 	    _board.resetExplodedSpaces();
-	    removeGroups();
+	    checkGroups();
 	  }, 200));
 	}
 	
@@ -27663,12 +27663,21 @@
 	}
 	
 	// run this first
-	function removeGroups() {
+	function checkGroups() {
 	  _board.scoreMultiplier++;
-	  _board.checkInARows(boardDrop);
+	  _board.checkInARows(removeGroups);
 	}
 	
 	// second callback
+	function removeGroups() {
+	  Liaison.broadcastChanges();
+	  _boardTimeouts.push(setTimeout(function () {
+	    _board.resetExplodedSpaces();
+	    _board.blowEmUp(boardDrop);
+	  }, 100));
+	}
+	
+	// third callback
 	function boardDrop() {
 	  Liaison.broadcastChanges();
 	  _boardTimeouts.push(setTimeout(function () {
@@ -27677,7 +27686,7 @@
 	  }, 400));
 	}
 	
-	// third callback
+	// fourth callback
 	function updateDisplay() {
 	  Liaison.broadcastChanges();
 	  _boardTimeouts.push(setTimeout(function () {
@@ -27691,7 +27700,7 @@
 	
 	  if (noFills) {
 	    if (_board.spheresToExplode.length > 0) {
-	      _board.sphereExplode(Liaison.broadcastChanges, removeGroups);
+	      _board.sphereExplode(Liaison.broadcastChanges, checkGroups);
 	    } else {
 	      (function () {
 	        var rainbows = _board.rainbowTiles();
@@ -27714,7 +27723,7 @@
 	    Liaison.broadcastChanges();
 	    _boardTimeouts.push(setTimeout(function () {
 	      _board.resetExplodedSpaces();
-	      removeGroups();
+	      checkGroups();
 	    }, 400));
 	  }
 	}
@@ -27823,8 +27832,12 @@
 	  switchDots([dot1, dot2]);
 	};
 	
+	Liaison.ACTIONcheckGroups = function () {
+	  checkGroups();
+	};
+	
 	Liaison.ACTIONremoveGroups = function () {
-	  removeGroups();
+	  checkGroups();
 	};
 	
 	Liaison.ACTIONboardDrop = function () {
@@ -27854,12 +27867,14 @@
 	var Board = function Board(options) {
 	  this.size = options.size || 16;
 	  this.grid = initializeGrid(this.size, {});
-	  this.isKilled = false;
 	  this.score = 0;
 	  this.colors = levelColors(options.colors || [0, 1, 2, 3, 4, 5, 6, 7, 8]);
+	  this.style = ' ';
+	
 	  this.dotIdentifier = 0;
 	  this.dotsById = {};
-	  this.style = ' ';
+	
+	  this.dotsToExplode = initializeGrid(this.size, false);
 	  this.explodedSpaces = initializeGrid(this.size, ' ');
 	  this.explosionCallbacks = options.callbacks || {};
 	  this.scoreMultiplier = 0;
@@ -27904,6 +27919,29 @@
 	
 	  return newGrid;
 	}
+	
+	Board.prototype.verifyValidPositions = function () {
+	  var that = this;
+	
+	  for (var _len = arguments.length, positions = Array(_len), _key = 0; _key < _len; _key++) {
+	    positions[_key] = arguments[_key];
+	  }
+	
+	  return positions.every(function (pos) {
+	    return pos[0] >= 0 && pos[1] >= 0 && pos[0] < that.size && pos[1] < that.size && that.grid[pos[0]][pos[1]] && !that.dotsToExplode[pos[0]][pos[1]];
+	  });
+	};
+	
+	Board.prototype.blowEmUp = function (callback) {
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      if (this.dotsToExplode[ix][iy]) this.removeDot(ix, iy);
+	    }
+	  }
+	
+	  this.dotsToExplode = initializeGrid(this.size, false);
+	  callback();
+	};
 	
 	Board.prototype.rainbowTiles = function () {
 	  var ret_arr = [];
@@ -27972,7 +28010,6 @@
 	};
 	
 	Board.prototype.placeRandomDot = function (x, y) {
-	  // let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
 	  var randColor = this.colors[Math.floor(Math.random() * this.colors.length)];
 	
 	  var newDot = new Dots.circle({
@@ -28025,12 +28062,12 @@
 	    for (var iy = 0; iy < this.size; iy++) {
 	
 	      this.checkStarsAndAsterisks(ix, iy);
-	      this.checkClusters(ix, iy);
-	      this.checkTnLz(ix, iy);
 	      this.checkNumInDelta(ix, iy, 6, [0, 1], update);
 	      this.checkNumInDelta(ix, iy, 6, [1, 0], update);
+	      this.checkTnLz(ix, iy);
 	      this.checkNumInDelta(ix, iy, 5, [0, 1], update);
 	      this.checkNumInDelta(ix, iy, 5, [1, 0], update);
+	      this.checkClusters(ix, iy);
 	      this.checkNumInDelta(ix, iy, 4, [0, 1], update);
 	      this.checkNumInDelta(ix, iy, 4, [1, 0], update);
 	      this.checkNumInDelta(ix, iy, 3, [0, 1], update);
@@ -28110,6 +28147,10 @@
 	  }
 	};
 	
+	Board.prototype.setDotForRemoval = function (x, y) {
+	  this.dotsToExplode[x][y] = true;
+	};
+	
 	Board.prototype.removeDot = function (x, y) {
 	  if (this.grid[x][y] === null) {
 	    return;
@@ -28122,9 +28163,9 @@
 	    oldDot.isKilled = true;
 	    this.grid[x][y] = null;
 	    this.explodedSpaces[x][y] = oldDot.color;
+	    this.runDotCallbacks(x, y, oldDot);
 	  }
 	
-	  this.runDotCallbacks(x, y, oldDot);
 	  this.runDotExplosions(x, y, oldDot);
 	};
 	
@@ -28178,23 +28219,21 @@
 	    id: this.dotIdentifier
 	  });
 	
-	  // if (this.fruitify) this.grid[x][y].fruitify();
-	
 	  this.dotsById[this.dotIdentifier] = this.grid[x][y];
 	  this.dotIdentifier++;
 	};
 	
 	Board.prototype.checkClusters = function (x, y) {
-	  if (!this.grid[x][y] || x === this.size - 1 || y === this.size - 1 || !this.grid[x + 1][y] || !this.grid[x][y + 1] || !this.grid[x + 1][y + 1] || this.grid[x][y].color === 'rainbow') {
+	  if (!this.verifyValidPositions([x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]) || this.grid[x][y].color === 'rainbow') {
 	    return;
 	  }
 	
 	  var thisColor = this.grid[x][y].color;
 	  if (this.grid[x + 1][y].color === thisColor && this.grid[x + 1][y + 1].color === thisColor && this.grid[x][y + 1].color === thisColor) {
 	
-	    this.removeDot(x, y + 1);
-	    this.removeDot(x + 1, y);
-	    this.removeDot(x + 1, y + 1);
+	    this.setDotForRemoval(x, y + 1);
+	    this.setDotForRemoval(x + 1, y);
+	    this.setDotForRemoval(x + 1, y + 1);
 	    this.replaceDot(x, y, Dots.heart);
 	
 	    this.score += scoreConv[4] * this.scoreMultiplier;
@@ -28207,29 +28246,22 @@
 	  }
 	
 	  for (var dy = 0; dy < 3; dy++) {
-	    if (this.grid[x][y + dy] && this.grid[x + 1][y + dy] && this.grid[x + 2][y + dy]) {
+	    if (this.grid[x][y + dy] && this.grid[x + 1][y + dy] && this.grid[x + 2][y + dy] && !this.dotsToExplode[x][y + dy] && !this.dotsToExplode[x + 1][y + dy] && !this.dotsToExplode[x + 2][y + dy]) {
 	      var thisColor = this.grid[x][y + dy].color;
 	      if (this.grid[x + 1][y + dy].color === thisColor && this.grid[x + 2][y + dy].color === thisColor) {
 	        for (var dx = 0; dx < 3; dx++) {
-	          if (this.grid[x + dx][y] && this.grid[x + dx][y + 1] && this.grid[x + dx][y + 2]) {
+	          if (this.verifyValidPositions([x + dx, y], [x + dx, y + 1], [x + dx, y + 2])) {
 	            if (this.grid[x + dx][y].color === thisColor && this.grid[x + dx][y + 1].color === thisColor && this.grid[x + dx][y + 2].color === thisColor) {
 	
-	              this.removeDot(x, y + dy);
-	              this.removeDot(x + 1, y + dy);
-	              this.removeDot(x + 2, y + dy);
+	              if (dx !== 0) this.setDotForRemoval(x, y + dy);
+	              if (dx !== 1) this.setDotForRemoval(x + 1, y + dy);
+	              if (dx !== 2) this.setDotForRemoval(x + 2, y + dy);
 	
-	              this.removeDot(x + dx, y);
-	              this.removeDot(x + dx, y + 1);
-	              this.removeDot(x + dx, y + 2);
+	              if (dy !== 0) this.setDotForRemoval(x + dx, y);
+	              if (dy !== 1) this.setDotForRemoval(x + dx, y + 1);
+	              if (dy !== 2) this.setDotForRemoval(x + dx, y + 2);
 	
-	              this.grid[x + dx][y + dy] = new Dots.plus({
-	                color: thisColor,
-	                pos: [x + dx, y + dy],
-	                id: this.dotIdentifier
-	              });
-	
-	              this.dotsById[this.dotIdentifier] = this.grid[x + dx][y + dy];
-	              this.dotIdentifier++;
+	              this.replaceDot(x + dx, y + dy, Dots.plus);
 	
 	              this.score += scoreConv[5] * this.scoreMultiplier;
 	            }
@@ -28251,7 +28283,7 @@
 	    var sameColor = true;
 	
 	    for (var i = 0; i < num && sameColor; i++) {
-	      if (!this.grid[x + dx * i][y + dy * i] || this.grid[x + dx * i][y + dy * i].color !== initColor) {
+	      if (!this.verifyValidPositions([x + dx * i, y + dy * i]) || this.grid[x + dx * i][y + dy * i].color !== initColor) {
 	        sameColor = false;
 	      }
 	    }
@@ -28261,11 +28293,10 @@
 	        if (Math.floor(num / 2) === j) {
 	          this.replaceDot(x + dx * j, y + dy * j, dotNumConv[num]);
 	        } else {
-	          this.removeDot(x + dx * j, y + dy * j);
+	          this.setDotForRemoval(x + dx * j, y + dy * j);
 	        }
 	      }
 	      this.score += scoreConv[num];
-	      // callback();
 	    }
 	  }
 	};
@@ -36613,7 +36644,7 @@
 	    };
 	
 	    var margin = {
-	      margin: (this.props.sizeOfGrids - 25) / 2.0 + 'px'
+	      padding: (this.props.sizeOfGrids - 25) / 2.0 + 'px'
 	    };
 	
 	    var connectDragSource = this.props.connectDragSource;
@@ -37161,10 +37192,11 @@
 	  },
 	  getOutOfModal: function getOutOfModal(e) {
 	    e.preventDefault();
+	    this.modalFlag++;
 	    this.setState({ showModal: false });
 	  },
 	  updateGameOverModal: function updateGameOverModal() {
-	    if (Liaison.isOver() === 'won') {
+	    if (Liaison.isOver() === 'won' && this.modalFlag === 0) {
 	      localStorage.setItem(this.props.levelType.name, true);
 	      if (!localStorage[this.props.levelType.name + '-score'] || parseInt(localStorage[this.props.levelType.name + '-score']) < Liaison.score()) {
 	        localStorage.setItem(this.props.levelType.name + '-score', Liaison.score());

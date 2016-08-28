@@ -6,12 +6,14 @@ const Shapes = require('../constants/shapes');
 let Board = function (options) {
   this.size = options.size || 16;
   this.grid = initializeGrid(this.size, {});
-  this.isKilled = false;
   this.score = 0;
   this.colors = levelColors(options.colors || [0,1,2,3,4,5,6,7,8]);
+  this.style = ' ';
+
   this.dotIdentifier = 0;
   this.dotsById = {};
-  this.style = ' ';
+
+  this.dotsToExplode = initializeGrid(this.size, false);
   this.explodedSpaces = initializeGrid(this.size, ' ');
   this.explosionCallbacks = options.callbacks || {};
   this.scoreMultiplier = 0;
@@ -56,6 +58,30 @@ function initializeGrid(size, placeholder) {
 
   return newGrid;
 }
+
+Board.prototype.verifyValidPositions = function (...positions) {
+  const that = this;
+  return positions.every((pos) => {
+    return (
+      pos[0] >= 0 && pos[1] >= 0 &&
+      pos[0] < that.size && pos[1] < that.size &&
+      that.grid[pos[0]][pos[1]] &&
+      !that.dotsToExplode[pos[0]][pos[1]]
+    );
+  });
+};
+
+
+Board.prototype.blowEmUp = function (callback) {
+  for (var ix = 0; ix < this.size; ix++) {
+    for (var iy = 0; iy < this.size; iy++) {
+      if (this.dotsToExplode[ix][iy] ) this.removeDot(ix, iy);
+    }
+  }
+
+  this.dotsToExplode = initializeGrid(this.size, false);
+  callback();
+};
 
 Board.prototype.rainbowTiles = function () {
   const ret_arr = [];
@@ -127,7 +153,6 @@ Board.prototype.sphereExplode = function (startCallback, endCallback) {
 };
 
 Board.prototype.placeRandomDot = function (x, y) {
-  // let randColor = Object.keys(Colors)[Math.floor(Math.random() * 8)];
   let randColor = this.colors[Math.floor(Math.random() * this.colors.length)];
 
   const newDot = (new Dots.circle({
@@ -180,12 +205,12 @@ Board.prototype.checkInARows = function (callback, update) {
     for (var iy = 0; iy < this.size; iy++) {
 
       this.checkStarsAndAsterisks(ix, iy);
-      this.checkClusters(ix, iy);
-      this.checkTnLz(ix,iy);
       this.checkNumInDelta(ix, iy, 6, [0, 1], update);
       this.checkNumInDelta(ix, iy, 6, [1, 0], update);
+      this.checkTnLz(ix,iy);
       this.checkNumInDelta(ix, iy, 5, [0, 1], update);
       this.checkNumInDelta(ix, iy, 5, [1, 0], update);
+      this.checkClusters(ix, iy);
       this.checkNumInDelta(ix, iy, 4, [0, 1], update);
       this.checkNumInDelta(ix, iy, 4, [1, 0], update);
       this.checkNumInDelta(ix, iy, 3, [0, 1], update);
@@ -269,6 +294,10 @@ Board.prototype.killSquare = function (x, y) {
   }
 };
 
+Board.prototype.setDotForRemoval = function (x, y) {
+  this.dotsToExplode[x][y] = true;
+};
+
 Board.prototype.removeDot = function (x, y) {
   if (this.grid[x][y] === null) { return; }
   let oldDot = this.grid[x][y];
@@ -279,9 +308,9 @@ Board.prototype.removeDot = function (x, y) {
     oldDot.isKilled = true;
     this.grid[x][y] = null;
     this.explodedSpaces[x][y] = oldDot.color;
+    this.runDotCallbacks(x, y, oldDot);
   }
 
-  this.runDotCallbacks(x, y, oldDot);
   this.runDotExplosions(x, y, oldDot);
 };
 
@@ -333,17 +362,12 @@ Board.prototype.replaceDot = function (x, y, dotConstructor) {
     id: this.dotIdentifier
   });
 
-  // if (this.fruitify) this.grid[x][y].fruitify();
-
   this.dotsById[this.dotIdentifier] = this.grid[x][y];
   this.dotIdentifier ++;
 };
 
 Board.prototype.checkClusters = function (x, y) {
-  if (!this.grid[x][y] || (x === this.size - 1) || (y === this.size - 1) ||
-    !this.grid[x + 1][y] ||
-    !this.grid[x][y + 1] ||
-    !this.grid[x + 1][y + 1] ||
+  if (!this.verifyValidPositions([x, y], [x + 1, y], [x, y +1], [x + 1, y + 1]) ||
     this.grid[x][y].color === 'rainbow') { return; }
 
   const thisColor = this.grid[x][y].color;
@@ -351,9 +375,9 @@ Board.prototype.checkClusters = function (x, y) {
       (this.grid[x + 1][y + 1].color === thisColor) &&
       (this.grid[x][y + 1].color === thisColor)) {
 
-    this.removeDot(x, y + 1);
-    this.removeDot(x + 1, y);
-    this.removeDot(x + 1, y + 1);
+    this.setDotForRemoval(x, y + 1);
+    this.setDotForRemoval(x + 1, y);
+    this.setDotForRemoval(x + 1, y + 1);
     this.replaceDot(x, y, Dots.heart);
 
     this.score += scoreConv[4] * this.scoreMultiplier;
@@ -368,31 +392,26 @@ Board.prototype.checkTnLz = function (x, y) {
   }
 
   for (var dy = 0; dy < 3; dy ++) {
-    if (this.grid[x][y + dy] && this.grid[x + 1][y + dy] && this.grid[x + 2][y + dy]) {
+    if (this.grid[x][y + dy] && this.grid[x + 1][y + dy] && this.grid[x + 2][y + dy] &&
+        !this.dotsToExplode[x][y + dy] && !this.dotsToExplode[x + 1][y + dy] && !this.dotsToExplode[x + 2][y + dy]) {
       const thisColor = this.grid[x][y + dy].color;
       if (this.grid[x + 1][y + dy].color === thisColor && this.grid[x + 2][y + dy].color === thisColor) {
         for (var dx = 0; dx < 3; dx ++) {
-          if (this.grid[x + dx][y] && this.grid[x + dx][y + 1] && this.grid[x + dx][y + 2]) {
+          if (this.verifyValidPositions([x + dx, y], [x + dx, y + 1], [x + dx, y + 2])) {
             if (this.grid[x + dx][y].color === thisColor &&
               this.grid[x + dx][y + 1].color === thisColor &&
               this.grid[x + dx][y + 2].color === thisColor) {
 
-                this.removeDot(x, y + dy);
-                this.removeDot(x + 1, y + dy);
-                this.removeDot(x + 2, y + dy);
+                if (dx !== 0) this.setDotForRemoval(x, y + dy);
+                if (dx !== 1) this.setDotForRemoval(x + 1, y + dy);
+                if (dx !== 2) this.setDotForRemoval(x + 2, y + dy);
 
-                this.removeDot(x + dx, y);
-                this.removeDot(x + dx, y + 1);
-                this.removeDot(x + dx, y + 2);
+                if (dy !== 0) this.setDotForRemoval(x + dx, y);
+                if (dy !== 1) this.setDotForRemoval(x + dx, y + 1);
+                if (dy !== 2) this.setDotForRemoval(x + dx, y + 2);
 
-                this.grid[x + dx][y + dy] = new Dots.plus({
-                  color: thisColor,
-                  pos: [x + dx, y + dy],
-                  id: this.dotIdentifier
-                });
 
-                this.dotsById[this.dotIdentifier] = this.grid[x + dx][y + dy];
-                this.dotIdentifier ++;
+                this.replaceDot(x + dx, y + dy, Dots.plus);
 
                 this.score += scoreConv[5] * this.scoreMultiplier;
               }
@@ -418,22 +437,22 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
     let sameColor = true;
 
     for (var i = 0; i < num && sameColor; i++) {
-      if (!this.grid[x + dx * i][y + dy * i] ||
+      if (!this.verifyValidPositions([x + dx * i, y + dy * i]) ||
         this.grid[x + dx * i][y + dy * i].color !== initColor) {
         sameColor = false;
       }
     }
+
 
     if (sameColor && i === num) {
       for (var j = 0; j < num; j++) {
         if (Math.floor(num / 2) === j) {
           this.replaceDot(x + dx * j, y + dy * j, dotNumConv[num]);
         } else {
-          this.removeDot(x + dx * j, y + dy * j);
+          this.setDotForRemoval(x + dx * j, y + dy * j);
         }
       }
       this.score += scoreConv[num];
-      // callback();
     }
   }
 };

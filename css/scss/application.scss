@@ -114,12 +114,12 @@ input[type="submit"] {
 }
 
 .rainbow {
-  color: $pink;
+  color: $pink !important;
   text-shadow: 0px 0px 4px #9a9a9a !important;
-  animation-name: cycle-colors;
-  animation-duration: 3s;
-  animation-timing-function: ease;
-  animation-iteration-count: infinite;
+  animation-name: cycle-colors !important;
+  animation-duration: 3s !important;
+  animation-timing-function: ease !important;
+  animation-iteration-count: infinite !important;
 }
 
 .pink-hover:hover { color: $pink; }
@@ -455,6 +455,7 @@ input[type="submit"] {
     position: absolute;
     z-index: 4;
     text-shadow: .1px 0px 1px #d7d7d7;
+
     // unselectable
     -webkit-touch-callout: none;
     -webkit-user-select: none;

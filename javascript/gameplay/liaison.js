@@ -71,7 +71,7 @@ function resetDots (options) {
   Liaison.broadcastChanges();
   _boardTimeouts.push(setTimeout((() => {
     _board.resetExplodedSpaces();
-    removeGroups();
+    checkGroups();
   }), 200));
 }
 
@@ -143,7 +143,7 @@ function switchDots(dots) {
   Liaison.broadcastChanges();
   _boardTimeouts.push(setTimeout((() => {
     _board.resetExplodedSpaces();
-    removeGroups();
+    checkGroups();
   }), 200));
 }
 
@@ -175,12 +175,21 @@ function unknwnTypeDup(val) {
 
 
 // run this first
-function removeGroups() {
+function checkGroups() {
   _board.scoreMultiplier ++;
-  _board.checkInARows(boardDrop);
+  _board.checkInARows(removeGroups);
 }
 
 // second callback
+function removeGroups() {
+  Liaison.broadcastChanges();
+  _boardTimeouts.push(setTimeout((() => {
+    _board.resetExplodedSpaces();
+    _board.blowEmUp(boardDrop);
+  }), 100));
+}
+
+// third callback
 function boardDrop() {
   Liaison.broadcastChanges();
   _boardTimeouts.push(setTimeout((() => {
@@ -189,7 +198,7 @@ function boardDrop() {
   }), 400));
 }
 
-// third callback
+// fourth callback
 function updateDisplay () {
   Liaison.broadcastChanges();
   _boardTimeouts.push(setTimeout((() => {
@@ -203,7 +212,7 @@ function fillInTop() {
 
   if (noFills) {
     if (_board.spheresToExplode.length > 0) {
-      _board.sphereExplode(Liaison.broadcastChanges, removeGroups);
+      _board.sphereExplode(Liaison.broadcastChanges, checkGroups);
     } else {
       const rainbows = _board.rainbowTiles();
       if (rainbows.length > 0) {
@@ -224,7 +233,7 @@ function fillInTop() {
     Liaison.broadcastChanges();
     _boardTimeouts.push(setTimeout((() => {
       _board.resetExplodedSpaces();
-      removeGroups();
+      checkGroups();
     }), 400));
   }
 }
@@ -332,8 +341,12 @@ Liaison.ACTIONswitchDots = function (dot1, dot2) {
   switchDots([dot1, dot2]);
 };
 
+Liaison.ACTIONcheckGroups = function () {
+  checkGroups();
+};
+
 Liaison.ACTIONremoveGroups = function () {
-  removeGroups();
+  checkGroups();
 };
 
 Liaison.ACTIONboardDrop = function () {
