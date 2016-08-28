@@ -27722,6 +27722,7 @@
 	  } else {
 	    Liaison.broadcastChanges();
 	    _boardTimeouts.push(setTimeout(function () {
+	      // debugger
 	      _board.resetExplodedSpaces();
 	      checkGroups();
 	    }, 400));
@@ -27932,6 +27933,18 @@
 	  });
 	};
 	
+	Board.prototype.verifyColors = function (color) {
+	  var that = this;
+	
+	  for (var _len2 = arguments.length, positions = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	    positions[_key2 - 1] = arguments[_key2];
+	  }
+	
+	  return positions.every(function (pos) {
+	    return pos[0] >= 0 && pos[1] >= 0 && pos[0] < that.size && pos[1] < that.size && that.grid[pos[0]][pos[1]] && !that.dotsToExplode[pos[0]][pos[1]] && that.grid[pos[0]][pos[1]].color === color;
+	  });
+	};
+	
 	Board.prototype.blowEmUp = function (callback) {
 	  for (var ix = 0; ix < this.size; ix++) {
 	    for (var iy = 0; iy < this.size; iy++) {
@@ -28092,8 +28105,7 @@
 	Board.prototype.changeColors = function (color) {
 	  for (var ix = 0; ix < this.size; ix++) {
 	    for (var iy = 0; iy < this.size; iy++) {
-	
-	      if (this.grid[ix][iy] && this.grid[ix][iy].color !== 'rainbow') {
+	      if (this.grid[ix][iy] && this.grid[ix][iy].color !== 'rainbow' && this.grid[ix][iy].color !== 'grey-out') {
 	        this.grid[ix][iy].color = color;
 	      }
 	    }
@@ -28224,7 +28236,7 @@
 	};
 	
 	Board.prototype.checkClusters = function (x, y) {
-	  if (!this.verifyValidPositions([x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]) || this.grid[x][y].color === 'rainbow') {
+	  if (!this.verifyValidPositions([x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]) || this.grid[x][y].color === 'rainbow' || this.grid[x][y].color === 'grey-out') {
 	    return;
 	  }
 	
@@ -28241,7 +28253,7 @@
 	};
 	
 	Board.prototype.checkTnLz = function (x, y) {
-	  if (x + 2 >= this.size || y + 2 >= this.size || this.grid[x][y] && this.grid[x][y].color === 'rainbow') {
+	  if (x + 2 >= this.size || y + 2 >= this.size || this.grid[x][y] && (this.grid[x][y].color === 'rainbow' || this.grid[x][y].color === 'grey-out')) {
 	    return;
 	  }
 	
@@ -28277,7 +28289,7 @@
 	  var dy = dPos[1];
 	  var size = this.size;
 	
-	  if (this.grid[x][y] && this.grid[x][y].id && x + (num - 1) * dx < size && y + (num - 1) * dy < size && this.grid[x][y].color !== 'rainbow') {
+	  if (this.grid[x][y] && this.grid[x][y].id && x + (num - 1) * dx < size && y + (num - 1) * dy < size && this.grid[x][y].color !== 'rainbow' && this.grid[x][y].color !== 'grey-out') {
 	
 	    var initColor = this.grid[x][y].color;
 	    var sameColor = true;

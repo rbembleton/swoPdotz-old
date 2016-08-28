@@ -71,6 +71,19 @@ Board.prototype.verifyValidPositions = function (...positions) {
   });
 };
 
+Board.prototype.verifyColors = function (color, ...positions) {
+  const that = this;
+  return positions.every((pos) => {
+    return (
+      pos[0] >= 0 && pos[1] >= 0 &&
+      pos[0] < that.size && pos[1] < that.size &&
+      that.grid[pos[0]][pos[1]] &&
+      !that.dotsToExplode[pos[0]][pos[1]] &&
+      that.grid[pos[0]][pos[1]].color === color
+    );
+  });
+};
+
 
 Board.prototype.blowEmUp = function (callback) {
   for (var ix = 0; ix < this.size; ix++) {
@@ -238,11 +251,9 @@ Board.prototype.killColor = function (color) {
 Board.prototype.changeColors = function (color) {
   for (var ix = 0; ix < this.size; ix++) {
     for (var iy = 0; iy < this.size; iy++) {
-
-      if (this.grid[ix][iy] && this.grid[ix][iy].color !== 'rainbow') {
+      if (this.grid[ix][iy] && this.grid[ix][iy].color !== 'rainbow' && this.grid[ix][iy].color !== 'grey-out') {
         this.grid[ix][iy].color = color;
       }
-
     }
   }
 };
@@ -368,7 +379,7 @@ Board.prototype.replaceDot = function (x, y, dotConstructor) {
 
 Board.prototype.checkClusters = function (x, y) {
   if (!this.verifyValidPositions([x, y], [x + 1, y], [x, y +1], [x + 1, y + 1]) ||
-    this.grid[x][y].color === 'rainbow') { return; }
+    this.grid[x][y].color === 'rainbow' || this.grid[x][y].color === 'grey-out') { return; }
 
   const thisColor = this.grid[x][y].color;
   if ((this.grid[x + 1][y].color === thisColor) &&
@@ -387,7 +398,7 @@ Board.prototype.checkClusters = function (x, y) {
 
 Board.prototype.checkTnLz = function (x, y) {
   if (((x + 2 >= this.size) || (y + 2 >= this.size)) ||
-    (this.grid[x][y] && this.grid[x][y].color === 'rainbow')) {
+    (this.grid[x][y] && (this.grid[x][y].color === 'rainbow' || this.grid[x][y].color === 'grey-out'))) {
     return;
   }
 
@@ -431,7 +442,7 @@ Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
 
   if (this.grid[x][y] && this.grid[x][y].id &&
     (x + ((num - 1) * dx) < size) && (y + ((num - 1) * dy) < size) &&
-    this.grid[x][y].color !== 'rainbow') {
+    this.grid[x][y].color !== 'rainbow' && this.grid[x][y].color !== 'grey-out') {
 
     const initColor = this.grid[x][y].color;
     let sameColor = true;

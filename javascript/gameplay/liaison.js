@@ -232,6 +232,7 @@ function fillInTop() {
   } else {
     Liaison.broadcastChanges();
     _boardTimeouts.push(setTimeout((() => {
+      // debugger
       _board.resetExplodedSpaces();
       checkGroups();
     }), 400));
