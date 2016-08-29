@@ -397,8 +397,7 @@ Board.prototype.checkClusters = function (x, y) {
 };
 
 Board.prototype.checkTnLz = function (x, y) {
-  if (((x + 2 >= this.size) || (y + 2 >= this.size)) ||
-    (this.grid[x][y] && (this.grid[x][y].color === 'rainbow' || this.grid[x][y].color === 'grey-out'))) {
+  if (((x + 2 >= this.size) || (y + 2 >= this.size)) ) {
     return;
   }
 
@@ -406,7 +405,8 @@ Board.prototype.checkTnLz = function (x, y) {
     if (this.grid[x][y + dy] && this.grid[x + 1][y + dy] && this.grid[x + 2][y + dy] &&
         !this.dotsToExplode[x][y + dy] && !this.dotsToExplode[x + 1][y + dy] && !this.dotsToExplode[x + 2][y + dy]) {
       const thisColor = this.grid[x][y + dy].color;
-      if (this.grid[x + 1][y + dy].color === thisColor && this.grid[x + 2][y + dy].color === thisColor) {
+      if (thisColor !== 'rainbow' && thisColor !== 'grey-out' &&
+        this.grid[x + 1][y + dy].color === thisColor && this.grid[x + 2][y + dy].color === thisColor) {
         for (var dx = 0; dx < 3; dx ++) {
           if (this.verifyValidPositions([x + dx, y], [x + dx, y + 1], [x + dx, y + 2])) {
             if (this.grid[x + dx][y].color === thisColor &&
