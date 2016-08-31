@@ -2,7 +2,7 @@ const React = require('react');
 const PropTypes = React.PropTypes;
 const swapDots = require('./m_board_display').swapDots;
 const DropTarget = require('react-dnd').DropTarget;
-const Particle = require('../particle');
+const MParticle = require('./m_particle');
 
 
 const squareTarget = {
@@ -59,7 +59,7 @@ const MDropGrid = React.createClass({
     if (this.state.animate !== ' ') {
       for (var i = 0; i < 5; i++) {
         explosion.push(
-          <Particle key={i} color={this.state.animate}/>
+          <MParticle key={i} color={this.state.animate}/>
 
         );
       }

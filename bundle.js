@@ -36573,7 +36573,8 @@
 	var Particle = React.createClass({
 	  displayName: 'Particle',
 	  getInitialState: function getInitialState() {
-	    return { animationClass: 'start',
+	    return {
+	      animationClass: 'start',
 	      style: {
 	        top: '50%',
 	        left: '50%'
@@ -37486,8 +37487,7 @@
 	              React.createElement('span', { className: 'click-icons icon-github-01' })
 	            )
 	          )
-	        ),
-	        React.createElement(DotsDivider, null)
+	        )
 	      )
 	    );
 	  }
@@ -38107,7 +38107,7 @@
 	var PropTypes = React.PropTypes;
 	var swapDots = __webpack_require__(415).swapDots;
 	var DropTarget = __webpack_require__(257).DropTarget;
-	var Particle = __webpack_require__(406);
+	var MParticle = __webpack_require__(420);
 	
 	var squareTarget = {
 	  drop: function drop(props, monitor) {
@@ -38166,7 +38166,7 @@
 	
 	    if (this.state.animate !== ' ') {
 	      for (var i = 0; i < 5; i++) {
-	        explosion.push(React.createElement(Particle, { key: i, color: this.state.animate }));
+	        explosion.push(React.createElement(MParticle, { key: i, color: this.state.animate }));
 	      }
 	    }
 	
@@ -38386,6 +38386,47 @@
 	    nextLevel: 'bonus'
 	  }
 	};
+
+/***/ },
+/* 420 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(3);
+	
+	var MParticle = React.createClass({
+	  displayName: 'MParticle',
+	  getInitialState: function getInitialState() {
+	    return {
+	      animationClass: 'start',
+	      style: {
+	        top: '50%',
+	        left: '50%'
+	      } };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var that = this;
+	    setTimeout(function () {
+	      if (that.isMounted()) {
+	        that.setState({
+	          animationClass: 'finish',
+	          style: { top: Math.floor(Math.random() * 240 - 122) + 'px',
+	            left: Math.floor(Math.random() * 240 - 122) + 'px'
+	          } });
+	      }
+	    }, 10);
+	  },
+	  render: function render() {
+	
+	    return React.createElement('div', {
+	      className: "particle " + this.props.color + ' ' + this.state.animationClass,
+	      style: this.state.style
+	    });
+	  }
+	});
+	
+	module.exports = MParticle;
 
 /***/ }
 /******/ ]);

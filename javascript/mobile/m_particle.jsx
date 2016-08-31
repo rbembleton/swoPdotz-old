@@ -1,7 +1,7 @@
 const React = require('react');
 
 
-const Particle = React.createClass({
+const MParticle = React.createClass({
 
   getInitialState() {
     return({
@@ -19,8 +19,8 @@ const Particle = React.createClass({
         that.setState( {
           animationClass: 'finish',
           style:
-          { top: `${Math.floor(Math.random() * 120 - 62)}px`,
-            left: `${Math.floor(Math.random() * 120 - 62)}px`,
+          { top: `${Math.floor(Math.random() * 240 - 122)}px`,
+            left: `${Math.floor(Math.random() * 240 - 122)}px`,
           }});
       }
     }), 10);
@@ -43,4 +43,4 @@ const Particle = React.createClass({
 
 
 
-module.exports = Particle;
+module.exports = MParticle;

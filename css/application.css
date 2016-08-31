@@ -705,9 +705,15 @@ input[type="submit"] {
   font-family: "Open Sans", sans-serif; }
   .mobile-main.main-page .goals-cont {
     width: 800px;
-    font-size: 40px; }
+    font-size: 40px;
+    margin-top: 40px; }
   .mobile-main.main-page header {
-    font-size: 80px; }
+    font-size: 100px; }
+  .mobile-main.main-page footer {
+    font-size: 40px; }
+    .mobile-main.main-page footer .footer-links {
+      width: 800px;
+      margin-bottom: 20px; }
   .mobile-main.main-page .move-shield {
     width: 800px;
     height: 800px; }
@@ -720,11 +726,13 @@ input[type="submit"] {
     width: 800px;
     height: 800px;
     margin: auto;
+    margin-top: 40px;
     display: block;
     position: relative; }
   .mobile-main.main-page .screen-holder {
     width: 800px; }
   .mobile-main.main-page .score-cont {
+    margin-top: 40px;
     width: 700px; }
     .mobile-main.main-page .score-cont div {
       font-size: 50px; }
@@ -777,5 +785,15 @@ input[type="submit"] {
     left: -10px;
     animation: wiggle .5s infinite;
     transform-origin: center; }
+  .mobile-main.main-page .particle.finish {
+    transition: all .6s linear, background-color .001s linear;
+    width: 20px;
+    height: 20px;
+    opacity: 0; }
+  .mobile-main.main-page .particle.start {
+    width: 8px;
+    height: 8px;
+    opacity: 1;
+    background-color: white; }
 
 /*# sourceMappingURL=application.css.map */

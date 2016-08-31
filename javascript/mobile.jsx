@@ -60,7 +60,6 @@ const Main = React.createClass({
               </a>
             </div>
           </div>
-          <DotsDivider />
         </footer>
       </div>
     );

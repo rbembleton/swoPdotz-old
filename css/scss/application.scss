@@ -809,10 +809,20 @@ input[type="submit"] {
   .goals-cont {
     width: 800px;
     font-size: 40px;
+    margin-top: 40px;
   }
 
   header {
-    font-size: 80px;
+    font-size: 100px;
+  }
+
+  footer {
+    font-size: 40px;
+
+    .footer-links {
+      width:800px;
+      margin-bottom: 20px
+    }
   }
 
   .move-shield {
@@ -833,6 +843,7 @@ input[type="submit"] {
     width: 800px;
     height: 800px;
     margin: auto;
+    margin-top: 40px;
     // border: $lighter-grey 2px solid;
     display: block;
     position: relative;
@@ -843,6 +854,7 @@ input[type="submit"] {
   }
 
   .score-cont {
+    margin-top: 40px;
     width: 700px;
     div {
       font-size: 50px;
@@ -922,6 +934,20 @@ input[type="submit"] {
     left: -10px;
     animation: wiggle .5s infinite;
     transform-origin: center;
+  }
+
+  .particle.finish {
+    transition: all .6s linear, background-color .001s linear;
+    width: 20px;
+    height: 20px;
+    opacity: 0;
+  }
+
+  .particle.start {
+    width: 8px;
+    height: 8px;
+    opacity: 1;
+    background-color: white;
   }
 
 }
