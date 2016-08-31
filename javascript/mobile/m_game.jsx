@@ -2,7 +2,7 @@ const React = require('react');
 const Score = require('../score');
 const MBoardDisplay = require('./m_board_display');
 const hashHistory = require('react-router').hashHistory;
-const BoardLevels = require('../constants/board_levels');
+const MBoardLevels = require('./m_board_levels');
 const Goals = require('../goals');
 const GameOverModal = require('../game_over_modal');
 
@@ -15,9 +15,9 @@ const MGame = React.createClass({
 
 
   render () {
-    const displayGoals = BoardLevels[this.props.params.gameType].isGoalBased ? <Goals /> : "";
-    const toDispModalOrNotThatIsTheQuestion = BoardLevels[this.props.params.gameType].isGoalBased ?
-      <GameOverModal levelType={BoardLevels[this.props.params.gameType]}/> : '';
+    const displayGoals = MBoardLevels[this.props.params.gameType].isGoalBased ? <Goals /> : "";
+    const toDispModalOrNotThatIsTheQuestion = MBoardLevels[this.props.params.gameType].isGoalBased ?
+      <GameOverModal levelType={MBoardLevels[this.props.params.gameType]}/> : '';
 
     return (
       <div>
@@ -26,7 +26,7 @@ const MGame = React.createClass({
         </div>
         {displayGoals}
         <div className="m-screen screen">
-          <MBoardDisplay board={BoardLevels[this.props.params.gameType]}/>
+          <MBoardDisplay board={MBoardLevels[this.props.params.gameType]}/>
         </div>
         <Score />
         {toDispModalOrNotThatIsTheQuestion}

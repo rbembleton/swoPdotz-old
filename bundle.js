@@ -37505,7 +37505,7 @@
 	var Score = __webpack_require__(239);
 	var MBoardDisplay = __webpack_require__(415);
 	var hashHistory = __webpack_require__(1).hashHistory;
-	var BoardLevels = __webpack_require__(408);
+	var MBoardLevels = __webpack_require__(419);
 	var Goals = __webpack_require__(409);
 	var GameOverModal = __webpack_require__(410);
 	
@@ -37516,8 +37516,8 @@
 	    hashHistory.push('home');
 	  },
 	  render: function render() {
-	    var displayGoals = BoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(Goals, null) : "";
-	    var toDispModalOrNotThatIsTheQuestion = BoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(GameOverModal, { levelType: BoardLevels[this.props.params.gameType] }) : '';
+	    var displayGoals = MBoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(Goals, null) : "";
+	    var toDispModalOrNotThatIsTheQuestion = MBoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(GameOverModal, { levelType: MBoardLevels[this.props.params.gameType] }) : '';
 	
 	    return React.createElement(
 	      'div',
@@ -37531,7 +37531,7 @@
 	      React.createElement(
 	        'div',
 	        { className: 'm-screen screen' },
-	        React.createElement(MBoardDisplay, { board: BoardLevels[this.props.params.gameType] })
+	        React.createElement(MBoardDisplay, { board: MBoardLevels[this.props.params.gameType] })
 	      ),
 	      React.createElement(Score, null),
 	      toDispModalOrNotThatIsTheQuestion
@@ -37573,7 +37573,7 @@
 	  displayName: 'MBoardDisplay',
 	  getInitialState: function getInitialState() {
 	    Liaison.ACTIONinitializeDots(this.props.board);
-	    this.sizeOfGrids = 700.0 / (this.props.board.size || 16.0);
+	    this.sizeOfGrids = 800.0 / (this.props.board.size || 16.0);
 	    return {
 	      offset: [0, 0],
 	      dots: Liaison.all(),
@@ -38339,6 +38339,53 @@
 	};
 	
 	module.exports = (0, _reactDnd.DragSource)('Dot', dotSource, collect)(MDotDisplay);
+
+/***/ },
+/* 419 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = {
+	  'infinity': {
+	    isGoalBased: false,
+	    size: 12
+	  },
+	  'one': {
+	    name: 'one',
+	    isGoalBased: true,
+	    size: 10,
+	    colors: [1, 3, 5, 6, 9],
+	    goals: {
+	      triangle: 20
+	    },
+	    moves: 25,
+	    nextLevel: 'two'
+	  },
+	  'two': {
+	    name: 'two',
+	    isGoalBased: true,
+	    size: 10,
+	    colors: [1, 2, 3, 4, 7, 8],
+	    goals: {
+	      square: 10,
+	      heart: 10
+	    },
+	    moves: 25,
+	    nextLevel: 'three'
+	  },
+	  'three': {
+	    name: 'three',
+	    isGoalBased: true,
+	    size: 10,
+	    colors: [1, 2, 3, 4, 7],
+	    goals: {
+	      star: 3
+	    },
+	    moves: 20,
+	    nextLevel: 'bonus'
+	  }
+	};
 
 /***/ }
 /******/ ]);
