@@ -1,9 +1,6 @@
 const React = require('react');
 const DotsDivider = require('./dots/dots_divider');
 
-// <span className="logo-dot1">{"•"}</span>
-// <span className="logo-pd">{"Pd"}</span>
-// <span className="logo-dot2">{"•"}</span>
 
 const Main = React.createClass({
 
@@ -18,12 +15,6 @@ const Main = React.createClass({
     const that = this;
     setTimeout(() => { that.setState({renderLogo: true}); }, 10);
   },
-  //
-  // componentDidMount() {
-  //   setTimeout(() => {
-  //     this.setState({ paused: true });
-  //   }, 4000);
-  // },
 
 
   render () {
@@ -43,7 +34,7 @@ const Main = React.createClass({
       {"•tz"}</div>);
 
     return (
-      <div className="main-page clearfix">
+      <div className="mobile-main main-page clearfix">
         <header className="clearfix unsel">
           {thisLogo}
         </header>

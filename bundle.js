@@ -37386,10 +37386,6 @@
 	var React = __webpack_require__(3);
 	var DotsDivider = __webpack_require__(236);
 	
-	// <span className="logo-dot1">{"•"}</span>
-	// <span className="logo-pd">{"Pd"}</span>
-	// <span className="logo-dot2">{"•"}</span>
-	
 	var Main = React.createClass({
 	  displayName: 'Main',
 	  getInitialState: function getInitialState() {
@@ -37403,15 +37399,6 @@
 	      that.setState({ renderLogo: true });
 	    }, 10);
 	  },
-	
-	  //
-	  // componentDidMount() {
-	  //   setTimeout(() => {
-	  //     this.setState({ paused: true });
-	  //   }, 4000);
-	  // },
-	
-	
 	  render: function render() {
 	
 	    var thisLogo = this.state.renderLogo ? React.createElement(
@@ -37454,7 +37441,7 @@
 	
 	    return React.createElement(
 	      'div',
-	      { className: 'main-page clearfix' },
+	      { className: 'mobile-main main-page clearfix' },
 	      React.createElement(
 	        'header',
 	        { className: 'clearfix unsel' },
@@ -37522,8 +37509,8 @@
 	var Goals = __webpack_require__(409);
 	var GameOverModal = __webpack_require__(410);
 	
-	var Game = React.createClass({
-	  displayName: 'Game',
+	var MGame = React.createClass({
+	  displayName: 'MGame',
 	  clickBack: function clickBack(e) {
 	    e.preventDefault();
 	    hashHistory.push('home');
@@ -37543,7 +37530,7 @@
 	      displayGoals,
 	      React.createElement(
 	        'div',
-	        { className: 'screen' },
+	        { className: 'm-screen screen' },
 	        React.createElement(MBoardDisplay, { board: BoardLevels[this.props.params.gameType] })
 	      ),
 	      React.createElement(Score, null),
@@ -37552,7 +37539,7 @@
 	  }
 	});
 	
-	module.exports = Game;
+	module.exports = MGame;
 
 /***/ },
 /* 415 */
@@ -37586,7 +37573,7 @@
 	  displayName: 'MBoardDisplay',
 	  getInitialState: function getInitialState() {
 	    Liaison.ACTIONinitializeDots(this.props.board);
-	    this.sizeOfGrids = 400.0 / (this.props.board.size || 16.0);
+	    this.sizeOfGrids = 700.0 / (this.props.board.size || 16.0);
 	    return {
 	      offset: [0, 0],
 	      dots: Liaison.all(),
@@ -38338,7 +38325,7 @@
 	      React.createElement(
 	        'div',
 	        {
-	          className: this.props.dot.color + " " + (this.props.dot.isFruit ? "fruit" : this.props.dot.shape),
+	          className: this.props.dot.color + " m-" + (this.props.dot.isFruit ? "fruit" : this.props.dot.shape),
 	          style: margin },
 	        React.createElement('span', { className: this.props.dot.iconClass })
 	      )

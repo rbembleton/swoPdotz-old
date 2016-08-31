@@ -129,7 +129,7 @@ const MDotDisplay = React.createClass({
         onDrag={this.changePos}
       >
         <div
-          className={this.props.dot.color + " " + (this.props.dot.isFruit ? "fruit" : this.props.dot.shape)}
+          className={this.props.dot.color + " m-" + (this.props.dot.isFruit ? "fruit" : this.props.dot.shape)}
           style={margin}>
           <span className={this.props.dot.iconClass}/>
         </div>

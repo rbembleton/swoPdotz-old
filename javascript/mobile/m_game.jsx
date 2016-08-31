@@ -6,7 +6,7 @@ const BoardLevels = require('../constants/board_levels');
 const Goals = require('../goals');
 const GameOverModal = require('../game_over_modal');
 
-const Game = React.createClass({
+const MGame = React.createClass({
 
   clickBack (e) {
     e.preventDefault();
@@ -25,7 +25,7 @@ const Game = React.createClass({
           {"<< Back to Main Screen"}
         </div>
         {displayGoals}
-        <div className="screen">
+        <div className="m-screen screen">
           <MBoardDisplay board={BoardLevels[this.props.params.gameType]}/>
         </div>
         <Score />
@@ -37,4 +37,4 @@ const Game = React.createClass({
 });
 
 
-module.exports = Game;
+module.exports = MGame;

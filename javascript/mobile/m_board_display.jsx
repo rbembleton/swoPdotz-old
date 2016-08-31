@@ -14,7 +14,7 @@ import { default as TouchBackend } from 'react-dnd-touch-backend';
 const MBoardDisplay = React.createClass({
   getInitialState () {
     Liaison.ACTIONinitializeDots(this.props.board);
-    this.sizeOfGrids = (400.0 / (this.props.board.size || 16.0));
+    this.sizeOfGrids = (700.0 / (this.props.board.size || 16.0));
     return({
       offset: [0,0],
       dots: Liaison.all(),

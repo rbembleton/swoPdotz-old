@@ -693,4 +693,84 @@ input[type="submit"] {
   .modal-content .final-score {
     margin-top: 20px; }
 
+.mobile-main.main-page {
+  width: 100%;
+  height: 100%;
+  display: fixed;
+  margin: auto;
+  margin-top: 60px;
+  margin-bottom: 160px;
+  font-family: "Open Sans", sans-serif; }
+  .mobile-main.main-page .goals-cont {
+    width: 700px;
+    font-size: 40px; }
+  .mobile-main.main-page header {
+    font-size: 80px; }
+  .mobile-main.main-page .back-to-levels {
+    font-size: 30px;
+    width: 500px; }
+  .mobile-main.main-page .goals-left-cont div > div {
+    width: 140px; }
+  .mobile-main.main-page .m-screen.screen {
+    width: 700px;
+    height: 700px;
+    margin: auto;
+    display: block;
+    position: relative; }
+  .mobile-main.main-page .screen-holder {
+    width: 700px; }
+  .mobile-main.main-page .score-cont {
+    width: 700px; }
+    .mobile-main.main-page .score-cont div {
+      font-size: 50px; }
+  .mobile-main.main-page .m-square {
+    font-size: 25px;
+    top: -10px;
+    left: 0px;
+    animation: shake 2s infinite;
+    transform-origin: center; }
+  .mobile-main.main-page .m-heart {
+    font-size: 30px;
+    top: -10.5px;
+    left: -2.7px;
+    animation: pound 2s infinite;
+    transform-origin: center; }
+  .mobile-main.main-page .m-circle {
+    font-size: 28px;
+    top: -11.75px;
+    left: -2px; }
+  .mobile-main.main-page .m-sphere {
+    font-size: 28px;
+    top: -11.75px;
+    left: -2px; }
+  .mobile-main.main-page .m-fruit {
+    font-size: 18px;
+    top: -1.3px;
+    left: 4px;
+    animation: wiggle .5s infinite;
+    transform-origin: center; }
+  .mobile-main.main-page .m-triangle {
+    font-size: 33px;
+    top: -16.3px;
+    left: -4px;
+    animation: magic-triangle 3.8s infinite ease-in-out; }
+  .mobile-main.main-page .m-asterisk {
+    font-size: 30px;
+    top: -10.5px;
+    left: -3px;
+    animation: spin 2s infinite;
+    transform-origin: center; }
+  .mobile-main.main-page .m-plus {
+    font-size: 30px;
+    top: -10.5px;
+    left: -3px;
+    animation: grow 2s infinite;
+    transform-origin: center; }
+  .mobile-main.main-page .m-star {
+    font-size: 35px;
+    top: -17.5px;
+    left: -4px;
+    animation: wiggle .5s infinite;
+    transform-origin: center; }
+
 /*# sourceMappingURL=application.css.map */
