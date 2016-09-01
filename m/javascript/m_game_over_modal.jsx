@@ -25,7 +25,7 @@ const MGameOverModal = React.createClass({
 
   clickNext (e) {
     e.preventDefault();
-    hashHistory.push(`next_level/${"m-" + e.target.id}`);
+    hashHistory.push(`next_level/${e.target.id}`);
   },
 
   getOutOfModal (e) {

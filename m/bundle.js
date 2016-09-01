@@ -39175,7 +39175,7 @@
 	  },
 	  clickNext: function clickNext(e) {
 	    e.preventDefault();
-	    hashHistory.push('next_level/' + ("m-" + e.target.id));
+	    hashHistory.push('next_level/' + e.target.id);
 	  },
 	  getOutOfModal: function getOutOfModal(e) {
 	    e.preventDefault();
