@@ -9,6 +9,11 @@ const HomeScreen = React.createClass({
     hashHistory.push(`game/${e.target.id}`);
   },
 
+  playMobileGame (e) {
+    e.preventDefault();
+    hashHistory.push(`m/game/${e.target.id}`);
+  },
+
   howTo (e) {
     e.preventDefault();
     hashHistory.push(`how`);
@@ -55,6 +60,21 @@ const HomeScreen = React.createClass({
             <span className="icon-geo-circle teal-hover"/>
           <button id="seven" onClick={this.playGame}>seven</button>
           {bonus2Show}
+        </div>
+        <DotsDivider />
+        <h2 className='unsel'>{"Mobile-Friendly Levels"}</h2>
+        <div className="play-button">
+          <button id="one" onClick={this.playMobileGame}>one</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="two" onClick={this.playMobileGame}>two</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="three" onClick={this.playMobileGame}>three</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="four" onClick={this.playMobileGame}>four</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="five" onClick={this.playMobileGame}>five</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="six" onClick={this.playMobileGame}>six</button>
         </div>
         <DotsDivider />
         <h2 className="unsel">Unlimited Levels</h2>

@@ -12,7 +12,6 @@ const MDotDisplay = React.createClass({
   },
 
   handleTouchstart (e) {
-    console.log('hi');
   },
 
 
@@ -36,8 +35,6 @@ const MDotDisplay = React.createClass({
   },
 
   handleTouchEnd(e) {
-    console.log(this.state.pos);
-    console.log([Math.round(this.state.pos[0]), Math.round(this.state.pos[1])]);
     swapDots([Math.round(this.state.pos[0]), Math.round(this.state.pos[1])], this.props.dot);
   },
 

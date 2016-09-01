@@ -35,8 +35,9 @@ const Goals = React.createClass({
 
   goalsRender () {
     if (this.state.levelStatus.levelCompleted) {
+      // <div style={{width: '140px'}}>
       return (
-        <div style={{width: '140px'}}>
+        <div>
           LEVEL COMPLETE!
         </div>
       );

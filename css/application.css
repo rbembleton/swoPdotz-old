@@ -795,5 +795,42 @@ input[type="submit"] {
     height: 8px;
     opacity: 1;
     background-color: white; }
+  .mobile-main.main-page .modal-content {
+    left: 20%;
+    top: 300px;
+    right: 20%;
+    width: 60%;
+    min-width: 540px;
+    height: 540px; }
+    .mobile-main.main-page .modal-content h2 {
+      font-size: 40px; }
+    .mobile-main.main-page .modal-content .final-score {
+      font-size: 30px;
+      width: 440px; }
+    .mobile-main.main-page .modal-content .back-to-levels {
+      font-size: 30px; }
+    .mobile-main.main-page .modal-content .try-again {
+      font-size: 28px; }
+    .mobile-main.main-page .modal-content .win-lose-text {
+      font-size: 60px; }
+
+.short-screen.mobile-main.main-page header {
+  font-size: 80px; }
+.short-screen.mobile-main.main-page .screen-holder {
+  margin-top: 5px; }
+.short-screen.mobile-main.main-page .back-to-levels {
+  font-size: 24px;
+  margin-bottom: 0px; }
+.short-screen.mobile-main.main-page .goals-cont {
+  font-size: 30px;
+  margin-top: 16px; }
+.short-screen.mobile-main.main-page .screen {
+  margin-top: 10px; }
+.short-screen.mobile-main.main-page .score-cont {
+  margin-top: 20px; }
+  .short-screen.mobile-main.main-page .score-cont div {
+    font-size: 42px; }
+.short-screen.mobile-main.main-page footer {
+  font-size: 32px; }
 
 /*# sourceMappingURL=application.css.map */

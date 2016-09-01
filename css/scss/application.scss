@@ -950,4 +950,73 @@ input[type="submit"] {
     background-color: white;
   }
 
+  .modal-content {
+    left: 20%;
+    top: 300px;
+    right: 20%;
+    width: 60%;
+    min-width: 540px;
+    height: 540px;
+
+    h2 {
+      font-size: 40px;
+    }
+
+    .final-score {
+      font-size: 30px;
+      width: 440px;
+    }
+
+    .back-to-levels {
+      font-size: 30px;
+    }
+
+    .try-again {
+      font-size: 28px;
+    }
+
+    .win-lose-text {
+      font-size: 60px;
+    }
+  }
+
+}
+
+
+
+.short-screen.mobile-main.main-page {
+  header {
+    font-size: 80px;
+  }
+
+  .screen-holder {
+    margin-top: 5px;
+  }
+
+  .back-to-levels {
+    font-size: 24px;
+    margin-bottom: 0px;
+  }
+
+  .goals-cont {
+    font-size: 30px;
+    margin-top: 16px;
+  }
+
+  .screen {
+    margin-top: 10px;
+  }
+
+  .score-cont {
+    margin-top: 20px;
+
+    div {
+      font-size: 42px;
+    }
+  }
+
+  footer {
+    font-size: 32px;
+  }
+
 }

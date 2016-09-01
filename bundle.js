@@ -27229,6 +27229,10 @@
 	    e.preventDefault();
 	    hashHistory.push('game/' + e.target.id);
 	  },
+	  playMobileGame: function playMobileGame(e) {
+	    e.preventDefault();
+	    hashHistory.push('m/game/' + e.target.id);
+	  },
 	  howTo: function howTo(e) {
 	    e.preventDefault();
 	    hashHistory.push('how');
@@ -27317,6 +27321,51 @@
 	          'seven'
 	        ),
 	        bonus2Show
+	      ),
+	      React.createElement(DotsDivider, null),
+	      React.createElement(
+	        'h2',
+	        { className: 'unsel' },
+	        "Mobile-Friendly Levels"
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'play-button' },
+	        React.createElement(
+	          'button',
+	          { id: 'one', onClick: this.playMobileGame },
+	          'one'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'two', onClick: this.playMobileGame },
+	          'two'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'three', onClick: this.playMobileGame },
+	          'three'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'four', onClick: this.playMobileGame },
+	          'four'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'five', onClick: this.playMobileGame },
+	          'five'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'six', onClick: this.playMobileGame },
+	          'six'
+	        )
 	      ),
 	      React.createElement(DotsDivider, null),
 	      React.createElement(
@@ -36929,9 +36978,10 @@
 	  },
 	  goalsRender: function goalsRender() {
 	    if (this.state.levelStatus.levelCompleted) {
+	      // <div style={{width: '140px'}}>
 	      return React.createElement(
 	        'div',
-	        { style: { width: '140px' } },
+	        null,
 	        'LEVEL COMPLETE!'
 	      );
 	    }
@@ -37368,7 +37418,9 @@
 	var NextLevel = React.createClass({
 	  displayName: 'NextLevel',
 	  componentDidMount: function componentDidMount() {
-	    hashHistory.push('game/' + this.props.params.gameType);
+	    var gamePush = this.props.params.gameType.substring(0, 2) === 'm-' ? 'm/game/' + this.props.params.gameType.substring(2) : 'game/' + this.props.params.gameType;
+	    hashHistory.push(gamePush);
+	    // hashHistory.push(`game/${this.props.params.gameType}`);
 	  },
 	  render: function render() {
 	
@@ -37390,7 +37442,9 @@
 	var Main = React.createClass({
 	  displayName: 'Main',
 	  getInitialState: function getInitialState() {
-	    return { renderLogo: true };
+	    return {
+	      renderLogo: true,
+	      shortScreen: window.screen.height / window.screen.width < 1.5 ? true : false };
 	  },
 	  handleLogoClick: function handleLogoClick(e) {
 	    e.preventDefault();
@@ -37401,10 +37455,12 @@
 	    }, 10);
 	  },
 	  render: function render() {
-	
 	    var thisLogo = this.state.renderLogo ? React.createElement(
 	      'div',
-	      { className: 'logo', onClick: this.handleLogoClick },
+	      {
+	        className: 'logo',
+	        onClick: this.handleLogoClick
+	      },
 	      "sw",
 	      React.createElement(
 	        'div',
@@ -37442,7 +37498,7 @@
 	
 	    return React.createElement(
 	      'div',
-	      { className: 'mobile-main main-page clearfix' },
+	      { className: "mobile-main main-page clearfix " + (this.state.shortScreen ? "short-screen" : "") },
 	      React.createElement(
 	        'header',
 	        { className: 'clearfix unsel' },
@@ -37507,7 +37563,7 @@
 	var hashHistory = __webpack_require__(1).hashHistory;
 	var MBoardLevels = __webpack_require__(419);
 	var Goals = __webpack_require__(409);
-	var GameOverModal = __webpack_require__(410);
+	var MGameOverModal = __webpack_require__(421);
 	
 	var MGame = React.createClass({
 	  displayName: 'MGame',
@@ -37517,14 +37573,16 @@
 	  },
 	  render: function render() {
 	    var displayGoals = MBoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(Goals, null) : "";
-	    var toDispModalOrNotThatIsTheQuestion = MBoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(GameOverModal, { levelType: MBoardLevels[this.props.params.gameType] }) : '';
+	    var toDispModalOrNotThatIsTheQuestion = MBoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(MGameOverModal, { levelType: MBoardLevels[this.props.params.gameType] }) : '';
 	
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
 	        'div',
-	        { className: 'back-to-levels', onClick: this.clickBack },
+	        {
+	          className: 'back-to-levels',
+	          onClick: this.clickBack },
 	        "<< Back to Main Screen"
 	      ),
 	      displayGoals,
@@ -37738,9 +37796,7 @@
 	  getInitialState: function getInitialState() {
 	    return { pos: this.props.pos, specialClass: 'new-dot' };
 	  },
-	  handleTouchstart: function handleTouchstart(e) {
-	    console.log('hi');
-	  },
+	  handleTouchstart: function handleTouchstart(e) {},
 	  changePos: function changePos(e) {
 	    e.preventDefault();
 	
@@ -37765,8 +37821,6 @@
 	    this.setState({ pos: newPos });
 	  },
 	  handleTouchEnd: function handleTouchEnd(e) {
-	    console.log(this.state.pos);
-	    console.log([Math.round(this.state.pos[0]), Math.round(this.state.pos[1])]);
 	    swapDots([Math.round(this.state.pos[0]), Math.round(this.state.pos[1])], this.props.dot);
 	  },
 	  switchDots: function switchDots(e) {
@@ -37898,7 +37952,39 @@
 	      star: 3
 	    },
 	    moves: 20,
-	    nextLevel: 'bonus'
+	    nextLevel: 'four'
+	  },
+	  'four': {
+	    name: 'four',
+	    isGoalBased: true,
+	    size: 10,
+	    colors: [3, 4, 5, 6, 7],
+	    goals: {
+	      square: 5
+	    },
+	    moves: 10,
+	    nextLevel: 'five'
+	  },
+	  'five': {
+	    name: 'five',
+	    isGoalBased: true,
+	    size: 10,
+	    colors: [0, 3, 4, 5, 6, 7],
+	    goals: {
+	      heart: 20
+	    },
+	    moves: 20,
+	    nextLevel: 'six'
+	  },
+	  'six': {
+	    name: 'six',
+	    isGoalBased: true,
+	    size: 10,
+	    colors: [1, 2, 3, 5, 7, 9],
+	    goals: {
+	      sphere: 3
+	    },
+	    moves: 30
 	  }
 	};
 
@@ -37942,6 +38028,154 @@
 	});
 	
 	module.exports = MParticle;
+
+/***/ },
+/* 421 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(3);
+	var Liaison = __webpack_require__(240);
+	var hashHistory = __webpack_require__(1).hashHistory;
+	
+	var MGameOverModal = React.createClass({
+	  displayName: 'MGameOverModal',
+	  getInitialState: function getInitialState() {
+	    this.modalFlag = 0;
+	    return { isWon: false, isLost: false, showModal: false };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.scoreListener = Liaison.addListener(this.updateGameOverModal);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    Liaison.removeListener(this.scoreListener);
+	  },
+	  clickBack: function clickBack(e) {
+	    e.preventDefault();
+	    hashHistory.push('home');
+	  },
+	  clickNext: function clickNext(e) {
+	    e.preventDefault();
+	    hashHistory.push('next_level/' + ("m-" + e.target.id));
+	  },
+	  getOutOfModal: function getOutOfModal(e) {
+	    e.preventDefault();
+	    this.modalFlag++;
+	    this.setState({ showModal: false });
+	  },
+	  updateGameOverModal: function updateGameOverModal() {
+	    if (Liaison.isOver() === 'won' && this.modalFlag === 0) {
+	      localStorage.setItem(this.props.levelType.name, true);
+	      if (!localStorage[this.props.levelType.name + '-score'] || parseInt(localStorage[this.props.levelType.name + '-score']) < Liaison.score()) {
+	        localStorage.setItem(this.props.levelType.name + '-score', Liaison.score());
+	      }
+	    }
+	
+	    if (Liaison.isItTimeToMove()) {
+	      switch (Liaison.isOver()) {
+	        case 'won':
+	          this.modalFlag++;
+	          this.setState({ isWon: true });
+	          break;
+	        case 'lost':
+	          this.modalFlag++;
+	          this.setState({ isLost: true });
+	          break;
+	        case undefined:
+	          break;
+	      }
+	    }
+	
+	    if (this.modalFlag === 1) {
+	      this.setState({ showModal: true });
+	    }
+	  },
+	  render: function render() {
+	    var modalToRender = void 0;
+	
+	    var nextLevel = this.props.levelType.nextLevel ? React.createElement(
+	      'div',
+	      { id: this.props.levelType.nextLevel, className: 'back-to-levels', onClick: this.clickNext },
+	      'Next Level: ' + this.props.levelType.nextLevel + ' >>'
+	    ) : "";
+	
+	    if ((this.state.isWon || this.state.isLost) && this.state.showModal === true) {
+	      modalToRender = this.state.isWon ? React.createElement(
+	        'div',
+	        null,
+	        React.createElement('div', { className: 'win-lose-modal', onClick: this.getOutOfModal }),
+	        React.createElement(
+	          'div',
+	          { className: 'modal-content' },
+	          React.createElement(
+	            'h2',
+	            { className: 'unsel win-lose-text' },
+	            " YOU WON! "
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'back-to-levels', onClick: this.clickBack },
+	            "<< Back to Main Screen"
+	          ),
+	          nextLevel,
+	          React.createElement(
+	            'div',
+	            { className: 'final-score' },
+	            'Final Score: ',
+	            React.createElement(
+	              'h2',
+	              { style: { margin: '0px 0px 20px 0px', fontSize: '60px' } },
+	              Liaison.score()
+	            ),
+	            'Your Best Score: ',
+	            React.createElement(
+	              'h2',
+	              { style: { display: 'inline', margin: '0' } },
+	              localStorage[this.props.levelType.name + '-score']
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { id: this.props.levelType.name, className: 'try-again', onClick: this.clickNext },
+	            'Try Again?'
+	          )
+	        )
+	      ) : React.createElement(
+	        'div',
+	        null,
+	        React.createElement('div', { className: 'win-lose-modal', onClick: this.getOutOfModal }),
+	        React.createElement(
+	          'div',
+	          { className: 'modal-content' },
+	          React.createElement(
+	            'h2',
+	            { className: 'unsel win-lose-text' },
+	            " YOU LOST! "
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'back-to-levels', onClick: this.clickBack },
+	            "<< Back to Main Screen"
+	          ),
+	          React.createElement(
+	            'div',
+	            { id: this.props.levelType.name, className: 'try-again', onClick: this.clickNext },
+	            'Replay?'
+	          )
+	        )
+	      );
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      modalToRender
+	    );
+	  }
+	});
+	
+	module.exports = MGameOverModal;
 
 /***/ }
 /******/ ]);

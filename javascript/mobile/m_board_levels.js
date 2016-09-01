@@ -35,6 +35,38 @@ module.exports = {
       star: 3
     },
     moves: 20,
-    nextLevel: 'bonus'
+    nextLevel: 'four'
+  },
+  'four': {
+    name: 'four',
+    isGoalBased: true,
+    size: 10,
+    colors: [3,4,5,6,7],
+    goals: {
+      square: 5,
+    },
+    moves: 10,
+    nextLevel: 'five'
+  },
+  'five': {
+    name: 'five',
+    isGoalBased: true,
+    size: 10,
+    colors: [0,3,4,5,6,7],
+    goals: {
+      heart: 20
+    },
+    moves: 20,
+    nextLevel: 'six'
+  },
+  'six': {
+    name: 'six',
+    isGoalBased: true,
+    size: 10,
+    colors: [1,2,3,5,7,9],
+    goals: {
+      sphere: 3
+    },
+    moves: 30,
   },
 };

@@ -5,7 +5,9 @@ const DotsDivider = require('./dots/dots_divider');
 const Main = React.createClass({
 
   getInitialState () {
-    return({renderLogo: true});
+    return({
+      renderLogo: true,
+      shortScreen: window.screen.height / window.screen.width < 1.5 ? true : false});
   },
 
 
@@ -18,9 +20,11 @@ const Main = React.createClass({
 
 
   render () {
-
     const thisLogo = this.state.renderLogo ? (
-      <div className="logo" onClick={this.handleLogoClick}>
+      <div
+        className="logo"
+        onClick={this.handleLogoClick}
+      >
         {"sw"}
         <div className="logo-swap">
           <div className="logo-ball1">{"•"}</div>
@@ -34,7 +38,7 @@ const Main = React.createClass({
       {"•tz"}</div>);
 
     return (
-      <div className="mobile-main main-page clearfix">
+      <div className={"mobile-main main-page clearfix " + (this.state.shortScreen ? "short-screen" : "")}>
         <header className="clearfix unsel">
           {thisLogo}
         </header>
