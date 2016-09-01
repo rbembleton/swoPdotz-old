@@ -834,5 +834,8 @@ input[type="submit"] {
     font-size: 38px; }
 .short-screen.mobile-main.main-page footer {
   font-size: 24px; }
+  .short-screen.mobile-main.main-page footer .footer-links {
+    margin-bottom: 12px;
+    padding-top: 2px; }
 
 /*# sourceMappingURL=application.css.map */
