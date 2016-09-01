@@ -1,9 +1,8 @@
 const React = require('react');
-const PropTypes = React.PropTypes;
 const MDropGrid = require('./m_drop_grid');
 const MDotDisplay = require('./m_dot_display');
 const ReactDOM = require('react-dom');
-const Liaison = require('../gameplay/liaison');
+const Liaison = require('../../javascript/gameplay/liaison');
 
 
 const MBoardDisplay = React.createClass({
@@ -17,11 +16,6 @@ const MBoardDisplay = React.createClass({
       canTheyMove: Liaison.isItTimeToMove()
     });
   },
-
-  propTypes: {
-
-  },
-
 
   componentDidMount () {
     this.dotListener = Liaison.addListener(this.updateDots);

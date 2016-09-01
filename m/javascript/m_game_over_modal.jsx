@@ -1,5 +1,5 @@
 const React = require('react');
-const Liaison = require('../gameplay/liaison');
+const Liaison = require('../../javascript/gameplay/liaison');
 const hashHistory = require('react-router').hashHistory;
 
 

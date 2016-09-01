@@ -6,8 +6,6 @@ const HomeScreen = require('./home_screen');
 const Game = require('./game');
 const HowTo = require('./how_to');
 const NextLevel = require('./next_level');
-const Mobile = require('./mobile');
-const MGame = require('./mobile/m_game');
 
 const router = (
   <Router history={hashHistory}>
@@ -17,9 +15,6 @@ const router = (
       <Route path="game/:gameType" component={Game}/>
       <Route path="next_level/:gameType" component={NextLevel}/>
       <Route path="how" component={HowTo}/>
-    </Route>
-    <Route path="m" component={Mobile}>
-      <Route path="game/:gameType" component={MGame}/>
     </Route>
   </Router>
 );

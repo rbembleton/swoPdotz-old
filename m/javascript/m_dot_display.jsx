@@ -1,8 +1,8 @@
 const React = require('react');
-const Dots = require('../dots/all_dots');
-const Colors = require('../constants/colors');
-const Shapes = require('../constants/shapes');
-const Liaison = require('../gameplay/liaison');
+const Dots = require('../../javascript/dots/all_dots');
+const Colors = require('../../javascript/constants/colors');
+const Shapes = require('../../javascript/constants/shapes');
+const Liaison = require('../../javascript/gameplay/liaison');
 const swapDots = require('./m_board_display').swapDots;
 
 const MDotDisplay = React.createClass({

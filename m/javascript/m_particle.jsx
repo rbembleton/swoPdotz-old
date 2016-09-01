@@ -1,6 +1,5 @@
 const React = require('react');
 
-
 const MParticle = React.createClass({
 
   getInitialState() {
@@ -39,8 +38,6 @@ const MParticle = React.createClass({
   }
 
 });
-
-
 
 
 module.exports = MParticle;

@@ -1,17 +1,13 @@
 const React = require('react');
 const hashHistory = require('react-router').hashHistory;
-const DotsDivider = require('./dots/dots_divider');
+const DotsDivider = require('../../javascript/dots/dots_divider');
 
 const HomeScreen = React.createClass({
 
-  playGame (e) {
-    e.preventDefault();
-    hashHistory.push(`game/${e.target.id}`);
-  },
 
   playMobileGame (e) {
     e.preventDefault();
-    hashHistory.push(`m/game/${e.target.id}`);
+    hashHistory.push(`game/${e.target.id}`);
   },
 
   howTo (e) {
@@ -42,44 +38,26 @@ const HomeScreen = React.createClass({
     return (
       <div className="levels-select">
         <DotsDivider />
-        <h2 className='unsel'>Standard Levels</h2>
+        <h2 className='unsel'>{"Mobile-Friendly Levels"}</h2>
         <div className="play-button">
-          <button id="intro" onClick={this.playGame}>intro</button>
+          <button id="one" onClick={this.playMobileGame}>one</button>
             <span className="icon-geo-circle teal-hover"/>
-          <button id="one" onClick={this.playGame}>one</button>
+          <button id="two" onClick={this.playMobileGame}>two</button>
             <span className="icon-geo-circle teal-hover"/>
-          <button id="two" onClick={this.playGame}>two</button>
+          <button id="three" onClick={this.playMobileGame}>three</button>
             <span className="icon-geo-circle teal-hover"/>
-          <button id="three" onClick={this.playGame}>three</button>
-          {bonusShow}<br/>
-          <button id="four" onClick={this.playGame}>four</button>
+          <button id="four" onClick={this.playMobileGame}>four</button>
             <span className="icon-geo-circle teal-hover"/>
-          <button id="five" onClick={this.playGame}>five</button>
+          <button id="five" onClick={this.playMobileGame}>five</button>
             <span className="icon-geo-circle teal-hover"/>
-          <button id="six" onClick={this.playGame}>six</button>
-            <span className="icon-geo-circle teal-hover"/>
-          <button id="seven" onClick={this.playGame}>seven</button>
-          {bonus2Show}
+          <button id="six" onClick={this.playMobileGame}>six</button>
         </div>
         <DotsDivider />
-        <div className="play-button">
-          <a href="m/">
-            {"Switch to Mobile-Friendly Version"}
-          </a>
-        </div>
-        <DotsDivider />
-        <h2 className="unsel">Unlimited Levels</h2>
-        <div className="play-button">
-          <button id="ilikewinning" onClick={this.playGame}>
-            {"'I "}<span className="icon-like-3"/>{" Winning' Level"}
-          </button>
-        </div>
-        <div className="play-button">
-          <button id="coolcolors" onClick={this.playGame}>Cool Colors Level</button>
-        </div>
-        <div className="play-button">
-          <button id="infinity" onClick={this.playGame}>Infinity Level</button>
-        </div>
+          <div className="play-button">
+            <a href="../">
+              {"Switch to Desktop Version"}
+            </a>
+          </div>
         <DotsDivider />
         <div className="play-button">
           <button onClick={this.howTo}>How to Play</button>

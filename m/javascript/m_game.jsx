@@ -1,9 +1,9 @@
 const React = require('react');
-const Score = require('../score');
+const Score = require('../../javascript/score');
 const MBoardDisplay = require('./m_board_display');
 const hashHistory = require('react-router').hashHistory;
 const MBoardLevels = require('./m_board_levels');
-const Goals = require('../goals');
+const Goals = require('../../javascript/goals');
 const MGameOverModal = require('./m_game_over_modal');
 
 const MGame = React.createClass({

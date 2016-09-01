@@ -813,6 +813,20 @@ input[type="submit"] {
       font-size: 28px; }
     .mobile-main.main-page .modal-content .win-lose-text {
       font-size: 60px; }
+  .mobile-main.main-page .levels-select {
+    width: 800px; }
+    .mobile-main.main-page .levels-select h2 {
+      font-size: 40px; }
+    .mobile-main.main-page .levels-select .play-button {
+      font-size: 34px;
+      vertical-align: middle; }
+      .mobile-main.main-page .levels-select .play-button span {
+        font-size: 20px;
+        line-height: 34px;
+        margin: 5px 20px; }
+  .mobile-main.main-page .dots-divider .icon-geo-circle {
+    margin: 10px;
+    font-size: 24px; }
 
 .short-screen.mobile-main.main-page {
   margin-top: 12px; }

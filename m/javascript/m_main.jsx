@@ -1,5 +1,5 @@
 const React = require('react');
-const DotsDivider = require('./dots/dots_divider');
+const DotsDivider = require('../../javascript/dots/dots_divider');
 
 
 const Main = React.createClass({

@@ -1,6 +1,7 @@
 const React = require('react');
-const PropTypes = React.PropTypes;
 const MParticle = require('./m_particle');
+
+
 const MDropGrid = React.createClass({
 
   getInitialState () {
