@@ -14,7 +14,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 const BoardDisplay = React.createClass({
   getInitialState () {
     Liaison.ACTIONinitializeDots(this.props.board);
-    this.sizeOfGrids = (400.0 / (this.props.board.size || 16.0));
+    this.sizeOfGrids = (500.0 / (this.props.board.size || 16.0));
     return({
       offset: [0,0],
       dots: Liaison.all(),
@@ -40,7 +40,7 @@ const BoardDisplay = React.createClass({
   updateOffset () {
     const boxResize = (this.sizeOfGrids) / 2.0;
     let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-    this.setState({offset: [myRect.left + boxResize, myRect.bottom + (400 - boxResize)]});
+    this.setState({offset: [myRect.left + boxResize, myRect.bottom + (500 - boxResize)]});
   },
 
   updateDots () {

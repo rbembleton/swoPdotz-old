@@ -37215,11 +37215,11 @@
 	var React = __webpack_require__(3);
 	var Liaison = __webpack_require__(336);
 	var Goals = __webpack_require__(352);
-	var Score = __webpack_require__(354);
-	var MBoardDisplay = __webpack_require__(355);
+	var Score = __webpack_require__(353);
+	var MBoardDisplay = __webpack_require__(354);
 	var hashHistory = __webpack_require__(1).hashHistory;
-	var MBoardLevels = __webpack_require__(362);
-	var MGameOverModal = __webpack_require__(363);
+	var MBoardLevels = __webpack_require__(361);
+	var MGameOverModal = __webpack_require__(362);
 	
 	var MGame = React.createClass({
 	  displayName: 'MGame',
@@ -38506,14 +38506,14 @@
 	    }
 	  },
 	  goalsRender: function goalsRender() {
-	    if (this.state.levelStatus.levelCompleted) {
-	      // <div style={{width: '140px'}}>
-	      return React.createElement(
-	        'div',
-	        null,
-	        'LEVEL COMPLETE!'
-	      );
-	    }
+	    // if (this.state.levelStatus.levelCompleted) {
+	    //   // <div style={{width: '140px'}}>
+	    //   return (
+	    //     <div>
+	    //       LEVEL COMPLETE!
+	    //     </div>
+	    //   );
+	    // }
 	
 	    return React.createElement(
 	      'div',
@@ -38580,7 +38580,7 @@
 	        'div',
 	        { className: 'moves-left-cont' },
 	        'Moves: ',
-	        this.state.levelStatus.movesLeft && this.state.levelStatus.movesLeft > 0 ? this.state.levelStatus.movesLeft : 'No more moves left!'
+	        this.state.levelStatus.movesLeft && this.state.levelStatus.movesLeft > 0 ? this.state.levelStatus.movesLeft : '0'
 	      ),
 	      React.createElement(
 	        'div',
@@ -38594,8 +38594,7 @@
 	module.exports = Goals;
 
 /***/ },
-/* 353 */,
-/* 354 */
+/* 353 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38663,7 +38662,7 @@
 	module.exports = Score;
 
 /***/ },
-/* 355 */
+/* 354 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38673,8 +38672,8 @@
 	});
 	exports.swapDots = swapDots;
 	var React = __webpack_require__(3);
-	var MDropGrid = __webpack_require__(356);
-	var MDotDisplay = __webpack_require__(358);
+	var MDropGrid = __webpack_require__(355);
+	var MDotDisplay = __webpack_require__(357);
 	var ReactDOM = __webpack_require__(97);
 	var Liaison = __webpack_require__(336);
 	
@@ -38771,13 +38770,13 @@
 	module.exports = MBoardDisplay;
 
 /***/ },
-/* 356 */
+/* 355 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var React = __webpack_require__(3);
-	var MParticle = __webpack_require__(357);
+	var MParticle = __webpack_require__(356);
 	
 	var MDropGrid = React.createClass({
 	  displayName: 'MDropGrid',
@@ -38836,7 +38835,7 @@
 	module.exports = MDropGrid;
 
 /***/ },
-/* 357 */
+/* 356 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38877,18 +38876,17 @@
 	module.exports = MParticle;
 
 /***/ },
-/* 358 */
+/* 357 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var React = __webpack_require__(3);
-	var Dots = __webpack_require__(359);
-	var Colors = __webpack_require__(360);
-	var Shapes = __webpack_require__(361);
+	var Dots = __webpack_require__(358);
+	var Colors = __webpack_require__(359);
+	var Shapes = __webpack_require__(360);
 	var Liaison = __webpack_require__(336);
-	// const Liaison = require('../../javascript/gameplay/liaison');
-	var swapDots = __webpack_require__(355).swapDots;
+	var swapDots = __webpack_require__(354).swapDots;
 	
 	var MDotDisplay = React.createClass({
 	  displayName: 'MDotDisplay',
@@ -39009,7 +39007,7 @@
 	module.exports = MDotDisplay;
 
 /***/ },
-/* 359 */
+/* 358 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39035,7 +39033,7 @@
 	};
 
 /***/ },
-/* 360 */
+/* 359 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -39054,7 +39052,7 @@
 	};
 
 /***/ },
-/* 361 */
+/* 360 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -39069,7 +39067,7 @@
 	};
 
 /***/ },
-/* 362 */
+/* 361 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -39148,7 +39146,7 @@
 	};
 
 /***/ },
-/* 363 */
+/* 362 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

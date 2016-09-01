@@ -33,14 +33,14 @@ const Goals = React.createClass({
   },
 
   goalsRender () {
-    if (this.state.levelStatus.levelCompleted) {
-      // <div style={{width: '140px'}}>
-      return (
-        <div>
-          LEVEL COMPLETE!
-        </div>
-      );
-    }
+    // if (this.state.levelStatus.levelCompleted) {
+    //   // <div style={{width: '140px'}}>
+    //   return (
+    //     <div>
+    //       LEVEL COMPLETE!
+    //     </div>
+    //   );
+    // }
 
     return (
       <div>
@@ -84,7 +84,7 @@ const Goals = React.createClass({
       <div className="goals-cont clearfix unsel" style={movesStyle}>
         <div className="moves-left-cont">
           Moves: {this.state.levelStatus.movesLeft && this.state.levelStatus.movesLeft > 0 ?
-            this.state.levelStatus.movesLeft : 'No more moves left!'}
+            this.state.levelStatus.movesLeft : '0'}
         </div>
         <div className="goals-left-cont">
           {this.goalsRender()}

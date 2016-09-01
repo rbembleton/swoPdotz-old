@@ -27370,12 +27370,12 @@
 	'use strict';
 	
 	var React = __webpack_require__(3);
-	var BoardDisplay = __webpack_require__(256);
+	var BoardDisplay = __webpack_require__(239);
 	var hashHistory = __webpack_require__(1).hashHistory;
-	var BoardLevels = __webpack_require__(408);
-	var Liaison = __webpack_require__(240);
-	var Goals = __webpack_require__(409);
-	var Score = __webpack_require__(239);
+	var BoardLevels = __webpack_require__(407);
+	var Liaison = __webpack_require__(405);
+	var Goals = __webpack_require__(408);
+	var Score = __webpack_require__(409);
 	var GameOverModal = __webpack_require__(410);
 	
 	var MGame = React.createClass({
@@ -27414,1289 +27414,6 @@
 /* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var React = __webpack_require__(3);
-	
-	var Score = React.createClass({
-	  displayName: "Score",
-	  getInitialState: function getInitialState() {
-	    return {
-	      score: this.props.Liaison.score() || 0,
-	      score1: this.props.Liaison.score() || 0,
-	      score2: this.props.Liaison.score() || 0,
-	      cont: 1 };
-	  },
-	  componentDidMount: function componentDidMount() {
-	    this.scoreListener = this.props.Liaison.addListener(this.updateScore);
-	  },
-	  componentWillUnmount: function componentWillUnmount() {
-	    this.props.Liaison.removeListener(this.scoreListener);
-	  },
-	  updateScore: function updateScore() {
-	    var newScore = this.props.Liaison.score();
-	    if (this.state.score !== newScore) {
-	      if (this.state.cont === 1) {
-	        this.setState({
-	          score: newScore,
-	          score2: newScore,
-	          cont: 2
-	        });
-	      } else {
-	        this.setState({
-	          score: newScore,
-	          score1: newScore,
-	          cont: 1
-	        });
-	      }
-	    }
-	  },
-	  render: function render() {
-	
-	    return React.createElement(
-	      "div",
-	      { className: "score-cont" },
-	      React.createElement(
-	        "div",
-	        {
-	          className: "score-cont-1",
-	          style: { opacity: this.state.cont === 1 ? '1' : '0' }
-	        },
-	        this.state.score1
-	      ),
-	      React.createElement(
-	        "div",
-	        {
-	          className: "score-cont-2",
-	          style: { opacity: this.state.cont === 2 ? '1' : '0' }
-	        },
-	        this.state.score2
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = Score;
-
-/***/ },
-/* 240 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var React = __webpack_require__(3);
-	var Board = __webpack_require__(241);
-	
-	var explosionCallbacks = {
-	  star: explodeStar,
-	  square: explodeSquare,
-	  triangle: explodeTriangle,
-	  heart: explodeHeart,
-	  asterisk: explodeAsterisk,
-	  plus: explodePlus,
-	  sphere: explodeSphere
-	};
-	
-	var _board = new Board({ callbacks: explosionCallbacks });
-	var _listeners = [];
-	var _preventMove = true;
-	var _moves = void 0;
-	var _numOfType = resetNumOfType();
-	var _levelGoals = resetLevelGoals();
-	var _boardTimeouts = [];
-	
-	var Liaison = function Liaison() {};
-	
-	Liaison.addListener = function (callback) {
-	  _listeners.push(callback);
-	  return _listeners.length - 1;
-	};
-	
-	Liaison.broadcastChanges = function () {
-	  _listeners.forEach(function (callback) {
-	    if (callback === undefined) {
-	      return;
-	    }
-	    callback();
-	  });
-	};
-	
-	Liaison.removeListener = function (idx) {
-	  _listeners[idx] = undefined;
-	};
-	
-	function clearBoard() {
-	  _board.grid = {};
-	  _board.dotsById = {};
-	  _board.score = 0;
-	  _board = new Board({});
-	  _moves = undefined;
-	  _levelGoals = resetLevelGoals();
-	  _numOfType = resetNumOfType();
-	  clearBoardTimeouts();
-	}
-	
-	function clearBoardTimeouts() {
-	  while (_boardTimeouts.length !== 0) {
-	    clearTimeout(_boardTimeouts.pop());
-	  }
-	}
-	
-	function resetDots(options) {
-	  _board = new Board({
-	    callbacks: explosionCallbacks,
-	    size: options.size,
-	    colors: options.colors,
-	    fruitify: options.fruitify || false
-	  });
-	  _board.placeDots();
-	
-	  _numOfType = resetNumOfType();
-	  _moves = options.moves || undefined;
-	  _levelGoals = resetLevelGoals(options.goals);
-	
-	  Liaison.broadcastChanges();
-	  _boardTimeouts.push(setTimeout(function () {
-	    _board.resetExplodedSpaces();
-	    checkGroups();
-	  }, 200));
-	}
-	
-	function resetLevelGoals() {
-	  var goalsObj = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	
-	  return {
-	    triangle: goalsObj.triangle || undefined,
-	    square: goalsObj.square || undefined,
-	    star: goalsObj.star || undefined,
-	    heart: goalsObj.heart || undefined,
-	    asterisk: goalsObj.asterisk || undefined,
-	    plus: goalsObj.plus || undefined,
-	    sphere: goalsObj.sphere || undefined
-	  };
-	}
-	
-	function resetNumOfType() {
-	  return {
-	    triangle: 0,
-	    square: 0,
-	    heart: 0,
-	    star: 0,
-	    asterisk: 0,
-	    plus: 0,
-	    sphere: 0
-	  };
-	}
-	
-	function explodeStar(x, y) {
-	  _numOfType.star++;
-	}
-	
-	function explodeAsterisk(x, y) {
-	  _numOfType.asterisk++;
-	}
-	
-	function explodeTriangle(x, y) {
-	  _numOfType.triangle++;
-	}
-	
-	function explodeSquare(x, y) {
-	  _numOfType.square++;
-	}
-	
-	function explodeHeart(x, y) {
-	  _numOfType.heart++;
-	}
-	
-	function explodePlus(x, y) {
-	  _numOfType.plus++;
-	}
-	
-	function explodeSphere(x, y) {
-	  _numOfType.sphere++;
-	}
-	
-	function switchDots(dots) {
-	  _preventMove = true;
-	  var dot1 = _board.dotsById[dots[0].id];
-	  var dot2 = _board.dotsById[dots[1].id];
-	  var tempPos = dot1.pos;
-	  dot1.pos = dot2.pos;
-	  dot2.pos = tempPos;
-	
-	  _board.setValAt(dot1.pos, dot1);
-	  _board.setValAt(dot2.pos, dot2);
-	
-	  _moves--;
-	
-	  Liaison.broadcastChanges();
-	  _boardTimeouts.push(setTimeout(function () {
-	    _board.resetExplodedSpaces();
-	    checkGroups();
-	  }, 200));
-	}
-	
-	function snapDot(dot) {
-	  _board.setValAt(dot.pos, dot);
-	  _board.dotsById[dot.id] = dot;
-	  Liaison.broadcastChanges();
-	}
-	
-	function objDeepDup(obj) {
-	  var newObject = {};
-	
-	  Object.keys(obj).forEach(function (key) {
-	    newObject[key] = unknwnTypeDup(obj[key]);
-	  });
-	
-	  return newObject;
-	}
-	
-	function unknwnTypeDup(val) {
-	  if (val instanceof Array) {
-	    return val.map(function (el) {
-	      return unknwnTypeDup(el);
-	    });
-	  } else if (val instanceof Object) {
-	    return objDeepDup(val);
-	  } else {
-	    return val;
-	  }
-	}
-	
-	// run this first
-	function checkGroups() {
-	  _board.scoreMultiplier++;
-	  _board.checkInARows(removeGroups);
-	}
-	
-	// second callback
-	function removeGroups() {
-	  Liaison.broadcastChanges();
-	  _boardTimeouts.push(setTimeout(function () {
-	    _board.resetExplodedSpaces();
-	    _board.blowEmUp(boardDrop);
-	  }, 100));
-	}
-	
-	// third callback
-	function boardDrop() {
-	  Liaison.broadcastChanges();
-	  _boardTimeouts.push(setTimeout(function () {
-	    _board.resetExplodedSpaces();
-	    _board.columnsDrop(updateDisplay);
-	  }, 400));
-	}
-	
-	// fourth callback
-	function updateDisplay() {
-	  Liaison.broadcastChanges();
-	  _boardTimeouts.push(setTimeout(function () {
-	    _board.resetExplodedSpaces();
-	    fillInTop();
-	  }, 400));
-	}
-	
-	function fillInTop() {
-	  var noFills = _board.fillInTop();
-	
-	  if (noFills) {
-	    if (_board.spheresToExplode.length > 0) {
-	      _board.sphereExplode(Liaison.broadcastChanges, checkGroups);
-	    } else {
-	      (function () {
-	        var rainbows = _board.rainbowTiles();
-	        if (rainbows.length > 0) {
-	          _boardTimeouts.push(setTimeout(function () {
-	            _board.spreadRainbow(rainbows);
-	            Liaison.broadcastChanges();
-	          }, 100));
-	        }
-	
-	        _boardTimeouts.push(setTimeout(function () {
-	          _preventMove = false;
-	          _board.scoreMultiplier = 0;
-	          Liaison.broadcastChanges();
-	          clearBoardTimeouts();
-	        }, 400));
-	      })();
-	    }
-	  } else {
-	    Liaison.broadcastChanges();
-	    _boardTimeouts.push(setTimeout(function () {
-	      _board.resetExplodedSpaces();
-	      checkGroups();
-	    }, 400));
-	  }
-	}
-	
-	//    STORE FUNCTIONS
-	
-	Liaison.isOver = function () {
-	  return completedHelper();
-	};
-	
-	Liaison.explosions = function () {
-	  return _board.explodedSpaces;
-	};
-	
-	Liaison.score = function () {
-	  return _board.score;
-	};
-	
-	Liaison.continueUpdate = function () {
-	  return _board.continueUpdate;
-	};
-	
-	Liaison.all = function () {
-	  var retArr = [];
-	
-	  Object.keys(_board.dotsById).forEach(function (id) {
-	    if (_board.dotsById[id].isKilled === true) {
-	
-	      delete _board.dotsById[id];
-	      return;
-	    }
-	    retArr.push(objDeepDup(_board.dotsById[id]));
-	  });
-	
-	  return retArr;
-	};
-	
-	Liaison.byId = function (id) {
-	  return objDeepDup(_board.dotsById[id]);
-	};
-	
-	Liaison.at = function (pos) {
-	  if (!_board.getValAt(pos)) {
-	    return null;
-	  }
-	  return objDeepDup(_board.getValAt(pos));
-	};
-	
-	Liaison.isItTimeToMove = function () {
-	  return _preventMove === false;
-	};
-	
-	Liaison.levelStatus = function () {
-	  return {
-	    movesLeft: _moves,
-	    star: levelStatusHelper('star'),
-	    triangle: levelStatusHelper('triangle'),
-	    square: levelStatusHelper('square'),
-	    asterisk: levelStatusHelper('asterisk'),
-	    plus: levelStatusHelper('plus'),
-	    sphere: levelStatusHelper('sphere'),
-	    heart: levelStatusHelper('heart'),
-	    levelCompleted: completedHelper()
-	  };
-	};
-	
-	function completedHelper() {
-	  var allTrue = true;
-	  ['star', 'heart', 'triangle', 'square', 'asterisk', 'plus', 'sphere'].forEach(function (el) {
-	    if (_levelGoals[el] && _levelGoals[el] !== 'completed') {
-	      allTrue = false;
-	    }
-	  });
-	
-	  return allTrue ? 'won' : _moves <= 0 ? 'lost' : undefined;
-	}
-	
-	function levelStatusHelper(kind) {
-	  if (_levelGoals[kind]) {
-	    if (_levelGoals[kind] === 'completed') {
-	      return 0;
-	    } else if (_levelGoals[kind] - _numOfType[kind] > 0) {
-	      return _levelGoals[kind] - _numOfType[kind];
-	    } else {
-	      _levelGoals[kind] = 'completed';
-	      // return "✔";
-	      return 0;
-	    }
-	  } else {
-	    return undefined;
-	  }
-	}
-	
-	// ACTIONS FUNCTIONS
-	
-	
-	Liaison.ACTIONinitializeDots = function (options) {
-	  resetDots(options);
-	};
-	
-	Liaison.ACTIONsnapToOrigin = function (dot) {
-	  snapDot(dot);
-	};
-	
-	Liaison.ACTIONswitchDots = function (dot1, dot2) {
-	  switchDots([dot1, dot2]);
-	};
-	
-	Liaison.ACTIONcheckGroups = function () {
-	  checkGroups();
-	};
-	
-	Liaison.ACTIONremoveGroups = function () {
-	  checkGroups();
-	};
-	
-	Liaison.ACTIONboardDrop = function () {
-	  boardDrop();
-	};
-	
-	Liaison.ACTIONfillInBoard = function () {
-	  fillInTop();
-	};
-	
-	Liaison.ACTIONclearBoard = function () {
-	  clearBoard();
-	};
-	
-	module.exports = Liaison;
-
-/***/ },
-/* 241 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Dots = __webpack_require__(242);
-	var Colors = __webpack_require__(254);
-	var Shapes = __webpack_require__(255);
-	
-	var Board = function Board(options) {
-	  this.size = options.size || 16;
-	  this.grid = initializeGrid(this.size, {});
-	  this.score = 0;
-	  this.colors = levelColors(options.colors || [0, 1, 2, 3, 4, 5, 6, 7, 8]);
-	  this.style = ' ';
-	
-	  this.dotIdentifier = 0;
-	  this.dotsById = {};
-	
-	  this.dotsToExplode = initializeGrid(this.size, false);
-	  this.explodedSpaces = initializeGrid(this.size, ' ');
-	  this.explosionCallbacks = options.callbacks || {};
-	  this.scoreMultiplier = 0;
-	  this.fruitify = options.fruitify === true ? true : false;
-	  this.spheresToExplode = [];
-	};
-	
-	var scoreConv = {
-	  3: 51,
-	  4: 201,
-	  5: 501,
-	  6: 1001
-	};
-	
-	var dotNumConv = {
-	  3: Dots.triangle,
-	  4: Dots.square,
-	  5: Dots.star,
-	  6: Dots.asterisk
-	};
-	
-	function levelColors(array) {
-	  var colorKeys = Object.keys(Colors);
-	  var myColors = [];
-	
-	  array.forEach(function (el) {
-	    myColors.push(Colors[colorKeys[el]]);
-	  });
-	
-	  return myColors;
-	}
-	
-	function initializeGrid(size, placeholder) {
-	  var newGrid = {};
-	
-	  for (var ix = 0; ix < size; ix++) {
-	    newGrid[ix] = {};
-	    for (var iy = 0; iy < size; iy++) {
-	      newGrid[ix][iy] = placeholder;
-	    }
-	  }
-	
-	  return newGrid;
-	}
-	
-	Board.prototype.verifyValidPositions = function () {
-	  var that = this;
-	
-	  for (var _len = arguments.length, positions = Array(_len), _key = 0; _key < _len; _key++) {
-	    positions[_key] = arguments[_key];
-	  }
-	
-	  return positions.every(function (pos) {
-	    return pos[0] >= 0 && pos[1] >= 0 && pos[0] < that.size && pos[1] < that.size && that.grid[pos[0]][pos[1]] && !that.dotsToExplode[pos[0]][pos[1]];
-	  });
-	};
-	
-	Board.prototype.verifyColors = function (color) {
-	  var that = this;
-	
-	  for (var _len2 = arguments.length, positions = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-	    positions[_key2 - 1] = arguments[_key2];
-	  }
-	
-	  return positions.every(function (pos) {
-	    return pos[0] >= 0 && pos[1] >= 0 && pos[0] < that.size && pos[1] < that.size && that.grid[pos[0]][pos[1]] && !that.dotsToExplode[pos[0]][pos[1]] && that.grid[pos[0]][pos[1]].color === color;
-	  });
-	};
-	
-	Board.prototype.blowEmUp = function (callback) {
-	  for (var ix = 0; ix < this.size; ix++) {
-	    for (var iy = 0; iy < this.size; iy++) {
-	      if (this.dotsToExplode[ix][iy]) this.removeDot(ix, iy);
-	    }
-	  }
-	
-	  this.dotsToExplode = initializeGrid(this.size, false);
-	  callback();
-	};
-	
-	Board.prototype.rainbowTiles = function () {
-	  var ret_arr = [];
-	  for (var ix = 0; ix < this.size; ix++) {
-	    for (var iy = 0; iy < this.size; iy++) {
-	      if (this.grid[ix][iy].color === 'rainbow') {
-	        ret_arr.push([ix, iy]);
-	      }
-	    }
-	  }
-	  return ret_arr;
-	};
-	
-	var rainbowDiseaseDirections = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-	
-	Board.prototype.spreadRainbow = function (arr) {
-	  var _this = this;
-	
-	  arr.forEach(function (pos) {
-	    var randDelt = rainbowDiseaseDirections[Math.floor(Math.random() * 4)];
-	    if (pos[0] + randDelt[0] > 0 && pos[0] + randDelt[0] < _this.size && pos[1] + randDelt[1] > 0 && pos[1] + randDelt[1] < _this.size) {
-	      _this.grid[pos[0] + randDelt[0]][pos[1] + randDelt[1]].color = 'rainbow';
-	    }
-	  });
-	};
-	
-	Board.prototype.resetExplodedSpaces = function () {
-	  this.explodedSpaces = initializeGrid(this.size, ' ');
-	};
-	
-	Board.prototype.sphereify = function () {
-	  for (var ix = 0; ix < this.size; ix++) {
-	    for (var iy = 0; iy < this.size; iy++) {
-	      if (this.grid[ix][iy]) {
-	        if (this.grid[ix][iy] instanceof Dots.asterisk || this.grid[ix][iy] instanceof Dots.plus || this.grid[ix][iy] instanceof Dots.star) this.replaceDot(ix, iy, Dots.sphere);
-	      }
-	    }
-	  }
-	};
-	
-	Board.prototype.sphereExplode = function (startCallback, endCallback) {
-	  var _this2 = this;
-	
-	  for (var ix = 0; ix < this.size; ix++) {
-	    for (var iy = 0; iy < this.size; iy++) {
-	      this.grid[ix][iy].color = 'black-out';
-	    }
-	  }
-	
-	  startCallback();
-	
-	  setTimeout(function () {
-	    for (var ix = 0; ix < _this2.size; ix++) {
-	      for (var iy = 0; iy < _this2.size; iy++) {
-	        var oldDot = _this2.grid[ix][iy];
-	        oldDot.isKilled = true;
-	        _this2.grid[ix][iy] = null;
-	        _this2.explodedSpaces[ix][iy] = 'rainbow-explosion';
-	        _this2.runDotCallbacks(ix, iy, oldDot);
-	        _this2.score += 314 * _this2.scoreMultiplier;
-	      }
-	    }
-	    _this2.spheresToExplode = [];
-	    endCallback();
-	  }, 1000);
-	};
-	
-	Board.prototype.placeRandomDot = function (x, y) {
-	  var randColor = this.colors[Math.floor(Math.random() * this.colors.length)];
-	
-	  var newDot = new Dots.circle({
-	    color: randColor,
-	    pos: [x, y],
-	    id: this.dotIdentifier
-	  });
-	
-	  if (this.fruitify && Math.floor(Math.random() * 10) === 0) newDot.fruitify();
-	
-	  this.grid[x][y] = newDot;
-	  this.dotsById[this.dotIdentifier] = newDot;
-	  this.dotIdentifier++;
-	};
-	
-	Board.prototype.placeDots = function () {
-	  for (var ix = 0; ix < this.size; ix++) {
-	    for (var iy = 0; iy < this.size; iy++) {
-	      this.placeRandomDot(ix, iy);
-	    }
-	  }
-	};
-	
-	Board.prototype.fillInTop = function () {
-	  var noFills = true;
-	
-	  for (var ix = 0; ix < this.size; ix++) {
-	    for (var iy = 0; iy < this.size; iy++) {
-	      if (!this.grid[ix][iy]) {
-	
-	        this.placeRandomDot(ix, iy);
-	        noFills = false;
-	      }
-	    }
-	  }
-	
-	  return noFills;
-	};
-	
-	Board.prototype.getValAt = function (pos) {
-	  return this.grid[pos[0]][pos[1]];
-	};
-	
-	Board.prototype.setValAt = function (pos, val) {
-	  this.grid[pos[0]][pos[1]] = val;
-	};
-	
-	Board.prototype.checkInARows = function (callback, update) {
-	  var ix = void 0,
-	      iy = void 0;
-	
-	  for (ix = 0; ix < this.size; ix++) {
-	    for (iy = 0; iy < this.size; iy++) {
-	
-	      this.checkStarsAndAsterisks(ix, iy);
-	    }
-	  }
-	
-	  for (ix = 0; ix < this.size; ix++) {
-	    for (iy = 0; iy < this.size; iy++) {
-	
-	      this.checkNumInDelta(ix, iy, 6, [0, 1], update);
-	      this.checkNumInDelta(ix, iy, 6, [1, 0], update);
-	      this.checkNumInDelta(ix, iy, 5, [0, 1], update);
-	      this.checkNumInDelta(ix, iy, 5, [1, 0], update);
-	    }
-	  }
-	
-	  for (ix = 0; ix < this.size; ix++) {
-	    for (iy = 0; iy < this.size; iy++) {
-	
-	      this.checkTnLz(ix, iy);
-	      this.checkClusters(ix, iy);
-	    }
-	  }
-	
-	  for (ix = 0; ix < this.size; ix++) {
-	    for (iy = 0; iy < this.size; iy++) {
-	
-	      this.checkNumInDelta(ix, iy, 4, [0, 1], update);
-	      this.checkNumInDelta(ix, iy, 4, [1, 0], update);
-	      this.checkNumInDelta(ix, iy, 3, [0, 1], update);
-	      this.checkNumInDelta(ix, iy, 3, [1, 0], update);
-	    }
-	  }
-	
-	  callback();
-	};
-	
-	Board.prototype.killColor = function (color) {
-	  for (var ix = 0; ix < this.size; ix++) {
-	    for (var iy = 0; iy < this.size; iy++) {
-	
-	      if (this.grid[ix][iy] && this.grid[ix][iy].color === color) {
-	        this.removeDot(ix, iy);
-	      }
-	    }
-	  }
-	};
-	
-	Board.prototype.changeColors = function (color) {
-	  for (var ix = 0; ix < this.size; ix++) {
-	    for (var iy = 0; iy < this.size; iy++) {
-	      if (this.grid[ix][iy] && this.grid[ix][iy].color !== 'rainbow' && this.grid[ix][iy].color !== 'grey-out') {
-	        this.grid[ix][iy].color = color;
-	      }
-	    }
-	  }
-	};
-	
-	Board.prototype.killCross = function (x, y) {
-	  for (var ix = 0; ix < this.size; ix++) {
-	    if (this.grid[ix][y]) {
-	      this.removeDot(ix, y);
-	    }
-	  }
-	  for (var iy = 0; iy < this.size; iy++) {
-	    if (this.grid[x][iy]) {
-	      this.removeDot(x, iy);
-	    }
-	  }
-	};
-	
-	Board.prototype.killBigX = function (x, y) {
-	  var _this3 = this;
-	
-	  [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function (deltaPos) {
-	    var dx = deltaPos[0];
-	    var dy = deltaPos[1];
-	    for (var i = 0; x + i * dx >= 0 && x + i * dx < _this3.size && y + i * dy >= 0 && y + i * dy < _this3.size; i++) {
-	      _this3.removeDot(x + i * dx, y + i * dy);
-	    }
-	  });
-	};
-	
-	Board.prototype.killTri = function (x, y) {
-	  if (y < this.size - 1 && this.grid[x][y + 1]) {
-	    this.removeDot(x, y + 1);
-	  }
-	  if (x > 0 && y > 0 && this.grid[x - 1][y - 1]) {
-	    this.removeDot(x - 1, y - 1);
-	  }
-	  if (x < this.size - 1 && y > 0 && this.grid[x + 1][y - 1]) {
-	    this.removeDot(x + 1, y - 1);
-	  }
-	};
-	
-	Board.prototype.killSquare = function (x, y) {
-	  for (var ix = x - 2; ix < x + 3; ix++) {
-	    for (var iy = y - 2; iy < y + 3; iy++) {
-	      if (ix >= 0 && iy >= 0 && ix < this.size && iy < this.size && this.grid[ix][iy]) {
-	        this.removeDot(ix, iy);
-	      }
-	    }
-	  }
-	};
-	
-	Board.prototype.setDotForRemoval = function (x, y) {
-	  this.dotsToExplode[x][y] = true;
-	};
-	
-	Board.prototype.removeDot = function (x, y) {
-	  if (this.grid[x][y] === null) {
-	    return;
-	  }
-	  var oldDot = this.grid[x][y];
-	
-	  if (this.fruitify && oldDot.isFruit) this.score += 1000 * this.scoreMultiplier;
-	
-	  if (!(oldDot instanceof Dots.sphere)) {
-	    oldDot.isKilled = true;
-	    this.grid[x][y] = null;
-	    this.explodedSpaces[x][y] = oldDot.color;
-	    this.runDotCallbacks(x, y, oldDot);
-	  }
-	
-	  this.runDotExplosions(x, y, oldDot);
-	};
-	
-	Board.prototype.runDotCallbacks = function (x, y, dot) {
-	  if (dot instanceof Dots.star) {
-	    this.explosionCallbacks.star();
-	  } else if (dot instanceof Dots.square) {
-	    this.explosionCallbacks.square();
-	  } else if (dot instanceof Dots.plus) {
-	    this.explosionCallbacks.plus();
-	  } else if (dot instanceof Dots.triangle) {
-	    this.explosionCallbacks.triangle();
-	  } else if (dot instanceof Dots.heart) {
-	    this.explosionCallbacks.heart();
-	  } else if (dot instanceof Dots.asterisk) {
-	    this.explosionCallbacks.asterisk();
-	  } else if (dot instanceof Dots.sphere) {
-	    this.explosionCallbacks.sphere();
-	  }
-	};
-	
-	Board.prototype.runDotExplosions = function (x, y, dot) {
-	  if (dot instanceof Dots.star) {
-	    this.killColor(dot.color);
-	  } else if (dot instanceof Dots.square) {
-	    this.killCross(x, y);
-	  } else if (dot instanceof Dots.plus) {
-	    this.killBigX(x, y);
-	  } else if (dot instanceof Dots.triangle) {
-	    this.killTri(x, y);
-	  } else if (dot instanceof Dots.heart) {
-	    this.killSquare(x, y);
-	  } else if (dot instanceof Dots.asterisk) {
-	    this.changeColors(dot.color);
-	  } else if (dot instanceof Dots.sphere) {
-	    dot.color = 'grey-out';
-	    this.spheresToExplode.push(dot);
-	  }
-	};
-	
-	Board.prototype.replaceDot = function (x, y, dotConstructor) {
-	  if (this.grid[x][y] === null) {
-	    return;
-	  }
-	  var oldDot = this.grid[x][y];
-	  this.removeDot(x, y);
-	
-	  this.grid[x][y] = new dotConstructor({
-	    color: oldDot.color,
-	    pos: oldDot.pos,
-	    id: this.dotIdentifier
-	  });
-	
-	  this.dotsById[this.dotIdentifier] = this.grid[x][y];
-	  this.dotIdentifier++;
-	};
-	
-	Board.prototype.checkClusters = function (x, y) {
-	  if (!this.verifyValidPositions([x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]) || this.grid[x][y].color === 'rainbow' || this.grid[x][y].color === 'grey-out') {
-	    return;
-	  }
-	
-	  var thisColor = this.grid[x][y].color;
-	  if (this.grid[x + 1][y].color === thisColor && this.grid[x + 1][y + 1].color === thisColor && this.grid[x][y + 1].color === thisColor) {
-	
-	    this.setDotForRemoval(x, y + 1);
-	    this.setDotForRemoval(x + 1, y);
-	    this.setDotForRemoval(x + 1, y + 1);
-	    this.replaceDot(x, y, Dots.heart);
-	
-	    this.score += scoreConv[4] * this.scoreMultiplier;
-	  }
-	};
-	
-	Board.prototype.checkTnLz = function (x, y) {
-	  if (x + 2 >= this.size || y + 2 >= this.size) {
-	    return;
-	  }
-	
-	  for (var dy = 0; dy < 3; dy++) {
-	    if (this.grid[x][y + dy] && this.grid[x + 1][y + dy] && this.grid[x + 2][y + dy] && !this.dotsToExplode[x][y + dy] && !this.dotsToExplode[x + 1][y + dy] && !this.dotsToExplode[x + 2][y + dy]) {
-	      var thisColor = this.grid[x][y + dy].color;
-	      if (thisColor !== 'rainbow' && thisColor !== 'grey-out' && this.grid[x + 1][y + dy].color === thisColor && this.grid[x + 2][y + dy].color === thisColor) {
-	        for (var dx = 0; dx < 3; dx++) {
-	          if (this.verifyValidPositions([x + dx, y], [x + dx, y + 1], [x + dx, y + 2])) {
-	            if (this.grid[x + dx][y].color === thisColor && this.grid[x + dx][y + 1].color === thisColor && this.grid[x + dx][y + 2].color === thisColor) {
-	
-	              if (dx !== 0) this.setDotForRemoval(x, y + dy);
-	              if (dx !== 1) this.setDotForRemoval(x + 1, y + dy);
-	              if (dx !== 2) this.setDotForRemoval(x + 2, y + dy);
-	
-	              if (dy !== 0) this.setDotForRemoval(x + dx, y);
-	              if (dy !== 1) this.setDotForRemoval(x + dx, y + 1);
-	              if (dy !== 2) this.setDotForRemoval(x + dx, y + 2);
-	
-	              this.replaceDot(x + dx, y + dy, Dots.plus);
-	
-	              this.score += scoreConv[5] * this.scoreMultiplier;
-	            }
-	          }
-	        }
-	      }
-	    }
-	  }
-	};
-	
-	Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
-	  var dx = dPos[0];
-	  var dy = dPos[1];
-	  var size = this.size;
-	
-	  if (this.grid[x][y] && this.grid[x][y].id && x + (num - 1) * dx < size && y + (num - 1) * dy < size && this.grid[x][y].color !== 'rainbow' && this.grid[x][y].color !== 'grey-out') {
-	
-	    var initColor = this.grid[x][y].color;
-	    var sameColor = true;
-	
-	    for (var i = 0; i < num && sameColor; i++) {
-	      if (!this.verifyValidPositions([x + dx * i, y + dy * i]) || this.grid[x + dx * i][y + dy * i].color !== initColor) {
-	        sameColor = false;
-	      }
-	    }
-	
-	    if (sameColor && i === num) {
-	      for (var j = 0; j < num; j++) {
-	        if (Math.floor(num / 2) === j) {
-	          this.replaceDot(x + dx * j, y + dy * j, dotNumConv[num]);
-	        } else {
-	          this.setDotForRemoval(x + dx * j, y + dy * j);
-	        }
-	      }
-	      this.score += scoreConv[num];
-	    }
-	  }
-	};
-	
-	Board.prototype.checkStarsAndAsterisks = function (x, y) {
-	  if (this.grid[x][y] instanceof Dots.star || this.grid[x][y] instanceof Dots.asterisk || this.grid[x][y] instanceof Dots.plus) {
-	    if (x + 1 < this.size && (this.grid[x + 1][y] instanceof Dots.star || this.grid[x + 1][y] instanceof Dots.asterisk || this.grid[x + 1][y] instanceof Dots.plus)) {
-	      this.replaceDot(x, y, Dots.sphere);
-	      this.removeDot(x + 1, y);
-	      this.sphereify();
-	    } else if (y + 1 < this.size && (this.grid[x][y + 1] instanceof Dots.star || this.grid[x][y + 1] instanceof Dots.asterisk || this.grid[x][y + 1] instanceof Dots.plus)) {
-	      this.replaceDot(x, y, Dots.sphere);
-	      this.removeDot(x, y + 1);
-	      this.sphereify();
-	    }
-	  }
-	};
-	
-	Board.prototype.shiftColumnDown = function (x, startY) {
-	  var nextToBeFilled = startY;
-	
-	  for (var y = startY; y < this.size; y++) {
-	    if (this.grid[x][y]) {
-	      this.grid[x][y].pos = [x, nextToBeFilled];
-	      this.grid[x][nextToBeFilled] = this.grid[x][y];
-	      this.grid[x][nextToBeFilled].style = 'drop';
-	      this.grid[x][nextToBeFilled].oldPos = [x, y];
-	      this.grid[x][y] = null;
-	
-	      nextToBeFilled++;
-	    }
-	  }
-	};
-	
-	Board.prototype.columnsDrop = function (callback) {
-	  var columnsDropped = false;
-	
-	  for (var ix = 0; ix < this.size; ix++) {
-	    var thisColumnDropped = false;
-	
-	    for (var iy = 0; iy < this.size && !thisColumnDropped; iy++) {
-	
-	      if (!this.grid[ix][iy]) {
-	        thisColumnDropped = true;
-	        columnsDropped = true;
-	        this.shiftColumnDown(ix, iy);
-	      }
-	    }
-	  }
-	
-	  callback();
-	};
-	
-	module.exports = Board;
-
-/***/ },
-/* 242 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var CircleDot = __webpack_require__(243);
-	var HeartDot = __webpack_require__(247);
-	var SquareDot = __webpack_require__(248);
-	var StarDot = __webpack_require__(249);
-	var TriangleDot = __webpack_require__(250);
-	var AsteriskDot = __webpack_require__(251);
-	var PlusDot = __webpack_require__(252);
-	var SphereDot = __webpack_require__(253);
-	
-	module.exports = {
-	  circle: CircleDot,
-	  heart: HeartDot,
-	  square: SquareDot,
-	  star: StarDot,
-	  triangle: TriangleDot,
-	  asterisk: AsteriskDot,
-	  plus: PlusDot,
-	  sphere: SphereDot
-	};
-
-/***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Util = __webpack_require__(244);
-	var Dot = __webpack_require__(245);
-	var FruitDotConstants = __webpack_require__(246);
-	
-	var CircleDot = function CircleDot(options) {
-	  Dot.call(this, {
-	    color: options.color,
-	    pos: options.pos,
-	    id: options.id
-	  });
-	  this.shape = 'circle';
-	  this.icon = '•';
-	  this.iconClass = 'icon-geo-circle';
-	};
-	
-	Util.inherits(CircleDot, Dot);
-	
-	CircleDot.prototype.fruitify = function () {
-	  this.iconClass = FruitDotConstants.fruitify[Math.floor(Math.random() * 6)];
-	  this.isFruit = true;
-	};
-	
-	CircleDot.prototype.defruitify = function () {
-	  this.iconClass = 'icon-geo-circle';
-	};
-	
-	module.exports = CircleDot;
-
-/***/ },
-/* 244 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	var Util = {
-	  inherits: function inherits(childClass, parentClass) {
-	    var Surrogate = function Surrogate() {};
-	    Surrogate.prototype = parentClass.prototype;
-	    childClass.prototype = new Surrogate();
-	    childClass.prototype.constructor = childClass;
-	  }
-	};
-	
-	module.exports = Util;
-
-/***/ },
-/* 245 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	var Dot = function Dot(options) {
-	  this.pos = options.pos;
-	  this.color = options.color;
-	  this.shape = 'shape';
-	  this.icon = '-';
-	  this.iconClass = ' ';
-	  this.id = options.id;
-	  this.isFruit = false;
-	};
-	
-	module.exports = Dot;
-
-/***/ },
-/* 246 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	module.exports = {
-	  fruitify: ['icon-apple', 'icon-melon-slice', 'icon-bananas', 'icon-lemon', 'icon-sberry', 'icon-cherry']
-	};
-
-/***/ },
-/* 247 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Util = __webpack_require__(244);
-	var Dot = __webpack_require__(245);
-	
-	var HeartDot = function HeartDot(options) {
-	  Dot.call(this, {
-	    color: options.color,
-	    pos: options.pos,
-	    id: options.id
-	  });
-	  this.shape = 'heart';
-	  this.icon = '♥';
-	  this.iconClass = 'icon-like-3';
-	};
-	
-	Util.inherits(HeartDot, Dot);
-	
-	module.exports = HeartDot;
-
-/***/ },
-/* 248 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Util = __webpack_require__(244);
-	var Dot = __webpack_require__(245);
-	
-	var SquareDot = function SquareDot(options) {
-	  Dot.call(this, {
-	    color: options.color,
-	    pos: options.pos,
-	    id: options.id
-	  });
-	  this.shape = 'square';
-	  this.icon = '▪';
-	  this.iconClass = 'icon-geo-square';
-	};
-	
-	Util.inherits(SquareDot, Dot);
-	
-	module.exports = SquareDot;
-
-/***/ },
-/* 249 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Util = __webpack_require__(244);
-	var Dot = __webpack_require__(245);
-	
-	var StarDot = function StarDot(options) {
-	  Dot.call(this, {
-	    color: options.color,
-	    pos: options.pos,
-	    id: options.id
-	  });
-	  this.shape = 'star';
-	  this.icon = '★';
-	  this.iconClass = 'icon-star';
-	};
-	
-	Util.inherits(StarDot, Dot);
-	
-	module.exports = StarDot;
-
-/***/ },
-/* 250 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Util = __webpack_require__(244);
-	var Dot = __webpack_require__(245);
-	
-	var TriangleDot = function TriangleDot(options) {
-	  Dot.call(this, {
-	    color: options.color,
-	    pos: options.pos,
-	    id: options.id
-	  });
-	  this.shape = 'triangle';
-	  this.icon = '▴';
-	  this.iconClass = 'icon-geo-triangle';
-	};
-	
-	Util.inherits(TriangleDot, Dot);
-	
-	module.exports = TriangleDot;
-
-/***/ },
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Util = __webpack_require__(244);
-	var Dot = __webpack_require__(245);
-	
-	var AsteriskDot = function AsteriskDot(options) {
-	  Dot.call(this, {
-	    color: options.color,
-	    pos: options.pos,
-	    id: options.id
-	  });
-	  this.shape = 'asterisk';
-	  this.icon = '*';
-	  this.iconClass = 'icon-asterisk';
-	};
-	
-	Util.inherits(AsteriskDot, Dot);
-	
-	module.exports = AsteriskDot;
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Util = __webpack_require__(244);
-	var Dot = __webpack_require__(245);
-	
-	var PlusDot = function PlusDot(options) {
-	  Dot.call(this, {
-	    color: options.color,
-	    pos: options.pos,
-	    id: options.id
-	  });
-	  this.shape = 'plus';
-	  this.icon = '+';
-	  this.iconClass = 'icon-plus';
-	};
-	
-	Util.inherits(PlusDot, Dot);
-	
-	module.exports = PlusDot;
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Util = __webpack_require__(244);
-	var Dot = __webpack_require__(245);
-	
-	var SphereDot = function SphereDot(options) {
-	  Dot.call(this, {
-	    color: 'rainbow',
-	    pos: options.pos,
-	    id: options.id
-	  });
-	  this.shape = 'sphere';
-	  this.icon = 'o';
-	  this.iconClass = 'icon-geo-sphere';
-	};
-	
-	Util.inherits(SphereDot, Dot);
-	
-	module.exports = SphereDot;
-
-/***/ },
-/* 254 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	module.exports = {
-	  pink: 'pink',
-	  red: 'red',
-	  orange: 'orange',
-	  yellow: 'yellow',
-	  green: 'green',
-	  teal: 'teal',
-	  aqua: 'aqua',
-	  blue: 'blue',
-	  indigo: 'indigo',
-	  purple: 'purple'
-	};
-
-/***/ },
-/* 255 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	module.exports = {
-	  circle: 'circle',
-	  square: 'square',
-	  star: 'star',
-	  triangle: 'triangle',
-	  heart: 'heart',
-	  asterisk: 'asterisk'
-	};
-
-/***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
@@ -28704,9 +27421,9 @@
 	});
 	exports.swapDots = swapDots;
 	
-	var _reactDnd = __webpack_require__(257);
+	var _reactDnd = __webpack_require__(240);
 	
-	var _reactDndHtml5Backend = __webpack_require__(375);
+	var _reactDndHtml5Backend = __webpack_require__(358);
 	
 	var _reactDndHtml5Backend2 = _interopRequireDefault(_reactDndHtml5Backend);
 	
@@ -28714,10 +27431,10 @@
 	
 	var React = __webpack_require__(3);
 	var PropTypes = React.PropTypes;
-	var DropGrid = __webpack_require__(405);
-	var DotDisplay = __webpack_require__(407);
+	var DropGrid = __webpack_require__(388);
+	var DotDisplay = __webpack_require__(390);
 	var ReactDOM = __webpack_require__(97);
-	var Liaison = __webpack_require__(240);
+	var Liaison = __webpack_require__(405);
 	
 	// import { default as TouchBackend } from 'react-dnd-touch-backend';
 	
@@ -28726,7 +27443,7 @@
 	  displayName: 'BoardDisplay',
 	  getInitialState: function getInitialState() {
 	    Liaison.ACTIONinitializeDots(this.props.board);
-	    this.sizeOfGrids = 400.0 / (this.props.board.size || 16.0);
+	    this.sizeOfGrids = 500.0 / (this.props.board.size || 16.0);
 	    return {
 	      offset: [0, 0],
 	      dots: Liaison.all(),
@@ -28749,7 +27466,7 @@
 	  updateOffset: function updateOffset() {
 	    var boxResize = this.sizeOfGrids / 2.0;
 	    var myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-	    this.setState({ offset: [myRect.left + boxResize, myRect.bottom + (400 - boxResize)] });
+	    this.setState({ offset: [myRect.left + boxResize, myRect.bottom + (500 - boxResize)] });
 	  },
 	  updateDots: function updateDots() {
 	    this.setState({
@@ -28832,7 +27549,7 @@
 	// module.exports = DragDropContext(TouchBackend({ enableMouseEvents: true }))(BoardDisplay);
 
 /***/ },
-/* 257 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28841,24 +27558,24 @@
 	
 	function _interopRequire(obj) { return obj && obj.__esModule ? obj['default'] : obj; }
 	
-	var _DragDropContext = __webpack_require__(258);
+	var _DragDropContext = __webpack_require__(241);
 	
 	exports.DragDropContext = _interopRequire(_DragDropContext);
 	
-	var _DragLayer = __webpack_require__(352);
+	var _DragLayer = __webpack_require__(335);
 	
 	exports.DragLayer = _interopRequire(_DragLayer);
 	
-	var _DragSource = __webpack_require__(355);
+	var _DragSource = __webpack_require__(338);
 	
 	exports.DragSource = _interopRequire(_DragSource);
 	
-	var _DropTarget = __webpack_require__(370);
+	var _DropTarget = __webpack_require__(353);
 	
 	exports.DropTarget = _interopRequire(_DropTarget);
 
 /***/ },
-/* 258 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28883,13 +27600,13 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _dndCore = __webpack_require__(259);
+	var _dndCore = __webpack_require__(242);
 	
 	var _invariant = __webpack_require__(42);
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _utilsCheckDecoratorArguments = __webpack_require__(351);
+	var _utilsCheckDecoratorArguments = __webpack_require__(334);
 	
 	var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
 	
@@ -28963,7 +27680,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 259 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28972,24 +27689,24 @@
 	
 	function _interopRequire(obj) { return obj && obj.__esModule ? obj['default'] : obj; }
 	
-	var _DragDropManager = __webpack_require__(260);
+	var _DragDropManager = __webpack_require__(243);
 	
 	exports.DragDropManager = _interopRequire(_DragDropManager);
 	
-	var _DragSource = __webpack_require__(348);
+	var _DragSource = __webpack_require__(331);
 	
 	exports.DragSource = _interopRequire(_DragSource);
 	
-	var _DropTarget = __webpack_require__(349);
+	var _DropTarget = __webpack_require__(332);
 	
 	exports.DropTarget = _interopRequire(_DropTarget);
 	
-	var _backendsCreateTestBackend = __webpack_require__(350);
+	var _backendsCreateTestBackend = __webpack_require__(333);
 	
 	exports.createTestBackend = _interopRequire(_backendsCreateTestBackend);
 
 /***/ },
-/* 260 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29002,23 +27719,23 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _reduxLibCreateStore = __webpack_require__(261);
+	var _reduxLibCreateStore = __webpack_require__(244);
 	
 	var _reduxLibCreateStore2 = _interopRequireDefault(_reduxLibCreateStore);
 	
-	var _reducers = __webpack_require__(269);
+	var _reducers = __webpack_require__(252);
 	
 	var _reducers2 = _interopRequireDefault(_reducers);
 	
-	var _actionsDragDrop = __webpack_require__(271);
+	var _actionsDragDrop = __webpack_require__(254);
 	
 	var dragDropActions = _interopRequireWildcard(_actionsDragDrop);
 	
-	var _DragDropMonitor = __webpack_require__(343);
+	var _DragDropMonitor = __webpack_require__(326);
 	
 	var _DragDropMonitor2 = _interopRequireDefault(_DragDropMonitor);
 	
-	var _HandlerRegistry = __webpack_require__(344);
+	var _HandlerRegistry = __webpack_require__(327);
 	
 	var _HandlerRegistry2 = _interopRequireDefault(_HandlerRegistry);
 	
@@ -29087,7 +27804,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 261 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29096,11 +27813,11 @@
 	exports.ActionTypes = undefined;
 	exports["default"] = createStore;
 	
-	var _isPlainObject = __webpack_require__(262);
+	var _isPlainObject = __webpack_require__(245);
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _symbolObservable = __webpack_require__(267);
+	var _symbolObservable = __webpack_require__(250);
 	
 	var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 	
@@ -29354,12 +28071,12 @@
 	}
 
 /***/ },
-/* 262 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getPrototype = __webpack_require__(263),
-	    isHostObject = __webpack_require__(265),
-	    isObjectLike = __webpack_require__(266);
+	var getPrototype = __webpack_require__(246),
+	    isHostObject = __webpack_require__(248),
+	    isObjectLike = __webpack_require__(249);
 	
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -29430,10 +28147,10 @@
 
 
 /***/ },
-/* 263 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(264);
+	var overArg = __webpack_require__(247);
 	
 	/** Built-in value references. */
 	var getPrototype = overArg(Object.getPrototypeOf, Object);
@@ -29442,7 +28159,7 @@
 
 
 /***/ },
-/* 264 */
+/* 247 */
 /***/ function(module, exports) {
 
 	/**
@@ -29463,7 +28180,7 @@
 
 
 /***/ },
-/* 265 */
+/* 248 */
 /***/ function(module, exports) {
 
 	/**
@@ -29489,7 +28206,7 @@
 
 
 /***/ },
-/* 266 */
+/* 249 */
 /***/ function(module, exports) {
 
 	/**
@@ -29524,18 +28241,18 @@
 
 
 /***/ },
-/* 267 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
 	'use strict';
 	
-	module.exports = __webpack_require__(268)(global || window || this);
+	module.exports = __webpack_require__(251)(global || window || this);
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 268 */
+/* 251 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -29560,7 +28277,7 @@
 
 
 /***/ },
-/* 269 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29569,23 +28286,23 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _dragOffset = __webpack_require__(270);
+	var _dragOffset = __webpack_require__(253);
 	
 	var _dragOffset2 = _interopRequireDefault(_dragOffset);
 	
-	var _dragOperation = __webpack_require__(275);
+	var _dragOperation = __webpack_require__(258);
 	
 	var _dragOperation2 = _interopRequireDefault(_dragOperation);
 	
-	var _refCount = __webpack_require__(328);
+	var _refCount = __webpack_require__(311);
 	
 	var _refCount2 = _interopRequireDefault(_refCount);
 	
-	var _dirtyHandlerIds = __webpack_require__(329);
+	var _dirtyHandlerIds = __webpack_require__(312);
 	
 	var _dirtyHandlerIds2 = _interopRequireDefault(_dirtyHandlerIds);
 	
-	var _stateId = __webpack_require__(342);
+	var _stateId = __webpack_require__(325);
 	
 	var _stateId2 = _interopRequireDefault(_stateId);
 	
@@ -29604,7 +28321,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 270 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29617,7 +28334,7 @@
 	exports.getSourceClientOffset = getSourceClientOffset;
 	exports.getDifferenceFromInitialOffset = getDifferenceFromInitialOffset;
 	
-	var _actionsDragDrop = __webpack_require__(271);
+	var _actionsDragDrop = __webpack_require__(254);
 	
 	var initialState = {
 	  initialSourceClientOffset: null,
@@ -29685,7 +28402,7 @@
 	}
 
 /***/ },
-/* 271 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29699,7 +28416,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _utilsMatchesType = __webpack_require__(272);
+	var _utilsMatchesType = __webpack_require__(255);
 	
 	var _utilsMatchesType2 = _interopRequireDefault(_utilsMatchesType);
 	
@@ -29707,11 +28424,11 @@
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _lodashIsArray = __webpack_require__(273);
+	var _lodashIsArray = __webpack_require__(256);
 	
 	var _lodashIsArray2 = _interopRequireDefault(_lodashIsArray);
 	
-	var _lodashIsObject = __webpack_require__(274);
+	var _lodashIsObject = __webpack_require__(257);
 	
 	var _lodashIsObject2 = _interopRequireDefault(_lodashIsObject);
 	
@@ -29886,7 +28603,7 @@
 	}
 
 /***/ },
-/* 272 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29896,7 +28613,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _lodashIsArray = __webpack_require__(273);
+	var _lodashIsArray = __webpack_require__(256);
 	
 	var _lodashIsArray2 = _interopRequireDefault(_lodashIsArray);
 	
@@ -29913,7 +28630,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 273 */
+/* 256 */
 /***/ function(module, exports) {
 
 	/**
@@ -29945,7 +28662,7 @@
 
 
 /***/ },
-/* 274 */
+/* 257 */
 /***/ function(module, exports) {
 
 	/**
@@ -29982,7 +28699,7 @@
 
 
 /***/ },
-/* 275 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29995,11 +28712,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _actionsDragDrop = __webpack_require__(271);
+	var _actionsDragDrop = __webpack_require__(254);
 	
-	var _actionsRegistry = __webpack_require__(276);
+	var _actionsRegistry = __webpack_require__(259);
 	
-	var _lodashWithout = __webpack_require__(277);
+	var _lodashWithout = __webpack_require__(260);
 	
 	var _lodashWithout2 = _interopRequireDefault(_lodashWithout);
 	
@@ -30065,7 +28782,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 276 */
+/* 259 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30114,12 +28831,12 @@
 	}
 
 /***/ },
-/* 277 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseDifference = __webpack_require__(278),
-	    baseRest = __webpack_require__(323),
-	    isArrayLikeObject = __webpack_require__(325);
+	var baseDifference = __webpack_require__(261),
+	    baseRest = __webpack_require__(306),
+	    isArrayLikeObject = __webpack_require__(308);
 	
 	/**
 	 * Creates an array excluding all given values using
@@ -30151,15 +28868,15 @@
 
 
 /***/ },
-/* 278 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(279),
-	    arrayIncludes = __webpack_require__(315),
-	    arrayIncludesWith = __webpack_require__(319),
-	    arrayMap = __webpack_require__(320),
-	    baseUnary = __webpack_require__(321),
-	    cacheHas = __webpack_require__(322);
+	var SetCache = __webpack_require__(262),
+	    arrayIncludes = __webpack_require__(298),
+	    arrayIncludesWith = __webpack_require__(302),
+	    arrayMap = __webpack_require__(303),
+	    baseUnary = __webpack_require__(304),
+	    cacheHas = __webpack_require__(305);
 	
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -30224,12 +28941,12 @@
 
 
 /***/ },
-/* 279 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(280),
-	    setCacheAdd = __webpack_require__(313),
-	    setCacheHas = __webpack_require__(314);
+	var MapCache = __webpack_require__(263),
+	    setCacheAdd = __webpack_require__(296),
+	    setCacheHas = __webpack_require__(297);
 	
 	/**
 	 *
@@ -30257,14 +28974,14 @@
 
 
 /***/ },
-/* 280 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mapCacheClear = __webpack_require__(281),
-	    mapCacheDelete = __webpack_require__(307),
-	    mapCacheGet = __webpack_require__(310),
-	    mapCacheHas = __webpack_require__(311),
-	    mapCacheSet = __webpack_require__(312);
+	var mapCacheClear = __webpack_require__(264),
+	    mapCacheDelete = __webpack_require__(290),
+	    mapCacheGet = __webpack_require__(293),
+	    mapCacheHas = __webpack_require__(294),
+	    mapCacheSet = __webpack_require__(295);
 	
 	/**
 	 * Creates a map cache object to store key-value pairs.
@@ -30295,12 +29012,12 @@
 
 
 /***/ },
-/* 281 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Hash = __webpack_require__(282),
-	    ListCache = __webpack_require__(298),
-	    Map = __webpack_require__(306);
+	var Hash = __webpack_require__(265),
+	    ListCache = __webpack_require__(281),
+	    Map = __webpack_require__(289);
 	
 	/**
 	 * Removes all key-value entries from the map.
@@ -30321,14 +29038,14 @@
 
 
 /***/ },
-/* 282 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hashClear = __webpack_require__(283),
-	    hashDelete = __webpack_require__(294),
-	    hashGet = __webpack_require__(295),
-	    hashHas = __webpack_require__(296),
-	    hashSet = __webpack_require__(297);
+	var hashClear = __webpack_require__(266),
+	    hashDelete = __webpack_require__(277),
+	    hashGet = __webpack_require__(278),
+	    hashHas = __webpack_require__(279),
+	    hashSet = __webpack_require__(280);
 	
 	/**
 	 * Creates a hash object.
@@ -30359,10 +29076,10 @@
 
 
 /***/ },
-/* 283 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(284);
+	var nativeCreate = __webpack_require__(267);
 	
 	/**
 	 * Removes all key-value entries from the hash.
@@ -30379,10 +29096,10 @@
 
 
 /***/ },
-/* 284 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(285);
+	var getNative = __webpack_require__(268);
 	
 	/* Built-in method references that are verified to be native. */
 	var nativeCreate = getNative(Object, 'create');
@@ -30391,11 +29108,11 @@
 
 
 /***/ },
-/* 285 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsNative = __webpack_require__(286),
-	    getValue = __webpack_require__(293);
+	var baseIsNative = __webpack_require__(269),
+	    getValue = __webpack_require__(276);
 	
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -30414,14 +29131,14 @@
 
 
 /***/ },
-/* 286 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(287),
-	    isHostObject = __webpack_require__(265),
-	    isMasked = __webpack_require__(288),
-	    isObject = __webpack_require__(274),
-	    toSource = __webpack_require__(292);
+	var isFunction = __webpack_require__(270),
+	    isHostObject = __webpack_require__(248),
+	    isMasked = __webpack_require__(271),
+	    isObject = __webpack_require__(257),
+	    toSource = __webpack_require__(275);
 	
 	/**
 	 * Used to match `RegExp`
@@ -30468,10 +29185,10 @@
 
 
 /***/ },
-/* 287 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(274);
+	var isObject = __webpack_require__(257);
 	
 	/** `Object#toString` result references. */
 	var funcTag = '[object Function]',
@@ -30515,10 +29232,10 @@
 
 
 /***/ },
-/* 288 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(289);
+	var coreJsData = __webpack_require__(272);
 	
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -30541,10 +29258,10 @@
 
 
 /***/ },
-/* 289 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(290);
+	var root = __webpack_require__(273);
 	
 	/** Used to detect overreaching core-js shims. */
 	var coreJsData = root['__core-js_shared__'];
@@ -30553,10 +29270,10 @@
 
 
 /***/ },
-/* 290 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(291);
+	var freeGlobal = __webpack_require__(274);
 	
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -30568,7 +29285,7 @@
 
 
 /***/ },
-/* 291 */
+/* 274 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -30579,7 +29296,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 292 */
+/* 275 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -30611,7 +29328,7 @@
 
 
 /***/ },
-/* 293 */
+/* 276 */
 /***/ function(module, exports) {
 
 	/**
@@ -30630,7 +29347,7 @@
 
 
 /***/ },
-/* 294 */
+/* 277 */
 /***/ function(module, exports) {
 
 	/**
@@ -30651,10 +29368,10 @@
 
 
 /***/ },
-/* 295 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(284);
+	var nativeCreate = __webpack_require__(267);
 	
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -30687,10 +29404,10 @@
 
 
 /***/ },
-/* 296 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(284);
+	var nativeCreate = __webpack_require__(267);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -30716,10 +29433,10 @@
 
 
 /***/ },
-/* 297 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(284);
+	var nativeCreate = __webpack_require__(267);
 	
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -30744,14 +29461,14 @@
 
 
 /***/ },
-/* 298 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var listCacheClear = __webpack_require__(299),
-	    listCacheDelete = __webpack_require__(300),
-	    listCacheGet = __webpack_require__(303),
-	    listCacheHas = __webpack_require__(304),
-	    listCacheSet = __webpack_require__(305);
+	var listCacheClear = __webpack_require__(282),
+	    listCacheDelete = __webpack_require__(283),
+	    listCacheGet = __webpack_require__(286),
+	    listCacheHas = __webpack_require__(287),
+	    listCacheSet = __webpack_require__(288);
 	
 	/**
 	 * Creates an list cache object.
@@ -30782,7 +29499,7 @@
 
 
 /***/ },
-/* 299 */
+/* 282 */
 /***/ function(module, exports) {
 
 	/**
@@ -30800,10 +29517,10 @@
 
 
 /***/ },
-/* 300 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(301);
+	var assocIndexOf = __webpack_require__(284);
 	
 	/** Used for built-in method references. */
 	var arrayProto = Array.prototype;
@@ -30840,10 +29557,10 @@
 
 
 /***/ },
-/* 301 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(302);
+	var eq = __webpack_require__(285);
 	
 	/**
 	 * Gets the index at which the `key` is found in `array` of key-value pairs.
@@ -30867,7 +29584,7 @@
 
 
 /***/ },
-/* 302 */
+/* 285 */
 /***/ function(module, exports) {
 
 	/**
@@ -30910,10 +29627,10 @@
 
 
 /***/ },
-/* 303 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(301);
+	var assocIndexOf = __webpack_require__(284);
 	
 	/**
 	 * Gets the list cache value for `key`.
@@ -30935,10 +29652,10 @@
 
 
 /***/ },
-/* 304 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(301);
+	var assocIndexOf = __webpack_require__(284);
 	
 	/**
 	 * Checks if a list cache value for `key` exists.
@@ -30957,10 +29674,10 @@
 
 
 /***/ },
-/* 305 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(301);
+	var assocIndexOf = __webpack_require__(284);
 	
 	/**
 	 * Sets the list cache `key` to `value`.
@@ -30988,11 +29705,11 @@
 
 
 /***/ },
-/* 306 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(285),
-	    root = __webpack_require__(290);
+	var getNative = __webpack_require__(268),
+	    root = __webpack_require__(273);
 	
 	/* Built-in method references that are verified to be native. */
 	var Map = getNative(root, 'Map');
@@ -31001,10 +29718,10 @@
 
 
 /***/ },
-/* 307 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(308);
+	var getMapData = __webpack_require__(291);
 	
 	/**
 	 * Removes `key` and its value from the map.
@@ -31023,10 +29740,10 @@
 
 
 /***/ },
-/* 308 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isKeyable = __webpack_require__(309);
+	var isKeyable = __webpack_require__(292);
 	
 	/**
 	 * Gets the data for `map`.
@@ -31047,7 +29764,7 @@
 
 
 /***/ },
-/* 309 */
+/* 292 */
 /***/ function(module, exports) {
 
 	/**
@@ -31068,10 +29785,10 @@
 
 
 /***/ },
-/* 310 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(308);
+	var getMapData = __webpack_require__(291);
 	
 	/**
 	 * Gets the map value for `key`.
@@ -31090,10 +29807,10 @@
 
 
 /***/ },
-/* 311 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(308);
+	var getMapData = __webpack_require__(291);
 	
 	/**
 	 * Checks if a map value for `key` exists.
@@ -31112,10 +29829,10 @@
 
 
 /***/ },
-/* 312 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(308);
+	var getMapData = __webpack_require__(291);
 	
 	/**
 	 * Sets the map `key` to `value`.
@@ -31136,7 +29853,7 @@
 
 
 /***/ },
-/* 313 */
+/* 296 */
 /***/ function(module, exports) {
 
 	/** Used to stand-in for `undefined` hash values. */
@@ -31161,7 +29878,7 @@
 
 
 /***/ },
-/* 314 */
+/* 297 */
 /***/ function(module, exports) {
 
 	/**
@@ -31181,10 +29898,10 @@
 
 
 /***/ },
-/* 315 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIndexOf = __webpack_require__(316);
+	var baseIndexOf = __webpack_require__(299);
 	
 	/**
 	 * A specialized version of `_.includes` for arrays without support for
@@ -31204,11 +29921,11 @@
 
 
 /***/ },
-/* 316 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFindIndex = __webpack_require__(317),
-	    baseIsNaN = __webpack_require__(318);
+	var baseFindIndex = __webpack_require__(300),
+	    baseIsNaN = __webpack_require__(301);
 	
 	/**
 	 * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
@@ -31238,7 +29955,7 @@
 
 
 /***/ },
-/* 317 */
+/* 300 */
 /***/ function(module, exports) {
 
 	/**
@@ -31268,7 +29985,7 @@
 
 
 /***/ },
-/* 318 */
+/* 301 */
 /***/ function(module, exports) {
 
 	/**
@@ -31286,7 +30003,7 @@
 
 
 /***/ },
-/* 319 */
+/* 302 */
 /***/ function(module, exports) {
 
 	/**
@@ -31314,7 +30031,7 @@
 
 
 /***/ },
-/* 320 */
+/* 303 */
 /***/ function(module, exports) {
 
 	/**
@@ -31341,7 +30058,7 @@
 
 
 /***/ },
-/* 321 */
+/* 304 */
 /***/ function(module, exports) {
 
 	/**
@@ -31361,7 +30078,7 @@
 
 
 /***/ },
-/* 322 */
+/* 305 */
 /***/ function(module, exports) {
 
 	/**
@@ -31380,10 +30097,10 @@
 
 
 /***/ },
-/* 323 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(324);
+	var apply = __webpack_require__(307);
 	
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -31421,7 +30138,7 @@
 
 
 /***/ },
-/* 324 */
+/* 307 */
 /***/ function(module, exports) {
 
 	/**
@@ -31448,11 +30165,11 @@
 
 
 /***/ },
-/* 325 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(326),
-	    isObjectLike = __webpack_require__(266);
+	var isArrayLike = __webpack_require__(309),
+	    isObjectLike = __webpack_require__(249);
 	
 	/**
 	 * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -31487,11 +30204,11 @@
 
 
 /***/ },
-/* 326 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(287),
-	    isLength = __webpack_require__(327);
+	var isFunction = __webpack_require__(270),
+	    isLength = __webpack_require__(310);
 	
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -31526,7 +30243,7 @@
 
 
 /***/ },
-/* 327 */
+/* 310 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -31567,7 +30284,7 @@
 
 
 /***/ },
-/* 328 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31575,7 +30292,7 @@
 	exports.__esModule = true;
 	exports['default'] = refCount;
 	
-	var _actionsRegistry = __webpack_require__(276);
+	var _actionsRegistry = __webpack_require__(259);
 	
 	function refCount(state, action) {
 	  if (state === undefined) state = 0;
@@ -31595,7 +30312,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 329 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31606,17 +30323,17 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _lodashXor = __webpack_require__(330);
+	var _lodashXor = __webpack_require__(313);
 	
 	var _lodashXor2 = _interopRequireDefault(_lodashXor);
 	
-	var _lodashIntersection = __webpack_require__(339);
+	var _lodashIntersection = __webpack_require__(322);
 	
 	var _lodashIntersection2 = _interopRequireDefault(_lodashIntersection);
 	
-	var _actionsDragDrop = __webpack_require__(271);
+	var _actionsDragDrop = __webpack_require__(254);
 	
-	var _actionsRegistry = __webpack_require__(276);
+	var _actionsRegistry = __webpack_require__(259);
 	
 	var NONE = [];
 	var ALL = [];
@@ -31689,13 +30406,13 @@
 	}
 
 /***/ },
-/* 330 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayFilter = __webpack_require__(331),
-	    baseRest = __webpack_require__(323),
-	    baseXor = __webpack_require__(332),
-	    isArrayLikeObject = __webpack_require__(325);
+	var arrayFilter = __webpack_require__(314),
+	    baseRest = __webpack_require__(306),
+	    baseXor = __webpack_require__(315),
+	    isArrayLikeObject = __webpack_require__(308);
 	
 	/**
 	 * Creates an array of unique values that is the
@@ -31723,7 +30440,7 @@
 
 
 /***/ },
-/* 331 */
+/* 314 */
 /***/ function(module, exports) {
 
 	/**
@@ -31754,12 +30471,12 @@
 
 
 /***/ },
-/* 332 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayPush = __webpack_require__(333),
-	    baseDifference = __webpack_require__(278),
-	    baseUniq = __webpack_require__(334);
+	var arrayPush = __webpack_require__(316),
+	    baseDifference = __webpack_require__(261),
+	    baseUniq = __webpack_require__(317);
 	
 	/**
 	 * The base implementation of methods like `_.xor`, without support for
@@ -31790,7 +30507,7 @@
 
 
 /***/ },
-/* 333 */
+/* 316 */
 /***/ function(module, exports) {
 
 	/**
@@ -31816,15 +30533,15 @@
 
 
 /***/ },
-/* 334 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(279),
-	    arrayIncludes = __webpack_require__(315),
-	    arrayIncludesWith = __webpack_require__(319),
-	    cacheHas = __webpack_require__(322),
-	    createSet = __webpack_require__(335),
-	    setToArray = __webpack_require__(338);
+	var SetCache = __webpack_require__(262),
+	    arrayIncludes = __webpack_require__(298),
+	    arrayIncludesWith = __webpack_require__(302),
+	    cacheHas = __webpack_require__(305),
+	    createSet = __webpack_require__(318),
+	    setToArray = __webpack_require__(321);
 	
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -31894,12 +30611,12 @@
 
 
 /***/ },
-/* 335 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Set = __webpack_require__(336),
-	    noop = __webpack_require__(337),
-	    setToArray = __webpack_require__(338);
+	var Set = __webpack_require__(319),
+	    noop = __webpack_require__(320),
+	    setToArray = __webpack_require__(321);
 	
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -31919,11 +30636,11 @@
 
 
 /***/ },
-/* 336 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(285),
-	    root = __webpack_require__(290);
+	var getNative = __webpack_require__(268),
+	    root = __webpack_require__(273);
 	
 	/* Built-in method references that are verified to be native. */
 	var Set = getNative(root, 'Set');
@@ -31932,7 +30649,7 @@
 
 
 /***/ },
-/* 337 */
+/* 320 */
 /***/ function(module, exports) {
 
 	/**
@@ -31955,7 +30672,7 @@
 
 
 /***/ },
-/* 338 */
+/* 321 */
 /***/ function(module, exports) {
 
 	/**
@@ -31979,13 +30696,13 @@
 
 
 /***/ },
-/* 339 */
+/* 322 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayMap = __webpack_require__(320),
-	    baseIntersection = __webpack_require__(340),
-	    baseRest = __webpack_require__(323),
-	    castArrayLikeObject = __webpack_require__(341);
+	var arrayMap = __webpack_require__(303),
+	    baseIntersection = __webpack_require__(323),
+	    baseRest = __webpack_require__(306),
+	    castArrayLikeObject = __webpack_require__(324);
 	
 	/**
 	 * Creates an array of unique values that are included in all given arrays
@@ -32015,15 +30732,15 @@
 
 
 /***/ },
-/* 340 */
+/* 323 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(279),
-	    arrayIncludes = __webpack_require__(315),
-	    arrayIncludesWith = __webpack_require__(319),
-	    arrayMap = __webpack_require__(320),
-	    baseUnary = __webpack_require__(321),
-	    cacheHas = __webpack_require__(322);
+	var SetCache = __webpack_require__(262),
+	    arrayIncludes = __webpack_require__(298),
+	    arrayIncludesWith = __webpack_require__(302),
+	    arrayMap = __webpack_require__(303),
+	    baseUnary = __webpack_require__(304),
+	    cacheHas = __webpack_require__(305);
 	
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMin = Math.min;
@@ -32095,10 +30812,10 @@
 
 
 /***/ },
-/* 341 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLikeObject = __webpack_require__(325);
+	var isArrayLikeObject = __webpack_require__(308);
 	
 	/**
 	 * Casts `value` to an empty array if it's not an array like object.
@@ -32115,7 +30832,7 @@
 
 
 /***/ },
-/* 342 */
+/* 325 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32132,7 +30849,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 343 */
+/* 326 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32147,21 +30864,21 @@
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _utilsMatchesType = __webpack_require__(272);
+	var _utilsMatchesType = __webpack_require__(255);
 	
 	var _utilsMatchesType2 = _interopRequireDefault(_utilsMatchesType);
 	
-	var _lodashIsArray = __webpack_require__(273);
+	var _lodashIsArray = __webpack_require__(256);
 	
 	var _lodashIsArray2 = _interopRequireDefault(_lodashIsArray);
 	
-	var _HandlerRegistry = __webpack_require__(344);
+	var _HandlerRegistry = __webpack_require__(327);
 	
 	var _HandlerRegistry2 = _interopRequireDefault(_HandlerRegistry);
 	
-	var _reducersDragOffset = __webpack_require__(270);
+	var _reducersDragOffset = __webpack_require__(253);
 	
-	var _reducersDirtyHandlerIds = __webpack_require__(329);
+	var _reducersDirtyHandlerIds = __webpack_require__(312);
 	
 	var DragDropMonitor = (function () {
 	  function DragDropMonitor(store) {
@@ -32347,7 +31064,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 344 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32364,17 +31081,17 @@
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _lodashIsArray = __webpack_require__(273);
+	var _lodashIsArray = __webpack_require__(256);
 	
 	var _lodashIsArray2 = _interopRequireDefault(_lodashIsArray);
 	
-	var _utilsGetNextUniqueId = __webpack_require__(345);
+	var _utilsGetNextUniqueId = __webpack_require__(328);
 	
 	var _utilsGetNextUniqueId2 = _interopRequireDefault(_utilsGetNextUniqueId);
 	
-	var _actionsRegistry = __webpack_require__(276);
+	var _actionsRegistry = __webpack_require__(259);
 	
-	var _asap = __webpack_require__(346);
+	var _asap = __webpack_require__(329);
 	
 	var _asap2 = _interopRequireDefault(_asap);
 	
@@ -32556,7 +31273,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 345 */
+/* 328 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32572,13 +31289,13 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 346 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	// rawAsap provides everything we need except exception management.
-	var rawAsap = __webpack_require__(347);
+	var rawAsap = __webpack_require__(330);
 	// RawTasks are recycled to reduce GC churn.
 	var freeTasks = [];
 	// We queue errors to ensure they are thrown in right order (FIFO).
@@ -32644,7 +31361,7 @@
 
 
 /***/ },
-/* 347 */
+/* 330 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -32871,7 +31588,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 348 */
+/* 331 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32902,7 +31619,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 349 */
+/* 332 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32931,7 +31648,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 350 */
+/* 333 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32943,7 +31660,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _lodashNoop = __webpack_require__(337);
+	var _lodashNoop = __webpack_require__(320);
 	
 	var _lodashNoop2 = _interopRequireDefault(_lodashNoop);
 	
@@ -33004,7 +31721,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 351 */
+/* 334 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -33033,7 +31750,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 352 */
+/* 335 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33058,15 +31775,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _utilsShallowEqual = __webpack_require__(353);
+	var _utilsShallowEqual = __webpack_require__(336);
 	
 	var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
 	
-	var _utilsShallowEqualScalar = __webpack_require__(354);
+	var _utilsShallowEqualScalar = __webpack_require__(337);
 	
 	var _utilsShallowEqualScalar2 = _interopRequireDefault(_utilsShallowEqualScalar);
 	
-	var _lodashIsPlainObject = __webpack_require__(262);
+	var _lodashIsPlainObject = __webpack_require__(245);
 	
 	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
 	
@@ -33074,7 +31791,7 @@
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _utilsCheckDecoratorArguments = __webpack_require__(351);
+	var _utilsCheckDecoratorArguments = __webpack_require__(334);
 	
 	var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
 	
@@ -33176,7 +31893,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 353 */
+/* 336 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -33217,7 +31934,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 354 */
+/* 337 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33262,7 +31979,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 355 */
+/* 338 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33277,35 +31994,35 @@
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _lodashIsPlainObject = __webpack_require__(262);
+	var _lodashIsPlainObject = __webpack_require__(245);
 	
 	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
 	
-	var _utilsCheckDecoratorArguments = __webpack_require__(351);
+	var _utilsCheckDecoratorArguments = __webpack_require__(334);
 	
 	var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
 	
-	var _decorateHandler = __webpack_require__(356);
+	var _decorateHandler = __webpack_require__(339);
 	
 	var _decorateHandler2 = _interopRequireDefault(_decorateHandler);
 	
-	var _registerSource = __webpack_require__(362);
+	var _registerSource = __webpack_require__(345);
 	
 	var _registerSource2 = _interopRequireDefault(_registerSource);
 	
-	var _createSourceFactory = __webpack_require__(363);
+	var _createSourceFactory = __webpack_require__(346);
 	
 	var _createSourceFactory2 = _interopRequireDefault(_createSourceFactory);
 	
-	var _createSourceMonitor = __webpack_require__(364);
+	var _createSourceMonitor = __webpack_require__(347);
 	
 	var _createSourceMonitor2 = _interopRequireDefault(_createSourceMonitor);
 	
-	var _createSourceConnector = __webpack_require__(365);
+	var _createSourceConnector = __webpack_require__(348);
 	
 	var _createSourceConnector2 = _interopRequireDefault(_createSourceConnector);
 	
-	var _utilsIsValidType = __webpack_require__(369);
+	var _utilsIsValidType = __webpack_require__(352);
 	
 	var _utilsIsValidType2 = _interopRequireDefault(_utilsIsValidType);
 	
@@ -33346,7 +32063,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 356 */
+/* 339 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -33369,17 +32086,17 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _disposables = __webpack_require__(357);
+	var _disposables = __webpack_require__(340);
 	
-	var _utilsShallowEqual = __webpack_require__(353);
+	var _utilsShallowEqual = __webpack_require__(336);
 	
 	var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
 	
-	var _utilsShallowEqualScalar = __webpack_require__(354);
+	var _utilsShallowEqualScalar = __webpack_require__(337);
 	
 	var _utilsShallowEqualScalar2 = _interopRequireDefault(_utilsShallowEqualScalar);
 	
-	var _lodashIsPlainObject = __webpack_require__(262);
+	var _lodashIsPlainObject = __webpack_require__(245);
 	
 	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
 	
@@ -33544,7 +32261,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 357 */
+/* 340 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33553,32 +32270,32 @@
 	
 	exports.__esModule = true;
 	
-	var _isDisposable2 = __webpack_require__(358);
+	var _isDisposable2 = __webpack_require__(341);
 	
 	var _isDisposable3 = _interopRequireWildcard(_isDisposable2);
 	
 	exports.isDisposable = _isDisposable3['default'];
 	
-	var _Disposable2 = __webpack_require__(359);
+	var _Disposable2 = __webpack_require__(342);
 	
 	var _Disposable3 = _interopRequireWildcard(_Disposable2);
 	
 	exports.Disposable = _Disposable3['default'];
 	
-	var _CompositeDisposable2 = __webpack_require__(360);
+	var _CompositeDisposable2 = __webpack_require__(343);
 	
 	var _CompositeDisposable3 = _interopRequireWildcard(_CompositeDisposable2);
 	
 	exports.CompositeDisposable = _CompositeDisposable3['default'];
 	
-	var _SerialDisposable2 = __webpack_require__(361);
+	var _SerialDisposable2 = __webpack_require__(344);
 	
 	var _SerialDisposable3 = _interopRequireWildcard(_SerialDisposable2);
 	
 	exports.SerialDisposable = _SerialDisposable3['default'];
 
 /***/ },
-/* 358 */
+/* 341 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33593,7 +32310,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 359 */
+/* 342 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -33637,7 +32354,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 360 */
+/* 343 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33648,7 +32365,7 @@
 	
 	exports.__esModule = true;
 	
-	var _isDisposable = __webpack_require__(358);
+	var _isDisposable = __webpack_require__(341);
 	
 	var _isDisposable2 = _interopRequireWildcard(_isDisposable);
 	
@@ -33743,7 +32460,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 361 */
+/* 344 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33754,7 +32471,7 @@
 	
 	exports.__esModule = true;
 	
-	var _isDisposable = __webpack_require__(358);
+	var _isDisposable = __webpack_require__(341);
 	
 	var _isDisposable2 = _interopRequireWildcard(_isDisposable);
 	
@@ -33829,7 +32546,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 362 */
+/* 345 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -33854,7 +32571,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 363 */
+/* 346 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -33870,7 +32587,7 @@
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _lodashIsPlainObject = __webpack_require__(262);
+	var _lodashIsPlainObject = __webpack_require__(245);
 	
 	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
 	
@@ -33947,7 +32664,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 364 */
+/* 347 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34045,7 +32762,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 365 */
+/* 348 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34055,11 +32772,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _wrapConnectorHooks = __webpack_require__(366);
+	var _wrapConnectorHooks = __webpack_require__(349);
 	
 	var _wrapConnectorHooks2 = _interopRequireDefault(_wrapConnectorHooks);
 	
-	var _areOptionsEqual = __webpack_require__(368);
+	var _areOptionsEqual = __webpack_require__(351);
 	
 	var _areOptionsEqual2 = _interopRequireDefault(_areOptionsEqual);
 	
@@ -34139,7 +32856,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 366 */
+/* 349 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34149,7 +32866,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _utilsCloneWithRef = __webpack_require__(367);
+	var _utilsCloneWithRef = __webpack_require__(350);
 	
 	var _utilsCloneWithRef2 = _interopRequireDefault(_utilsCloneWithRef);
 	
@@ -34211,7 +32928,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 367 */
+/* 350 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34252,7 +32969,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 368 */
+/* 351 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34262,7 +32979,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _utilsShallowEqual = __webpack_require__(353);
+	var _utilsShallowEqual = __webpack_require__(336);
 	
 	var _utilsShallowEqual2 = _interopRequireDefault(_utilsShallowEqual);
 	
@@ -34277,7 +32994,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 369 */
+/* 352 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34287,7 +33004,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _lodashIsArray = __webpack_require__(273);
+	var _lodashIsArray = __webpack_require__(256);
 	
 	var _lodashIsArray2 = _interopRequireDefault(_lodashIsArray);
 	
@@ -34300,7 +33017,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 370 */
+/* 353 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34315,35 +33032,35 @@
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _lodashIsPlainObject = __webpack_require__(262);
+	var _lodashIsPlainObject = __webpack_require__(245);
 	
 	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
 	
-	var _utilsCheckDecoratorArguments = __webpack_require__(351);
+	var _utilsCheckDecoratorArguments = __webpack_require__(334);
 	
 	var _utilsCheckDecoratorArguments2 = _interopRequireDefault(_utilsCheckDecoratorArguments);
 	
-	var _decorateHandler = __webpack_require__(356);
+	var _decorateHandler = __webpack_require__(339);
 	
 	var _decorateHandler2 = _interopRequireDefault(_decorateHandler);
 	
-	var _registerTarget = __webpack_require__(371);
+	var _registerTarget = __webpack_require__(354);
 	
 	var _registerTarget2 = _interopRequireDefault(_registerTarget);
 	
-	var _createTargetFactory = __webpack_require__(372);
+	var _createTargetFactory = __webpack_require__(355);
 	
 	var _createTargetFactory2 = _interopRequireDefault(_createTargetFactory);
 	
-	var _createTargetMonitor = __webpack_require__(373);
+	var _createTargetMonitor = __webpack_require__(356);
 	
 	var _createTargetMonitor2 = _interopRequireDefault(_createTargetMonitor);
 	
-	var _createTargetConnector = __webpack_require__(374);
+	var _createTargetConnector = __webpack_require__(357);
 	
 	var _createTargetConnector2 = _interopRequireDefault(_createTargetConnector);
 	
-	var _utilsIsValidType = __webpack_require__(369);
+	var _utilsIsValidType = __webpack_require__(352);
 	
 	var _utilsIsValidType2 = _interopRequireDefault(_utilsIsValidType);
 	
@@ -34384,7 +33101,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 371 */
+/* 354 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -34409,7 +33126,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 372 */
+/* 355 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -34425,7 +33142,7 @@
 	
 	var _invariant2 = _interopRequireDefault(_invariant);
 	
-	var _lodashIsPlainObject = __webpack_require__(262);
+	var _lodashIsPlainObject = __webpack_require__(245);
 	
 	var _lodashIsPlainObject2 = _interopRequireDefault(_lodashIsPlainObject);
 	
@@ -34498,7 +33215,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 373 */
+/* 356 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34588,7 +33305,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 374 */
+/* 357 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34598,11 +33315,11 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _wrapConnectorHooks = __webpack_require__(366);
+	var _wrapConnectorHooks = __webpack_require__(349);
 	
 	var _wrapConnectorHooks2 = _interopRequireDefault(_wrapConnectorHooks);
 	
-	var _areOptionsEqual = __webpack_require__(368);
+	var _areOptionsEqual = __webpack_require__(351);
 	
 	var _areOptionsEqual2 = _interopRequireDefault(_areOptionsEqual);
 	
@@ -34655,7 +33372,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 375 */
+/* 358 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34667,15 +33384,15 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _HTML5Backend = __webpack_require__(376);
+	var _HTML5Backend = __webpack_require__(359);
 	
 	var _HTML5Backend2 = _interopRequireDefault(_HTML5Backend);
 	
-	var _getEmptyImage = __webpack_require__(404);
+	var _getEmptyImage = __webpack_require__(387);
 	
 	var _getEmptyImage2 = _interopRequireDefault(_getEmptyImage);
 	
-	var _NativeTypes = __webpack_require__(403);
+	var _NativeTypes = __webpack_require__(386);
 	
 	var NativeTypes = _interopRequireWildcard(_NativeTypes);
 	
@@ -34687,7 +33404,7 @@
 	}
 
 /***/ },
-/* 376 */
+/* 359 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -34700,25 +33417,25 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _lodashDefaults = __webpack_require__(377);
+	var _lodashDefaults = __webpack_require__(360);
 	
 	var _lodashDefaults2 = _interopRequireDefault(_lodashDefaults);
 	
-	var _shallowEqual = __webpack_require__(392);
+	var _shallowEqual = __webpack_require__(375);
 	
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 	
-	var _EnterLeaveCounter = __webpack_require__(393);
+	var _EnterLeaveCounter = __webpack_require__(376);
 	
 	var _EnterLeaveCounter2 = _interopRequireDefault(_EnterLeaveCounter);
 	
-	var _BrowserDetector = __webpack_require__(398);
+	var _BrowserDetector = __webpack_require__(381);
 	
-	var _OffsetUtils = __webpack_require__(400);
+	var _OffsetUtils = __webpack_require__(383);
 	
-	var _NativeDragSources = __webpack_require__(402);
+	var _NativeDragSources = __webpack_require__(385);
 	
-	var _NativeTypes = __webpack_require__(403);
+	var _NativeTypes = __webpack_require__(386);
 	
 	var NativeTypes = _interopRequireWildcard(_NativeTypes);
 	
@@ -35268,13 +33985,13 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 377 */
+/* 360 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(324),
-	    assignInDefaults = __webpack_require__(378),
-	    assignInWith = __webpack_require__(379),
-	    baseRest = __webpack_require__(323);
+	var apply = __webpack_require__(307),
+	    assignInDefaults = __webpack_require__(361),
+	    assignInWith = __webpack_require__(362),
+	    baseRest = __webpack_require__(306);
 	
 	/**
 	 * Assigns own and inherited enumerable string keyed properties of source
@@ -35306,10 +34023,10 @@
 
 
 /***/ },
-/* 378 */
+/* 361 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(302);
+	var eq = __webpack_require__(285);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -35339,12 +34056,12 @@
 
 
 /***/ },
-/* 379 */
+/* 362 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(380),
-	    createAssigner = __webpack_require__(382),
-	    keysIn = __webpack_require__(385);
+	var copyObject = __webpack_require__(363),
+	    createAssigner = __webpack_require__(365),
+	    keysIn = __webpack_require__(368);
 	
 	/**
 	 * This method is like `_.assignIn` except that it accepts `customizer`
@@ -35383,10 +34100,10 @@
 
 
 /***/ },
-/* 380 */
+/* 363 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignValue = __webpack_require__(381);
+	var assignValue = __webpack_require__(364);
 	
 	/**
 	 * Copies properties of `source` to `object`.
@@ -35420,10 +34137,10 @@
 
 
 /***/ },
-/* 381 */
+/* 364 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(302);
+	var eq = __webpack_require__(285);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -35453,11 +34170,11 @@
 
 
 /***/ },
-/* 382 */
+/* 365 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseRest = __webpack_require__(323),
-	    isIterateeCall = __webpack_require__(383);
+	var baseRest = __webpack_require__(306),
+	    isIterateeCall = __webpack_require__(366);
 	
 	/**
 	 * Creates a function like `_.assign`.
@@ -35496,13 +34213,13 @@
 
 
 /***/ },
-/* 383 */
+/* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(302),
-	    isArrayLike = __webpack_require__(326),
-	    isIndex = __webpack_require__(384),
-	    isObject = __webpack_require__(274);
+	var eq = __webpack_require__(285),
+	    isArrayLike = __webpack_require__(309),
+	    isIndex = __webpack_require__(367),
+	    isObject = __webpack_require__(257);
 	
 	/**
 	 * Checks if the given arguments are from an iteratee call.
@@ -35532,7 +34249,7 @@
 
 
 /***/ },
-/* 384 */
+/* 367 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -35560,12 +34277,12 @@
 
 
 /***/ },
-/* 385 */
+/* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(386),
-	    baseKeysIn = __webpack_require__(389),
-	    isArrayLike = __webpack_require__(326);
+	var arrayLikeKeys = __webpack_require__(369),
+	    baseKeysIn = __webpack_require__(372),
+	    isArrayLike = __webpack_require__(309);
 	
 	/**
 	 * Creates an array of the own and inherited enumerable property names of `object`.
@@ -35598,13 +34315,13 @@
 
 
 /***/ },
-/* 386 */
+/* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(387),
-	    isArguments = __webpack_require__(388),
-	    isArray = __webpack_require__(273),
-	    isIndex = __webpack_require__(384);
+	var baseTimes = __webpack_require__(370),
+	    isArguments = __webpack_require__(371),
+	    isArray = __webpack_require__(256),
+	    isIndex = __webpack_require__(367);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -35643,7 +34360,7 @@
 
 
 /***/ },
-/* 387 */
+/* 370 */
 /***/ function(module, exports) {
 
 	/**
@@ -35669,10 +34386,10 @@
 
 
 /***/ },
-/* 388 */
+/* 371 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLikeObject = __webpack_require__(325);
+	var isArrayLikeObject = __webpack_require__(308);
 	
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]';
@@ -35721,12 +34438,12 @@
 
 
 /***/ },
-/* 389 */
+/* 372 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(274),
-	    isPrototype = __webpack_require__(390),
-	    nativeKeysIn = __webpack_require__(391);
+	var isObject = __webpack_require__(257),
+	    isPrototype = __webpack_require__(373),
+	    nativeKeysIn = __webpack_require__(374);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -35760,7 +34477,7 @@
 
 
 /***/ },
-/* 390 */
+/* 373 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -35784,7 +34501,7 @@
 
 
 /***/ },
-/* 391 */
+/* 374 */
 /***/ function(module, exports) {
 
 	/**
@@ -35810,7 +34527,7 @@
 
 
 /***/ },
-/* 392 */
+/* 375 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -35851,7 +34568,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 393 */
+/* 376 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35862,11 +34579,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _lodashUnion = __webpack_require__(394);
+	var _lodashUnion = __webpack_require__(377);
 	
 	var _lodashUnion2 = _interopRequireDefault(_lodashUnion);
 	
-	var _lodashWithout = __webpack_require__(277);
+	var _lodashWithout = __webpack_require__(260);
 	
 	var _lodashWithout2 = _interopRequireDefault(_lodashWithout);
 	
@@ -35908,13 +34625,13 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 394 */
+/* 377 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFlatten = __webpack_require__(395),
-	    baseRest = __webpack_require__(323),
-	    baseUniq = __webpack_require__(334),
-	    isArrayLikeObject = __webpack_require__(325);
+	var baseFlatten = __webpack_require__(378),
+	    baseRest = __webpack_require__(306),
+	    baseUniq = __webpack_require__(317),
+	    isArrayLikeObject = __webpack_require__(308);
 	
 	/**
 	 * Creates an array of unique values, in order, from all given arrays using
@@ -35940,11 +34657,11 @@
 
 
 /***/ },
-/* 395 */
+/* 378 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayPush = __webpack_require__(333),
-	    isFlattenable = __webpack_require__(396);
+	var arrayPush = __webpack_require__(316),
+	    isFlattenable = __webpack_require__(379);
 	
 	/**
 	 * The base implementation of `_.flatten` with support for restricting flattening.
@@ -35984,12 +34701,12 @@
 
 
 /***/ },
-/* 396 */
+/* 379 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(397),
-	    isArguments = __webpack_require__(388),
-	    isArray = __webpack_require__(273);
+	var Symbol = __webpack_require__(380),
+	    isArguments = __webpack_require__(371),
+	    isArray = __webpack_require__(256);
 	
 	/** Built-in value references. */
 	var spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
@@ -36010,10 +34727,10 @@
 
 
 /***/ },
-/* 397 */
+/* 380 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(290);
+	var root = __webpack_require__(273);
 	
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -36022,7 +34739,7 @@
 
 
 /***/ },
-/* 398 */
+/* 381 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36031,7 +34748,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _lodashMemoize = __webpack_require__(399);
+	var _lodashMemoize = __webpack_require__(382);
 	
 	var _lodashMemoize2 = _interopRequireDefault(_lodashMemoize);
 	
@@ -36047,10 +34764,10 @@
 	exports.isSafari = isSafari;
 
 /***/ },
-/* 399 */
+/* 382 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(280);
+	var MapCache = __webpack_require__(263);
 	
 	/** Used as the `TypeError` message for "Functions" methods. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -36126,7 +34843,7 @@
 
 
 /***/ },
-/* 400 */
+/* 383 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36138,9 +34855,9 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _BrowserDetector = __webpack_require__(398);
+	var _BrowserDetector = __webpack_require__(381);
 	
-	var _MonotonicInterpolant = __webpack_require__(401);
+	var _MonotonicInterpolant = __webpack_require__(384);
 	
 	var _MonotonicInterpolant2 = _interopRequireDefault(_MonotonicInterpolant);
 	
@@ -36226,7 +34943,7 @@
 	}
 
 /***/ },
-/* 401 */
+/* 384 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -36343,7 +35060,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 402 */
+/* 385 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36361,7 +35078,7 @@
 	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
-	var _NativeTypes = __webpack_require__(403);
+	var _NativeTypes = __webpack_require__(386);
 	
 	var NativeTypes = _interopRequireWildcard(_NativeTypes);
 	
@@ -36451,7 +35168,7 @@
 	}
 
 /***/ },
-/* 403 */
+/* 386 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -36465,7 +35182,7 @@
 	exports.TEXT = TEXT;
 
 /***/ },
-/* 404 */
+/* 387 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -36486,16 +35203,16 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 405 */
+/* 388 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var React = __webpack_require__(3);
 	var PropTypes = React.PropTypes;
-	var swapDots = __webpack_require__(256).swapDots;
-	var DropTarget = __webpack_require__(257).DropTarget;
-	var Particle = __webpack_require__(406);
+	var swapDots = __webpack_require__(239).swapDots;
+	var DropTarget = __webpack_require__(240).DropTarget;
+	var Particle = __webpack_require__(389);
 	
 	var squareTarget = {
 	  drop: function drop(props, monitor) {
@@ -36578,7 +35295,7 @@
 	module.exports = DropTarget('Dot', squareTarget, collect)(DropGrid);
 
 /***/ },
-/* 406 */
+/* 389 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36619,19 +35336,19 @@
 	module.exports = Particle;
 
 /***/ },
-/* 407 */
+/* 390 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _reactDnd = __webpack_require__(257);
+	var _reactDnd = __webpack_require__(240);
 	
 	var React = __webpack_require__(3);
 	var PropTypes = React.PropTypes;
-	var Dots = __webpack_require__(242);
-	var Colors = __webpack_require__(254);
-	var Shapes = __webpack_require__(255);
-	var Liaison = __webpack_require__(240);
+	var Dots = __webpack_require__(391);
+	var Colors = __webpack_require__(403);
+	var Shapes = __webpack_require__(404);
+	var Liaison = __webpack_require__(405);
 	
 	var dotSource = {
 	  beginDrag: function beginDrag(props) {
@@ -36770,7 +35487,1222 @@
 	module.exports = (0, _reactDnd.DragSource)('Dot', dotSource, collect)(DotDisplay);
 
 /***/ },
-/* 408 */
+/* 391 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var CircleDot = __webpack_require__(392);
+	var HeartDot = __webpack_require__(396);
+	var SquareDot = __webpack_require__(397);
+	var StarDot = __webpack_require__(398);
+	var TriangleDot = __webpack_require__(399);
+	var AsteriskDot = __webpack_require__(400);
+	var PlusDot = __webpack_require__(401);
+	var SphereDot = __webpack_require__(402);
+	
+	module.exports = {
+	  circle: CircleDot,
+	  heart: HeartDot,
+	  square: SquareDot,
+	  star: StarDot,
+	  triangle: TriangleDot,
+	  asterisk: AsteriskDot,
+	  plus: PlusDot,
+	  sphere: SphereDot
+	};
+
+/***/ },
+/* 392 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(393);
+	var Dot = __webpack_require__(394);
+	var FruitDotConstants = __webpack_require__(395);
+	
+	var CircleDot = function CircleDot(options) {
+	  Dot.call(this, {
+	    color: options.color,
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'circle';
+	  this.icon = '•';
+	  this.iconClass = 'icon-geo-circle';
+	};
+	
+	Util.inherits(CircleDot, Dot);
+	
+	CircleDot.prototype.fruitify = function () {
+	  this.iconClass = FruitDotConstants.fruitify[Math.floor(Math.random() * 6)];
+	  this.isFruit = true;
+	};
+	
+	CircleDot.prototype.defruitify = function () {
+	  this.iconClass = 'icon-geo-circle';
+	};
+	
+	module.exports = CircleDot;
+
+/***/ },
+/* 393 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	var Util = {
+	  inherits: function inherits(childClass, parentClass) {
+	    var Surrogate = function Surrogate() {};
+	    Surrogate.prototype = parentClass.prototype;
+	    childClass.prototype = new Surrogate();
+	    childClass.prototype.constructor = childClass;
+	  }
+	};
+	
+	module.exports = Util;
+
+/***/ },
+/* 394 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var Dot = function Dot(options) {
+	  this.pos = options.pos;
+	  this.color = options.color;
+	  this.shape = 'shape';
+	  this.icon = '-';
+	  this.iconClass = ' ';
+	  this.id = options.id;
+	  this.isFruit = false;
+	};
+	
+	module.exports = Dot;
+
+/***/ },
+/* 395 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = {
+	  fruitify: ['icon-apple', 'icon-melon-slice', 'icon-bananas', 'icon-lemon', 'icon-sberry', 'icon-cherry']
+	};
+
+/***/ },
+/* 396 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(393);
+	var Dot = __webpack_require__(394);
+	
+	var HeartDot = function HeartDot(options) {
+	  Dot.call(this, {
+	    color: options.color,
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'heart';
+	  this.icon = '♥';
+	  this.iconClass = 'icon-like-3';
+	};
+	
+	Util.inherits(HeartDot, Dot);
+	
+	module.exports = HeartDot;
+
+/***/ },
+/* 397 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(393);
+	var Dot = __webpack_require__(394);
+	
+	var SquareDot = function SquareDot(options) {
+	  Dot.call(this, {
+	    color: options.color,
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'square';
+	  this.icon = '▪';
+	  this.iconClass = 'icon-geo-square';
+	};
+	
+	Util.inherits(SquareDot, Dot);
+	
+	module.exports = SquareDot;
+
+/***/ },
+/* 398 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(393);
+	var Dot = __webpack_require__(394);
+	
+	var StarDot = function StarDot(options) {
+	  Dot.call(this, {
+	    color: options.color,
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'star';
+	  this.icon = '★';
+	  this.iconClass = 'icon-star';
+	};
+	
+	Util.inherits(StarDot, Dot);
+	
+	module.exports = StarDot;
+
+/***/ },
+/* 399 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(393);
+	var Dot = __webpack_require__(394);
+	
+	var TriangleDot = function TriangleDot(options) {
+	  Dot.call(this, {
+	    color: options.color,
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'triangle';
+	  this.icon = '▴';
+	  this.iconClass = 'icon-geo-triangle';
+	};
+	
+	Util.inherits(TriangleDot, Dot);
+	
+	module.exports = TriangleDot;
+
+/***/ },
+/* 400 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(393);
+	var Dot = __webpack_require__(394);
+	
+	var AsteriskDot = function AsteriskDot(options) {
+	  Dot.call(this, {
+	    color: options.color,
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'asterisk';
+	  this.icon = '*';
+	  this.iconClass = 'icon-asterisk';
+	};
+	
+	Util.inherits(AsteriskDot, Dot);
+	
+	module.exports = AsteriskDot;
+
+/***/ },
+/* 401 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(393);
+	var Dot = __webpack_require__(394);
+	
+	var PlusDot = function PlusDot(options) {
+	  Dot.call(this, {
+	    color: options.color,
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'plus';
+	  this.icon = '+';
+	  this.iconClass = 'icon-plus';
+	};
+	
+	Util.inherits(PlusDot, Dot);
+	
+	module.exports = PlusDot;
+
+/***/ },
+/* 402 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Util = __webpack_require__(393);
+	var Dot = __webpack_require__(394);
+	
+	var SphereDot = function SphereDot(options) {
+	  Dot.call(this, {
+	    color: 'rainbow',
+	    pos: options.pos,
+	    id: options.id
+	  });
+	  this.shape = 'sphere';
+	  this.icon = 'o';
+	  this.iconClass = 'icon-geo-sphere';
+	};
+	
+	Util.inherits(SphereDot, Dot);
+	
+	module.exports = SphereDot;
+
+/***/ },
+/* 403 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = {
+	  pink: 'pink',
+	  red: 'red',
+	  orange: 'orange',
+	  yellow: 'yellow',
+	  green: 'green',
+	  teal: 'teal',
+	  aqua: 'aqua',
+	  blue: 'blue',
+	  indigo: 'indigo',
+	  purple: 'purple'
+	};
+
+/***/ },
+/* 404 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = {
+	  circle: 'circle',
+	  square: 'square',
+	  star: 'star',
+	  triangle: 'triangle',
+	  heart: 'heart',
+	  asterisk: 'asterisk'
+	};
+
+/***/ },
+/* 405 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(3);
+	var Board = __webpack_require__(406);
+	
+	var explosionCallbacks = {
+	  star: explodeStar,
+	  square: explodeSquare,
+	  triangle: explodeTriangle,
+	  heart: explodeHeart,
+	  asterisk: explodeAsterisk,
+	  plus: explodePlus,
+	  sphere: explodeSphere
+	};
+	
+	var _board = new Board({ callbacks: explosionCallbacks });
+	var _listeners = [];
+	var _preventMove = true;
+	var _moves = void 0;
+	var _numOfType = resetNumOfType();
+	var _levelGoals = resetLevelGoals();
+	var _boardTimeouts = [];
+	
+	var Liaison = function Liaison() {};
+	
+	Liaison.addListener = function (callback) {
+	  _listeners.push(callback);
+	  return _listeners.length - 1;
+	};
+	
+	Liaison.broadcastChanges = function () {
+	  _listeners.forEach(function (callback) {
+	    if (callback === undefined) {
+	      return;
+	    }
+	    callback();
+	  });
+	};
+	
+	Liaison.removeListener = function (idx) {
+	  _listeners[idx] = undefined;
+	};
+	
+	function clearBoard() {
+	  _board.grid = {};
+	  _board.dotsById = {};
+	  _board.score = 0;
+	  _board = new Board({});
+	  _moves = undefined;
+	  _levelGoals = resetLevelGoals();
+	  _numOfType = resetNumOfType();
+	  clearBoardTimeouts();
+	}
+	
+	function clearBoardTimeouts() {
+	  while (_boardTimeouts.length !== 0) {
+	    clearTimeout(_boardTimeouts.pop());
+	  }
+	}
+	
+	function resetDots(options) {
+	  _board = new Board({
+	    callbacks: explosionCallbacks,
+	    size: options.size,
+	    colors: options.colors,
+	    fruitify: options.fruitify || false
+	  });
+	  _board.placeDots();
+	
+	  _numOfType = resetNumOfType();
+	  _moves = options.moves || undefined;
+	  _levelGoals = resetLevelGoals(options.goals);
+	
+	  Liaison.broadcastChanges();
+	  _boardTimeouts.push(setTimeout(function () {
+	    _board.resetExplodedSpaces();
+	    checkGroups();
+	  }, 200));
+	}
+	
+	function resetLevelGoals() {
+	  var goalsObj = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
+	  return {
+	    triangle: goalsObj.triangle || undefined,
+	    square: goalsObj.square || undefined,
+	    star: goalsObj.star || undefined,
+	    heart: goalsObj.heart || undefined,
+	    asterisk: goalsObj.asterisk || undefined,
+	    plus: goalsObj.plus || undefined,
+	    sphere: goalsObj.sphere || undefined
+	  };
+	}
+	
+	function resetNumOfType() {
+	  return {
+	    triangle: 0,
+	    square: 0,
+	    heart: 0,
+	    star: 0,
+	    asterisk: 0,
+	    plus: 0,
+	    sphere: 0
+	  };
+	}
+	
+	function explodeStar(x, y) {
+	  _numOfType.star++;
+	}
+	
+	function explodeAsterisk(x, y) {
+	  _numOfType.asterisk++;
+	}
+	
+	function explodeTriangle(x, y) {
+	  _numOfType.triangle++;
+	}
+	
+	function explodeSquare(x, y) {
+	  _numOfType.square++;
+	}
+	
+	function explodeHeart(x, y) {
+	  _numOfType.heart++;
+	}
+	
+	function explodePlus(x, y) {
+	  _numOfType.plus++;
+	}
+	
+	function explodeSphere(x, y) {
+	  _numOfType.sphere++;
+	}
+	
+	function switchDots(dots) {
+	  _preventMove = true;
+	  var dot1 = _board.dotsById[dots[0].id];
+	  var dot2 = _board.dotsById[dots[1].id];
+	  var tempPos = dot1.pos;
+	  dot1.pos = dot2.pos;
+	  dot2.pos = tempPos;
+	
+	  _board.setValAt(dot1.pos, dot1);
+	  _board.setValAt(dot2.pos, dot2);
+	
+	  _moves--;
+	
+	  Liaison.broadcastChanges();
+	  _boardTimeouts.push(setTimeout(function () {
+	    _board.resetExplodedSpaces();
+	    checkGroups();
+	  }, 200));
+	}
+	
+	function snapDot(dot) {
+	  _board.setValAt(dot.pos, dot);
+	  _board.dotsById[dot.id] = dot;
+	  Liaison.broadcastChanges();
+	}
+	
+	function objDeepDup(obj) {
+	  var newObject = {};
+	
+	  Object.keys(obj).forEach(function (key) {
+	    newObject[key] = unknwnTypeDup(obj[key]);
+	  });
+	
+	  return newObject;
+	}
+	
+	function unknwnTypeDup(val) {
+	  if (val instanceof Array) {
+	    return val.map(function (el) {
+	      return unknwnTypeDup(el);
+	    });
+	  } else if (val instanceof Object) {
+	    return objDeepDup(val);
+	  } else {
+	    return val;
+	  }
+	}
+	
+	// run this first
+	function checkGroups() {
+	  _board.scoreMultiplier++;
+	  _board.checkInARows(removeGroups);
+	}
+	
+	// second callback
+	function removeGroups() {
+	  Liaison.broadcastChanges();
+	  _boardTimeouts.push(setTimeout(function () {
+	    _board.resetExplodedSpaces();
+	    _board.blowEmUp(boardDrop);
+	  }, 100));
+	}
+	
+	// third callback
+	function boardDrop() {
+	  Liaison.broadcastChanges();
+	  _boardTimeouts.push(setTimeout(function () {
+	    _board.resetExplodedSpaces();
+	    _board.columnsDrop(updateDisplay);
+	  }, 400));
+	}
+	
+	// fourth callback
+	function updateDisplay() {
+	  Liaison.broadcastChanges();
+	  _boardTimeouts.push(setTimeout(function () {
+	    _board.resetExplodedSpaces();
+	    fillInTop();
+	  }, 400));
+	}
+	
+	function fillInTop() {
+	  var noFills = _board.fillInTop();
+	
+	  if (noFills) {
+	    if (_board.spheresToExplode.length > 0) {
+	      _board.sphereExplode(Liaison.broadcastChanges, checkGroups);
+	    } else {
+	      (function () {
+	        var rainbows = _board.rainbowTiles();
+	        if (rainbows.length > 0) {
+	          _boardTimeouts.push(setTimeout(function () {
+	            _board.spreadRainbow(rainbows);
+	            Liaison.broadcastChanges();
+	          }, 100));
+	        }
+	
+	        _boardTimeouts.push(setTimeout(function () {
+	          _preventMove = false;
+	          _board.scoreMultiplier = 0;
+	          Liaison.broadcastChanges();
+	          clearBoardTimeouts();
+	        }, 400));
+	      })();
+	    }
+	  } else {
+	    Liaison.broadcastChanges();
+	    _boardTimeouts.push(setTimeout(function () {
+	      _board.resetExplodedSpaces();
+	      checkGroups();
+	    }, 400));
+	  }
+	}
+	
+	//    STORE FUNCTIONS
+	
+	Liaison.isOver = function () {
+	  return completedHelper();
+	};
+	
+	Liaison.explosions = function () {
+	  return _board.explodedSpaces;
+	};
+	
+	Liaison.score = function () {
+	  return _board.score;
+	};
+	
+	Liaison.continueUpdate = function () {
+	  return _board.continueUpdate;
+	};
+	
+	Liaison.all = function () {
+	  var retArr = [];
+	
+	  Object.keys(_board.dotsById).forEach(function (id) {
+	    if (_board.dotsById[id].isKilled === true) {
+	
+	      delete _board.dotsById[id];
+	      return;
+	    }
+	    retArr.push(objDeepDup(_board.dotsById[id]));
+	  });
+	
+	  return retArr;
+	};
+	
+	Liaison.byId = function (id) {
+	  return objDeepDup(_board.dotsById[id]);
+	};
+	
+	Liaison.at = function (pos) {
+	  if (!_board.getValAt(pos)) {
+	    return null;
+	  }
+	  return objDeepDup(_board.getValAt(pos));
+	};
+	
+	Liaison.isItTimeToMove = function () {
+	  return _preventMove === false;
+	};
+	
+	Liaison.levelStatus = function () {
+	  return {
+	    movesLeft: _moves,
+	    star: levelStatusHelper('star'),
+	    triangle: levelStatusHelper('triangle'),
+	    square: levelStatusHelper('square'),
+	    asterisk: levelStatusHelper('asterisk'),
+	    plus: levelStatusHelper('plus'),
+	    sphere: levelStatusHelper('sphere'),
+	    heart: levelStatusHelper('heart'),
+	    levelCompleted: completedHelper()
+	  };
+	};
+	
+	function completedHelper() {
+	  var allTrue = true;
+	  ['star', 'heart', 'triangle', 'square', 'asterisk', 'plus', 'sphere'].forEach(function (el) {
+	    if (_levelGoals[el] && _levelGoals[el] !== 'completed') {
+	      allTrue = false;
+	    }
+	  });
+	
+	  return allTrue ? 'won' : _moves <= 0 ? 'lost' : undefined;
+	}
+	
+	function levelStatusHelper(kind) {
+	  if (_levelGoals[kind]) {
+	    if (_levelGoals[kind] === 'completed') {
+	      return 0;
+	    } else if (_levelGoals[kind] - _numOfType[kind] > 0) {
+	      return _levelGoals[kind] - _numOfType[kind];
+	    } else {
+	      _levelGoals[kind] = 'completed';
+	      // return "✔";
+	      return 0;
+	    }
+	  } else {
+	    return undefined;
+	  }
+	}
+	
+	// ACTIONS FUNCTIONS
+	
+	
+	Liaison.ACTIONinitializeDots = function (options) {
+	  resetDots(options);
+	};
+	
+	Liaison.ACTIONsnapToOrigin = function (dot) {
+	  snapDot(dot);
+	};
+	
+	Liaison.ACTIONswitchDots = function (dot1, dot2) {
+	  switchDots([dot1, dot2]);
+	};
+	
+	Liaison.ACTIONcheckGroups = function () {
+	  checkGroups();
+	};
+	
+	Liaison.ACTIONremoveGroups = function () {
+	  checkGroups();
+	};
+	
+	Liaison.ACTIONboardDrop = function () {
+	  boardDrop();
+	};
+	
+	Liaison.ACTIONfillInBoard = function () {
+	  fillInTop();
+	};
+	
+	Liaison.ACTIONclearBoard = function () {
+	  clearBoard();
+	};
+	
+	module.exports = Liaison;
+
+/***/ },
+/* 406 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Dots = __webpack_require__(391);
+	var Colors = __webpack_require__(403);
+	var Shapes = __webpack_require__(404);
+	
+	var Board = function Board(options) {
+	  this.size = options.size || 16;
+	  this.grid = initializeGrid(this.size, {});
+	  this.score = 0;
+	  this.colors = levelColors(options.colors || [0, 1, 2, 3, 4, 5, 6, 7, 8]);
+	  this.style = ' ';
+	
+	  this.dotIdentifier = 0;
+	  this.dotsById = {};
+	
+	  this.dotsToExplode = initializeGrid(this.size, false);
+	  this.explodedSpaces = initializeGrid(this.size, ' ');
+	  this.explosionCallbacks = options.callbacks || {};
+	  this.scoreMultiplier = 0;
+	  this.fruitify = options.fruitify === true ? true : false;
+	  this.spheresToExplode = [];
+	};
+	
+	var scoreConv = {
+	  3: 51,
+	  4: 201,
+	  5: 501,
+	  6: 1001
+	};
+	
+	var dotNumConv = {
+	  3: Dots.triangle,
+	  4: Dots.square,
+	  5: Dots.star,
+	  6: Dots.asterisk
+	};
+	
+	function levelColors(array) {
+	  var colorKeys = Object.keys(Colors);
+	  var myColors = [];
+	
+	  array.forEach(function (el) {
+	    myColors.push(Colors[colorKeys[el]]);
+	  });
+	
+	  return myColors;
+	}
+	
+	function initializeGrid(size, placeholder) {
+	  var newGrid = {};
+	
+	  for (var ix = 0; ix < size; ix++) {
+	    newGrid[ix] = {};
+	    for (var iy = 0; iy < size; iy++) {
+	      newGrid[ix][iy] = placeholder;
+	    }
+	  }
+	
+	  return newGrid;
+	}
+	
+	Board.prototype.verifyValidPositions = function () {
+	  var that = this;
+	
+	  for (var _len = arguments.length, positions = Array(_len), _key = 0; _key < _len; _key++) {
+	    positions[_key] = arguments[_key];
+	  }
+	
+	  return positions.every(function (pos) {
+	    return pos[0] >= 0 && pos[1] >= 0 && pos[0] < that.size && pos[1] < that.size && that.grid[pos[0]][pos[1]] && !that.dotsToExplode[pos[0]][pos[1]];
+	  });
+	};
+	
+	Board.prototype.verifyColors = function (color) {
+	  var that = this;
+	
+	  for (var _len2 = arguments.length, positions = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	    positions[_key2 - 1] = arguments[_key2];
+	  }
+	
+	  return positions.every(function (pos) {
+	    return pos[0] >= 0 && pos[1] >= 0 && pos[0] < that.size && pos[1] < that.size && that.grid[pos[0]][pos[1]] && !that.dotsToExplode[pos[0]][pos[1]] && that.grid[pos[0]][pos[1]].color === color;
+	  });
+	};
+	
+	Board.prototype.blowEmUp = function (callback) {
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      if (this.dotsToExplode[ix][iy]) this.removeDot(ix, iy);
+	    }
+	  }
+	
+	  this.dotsToExplode = initializeGrid(this.size, false);
+	  callback();
+	};
+	
+	Board.prototype.rainbowTiles = function () {
+	  var ret_arr = [];
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      if (this.grid[ix][iy].color === 'rainbow') {
+	        ret_arr.push([ix, iy]);
+	      }
+	    }
+	  }
+	  return ret_arr;
+	};
+	
+	var rainbowDiseaseDirections = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+	
+	Board.prototype.spreadRainbow = function (arr) {
+	  var _this = this;
+	
+	  arr.forEach(function (pos) {
+	    var randDelt = rainbowDiseaseDirections[Math.floor(Math.random() * 4)];
+	    if (pos[0] + randDelt[0] > 0 && pos[0] + randDelt[0] < _this.size && pos[1] + randDelt[1] > 0 && pos[1] + randDelt[1] < _this.size) {
+	      _this.grid[pos[0] + randDelt[0]][pos[1] + randDelt[1]].color = 'rainbow';
+	    }
+	  });
+	};
+	
+	Board.prototype.resetExplodedSpaces = function () {
+	  this.explodedSpaces = initializeGrid(this.size, ' ');
+	};
+	
+	Board.prototype.sphereify = function () {
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      if (this.grid[ix][iy]) {
+	        if (this.grid[ix][iy] instanceof Dots.asterisk || this.grid[ix][iy] instanceof Dots.plus || this.grid[ix][iy] instanceof Dots.star) this.replaceDot(ix, iy, Dots.sphere);
+	      }
+	    }
+	  }
+	};
+	
+	Board.prototype.sphereExplode = function (startCallback, endCallback) {
+	  var _this2 = this;
+	
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      this.grid[ix][iy].color = 'black-out';
+	    }
+	  }
+	
+	  startCallback();
+	
+	  setTimeout(function () {
+	    for (var ix = 0; ix < _this2.size; ix++) {
+	      for (var iy = 0; iy < _this2.size; iy++) {
+	        var oldDot = _this2.grid[ix][iy];
+	        oldDot.isKilled = true;
+	        _this2.grid[ix][iy] = null;
+	        _this2.explodedSpaces[ix][iy] = 'rainbow-explosion';
+	        _this2.runDotCallbacks(ix, iy, oldDot);
+	        _this2.score += 314 * _this2.scoreMultiplier;
+	      }
+	    }
+	    _this2.spheresToExplode = [];
+	    endCallback();
+	  }, 1000);
+	};
+	
+	Board.prototype.placeRandomDot = function (x, y) {
+	  var randColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+	
+	  var newDot = new Dots.circle({
+	    color: randColor,
+	    pos: [x, y],
+	    id: this.dotIdentifier
+	  });
+	
+	  if (this.fruitify && Math.floor(Math.random() * 10) === 0) newDot.fruitify();
+	
+	  this.grid[x][y] = newDot;
+	  this.dotsById[this.dotIdentifier] = newDot;
+	  this.dotIdentifier++;
+	};
+	
+	Board.prototype.placeDots = function () {
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      this.placeRandomDot(ix, iy);
+	    }
+	  }
+	};
+	
+	Board.prototype.fillInTop = function () {
+	  var noFills = true;
+	
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      if (!this.grid[ix][iy]) {
+	
+	        this.placeRandomDot(ix, iy);
+	        noFills = false;
+	      }
+	    }
+	  }
+	
+	  return noFills;
+	};
+	
+	Board.prototype.getValAt = function (pos) {
+	  return this.grid[pos[0]][pos[1]];
+	};
+	
+	Board.prototype.setValAt = function (pos, val) {
+	  this.grid[pos[0]][pos[1]] = val;
+	};
+	
+	Board.prototype.checkInARows = function (callback, update) {
+	  var ix = void 0,
+	      iy = void 0;
+	
+	  for (ix = 0; ix < this.size; ix++) {
+	    for (iy = 0; iy < this.size; iy++) {
+	
+	      this.checkStarsAndAsterisks(ix, iy);
+	    }
+	  }
+	
+	  for (ix = 0; ix < this.size; ix++) {
+	    for (iy = 0; iy < this.size; iy++) {
+	
+	      this.checkNumInDelta(ix, iy, 6, [0, 1], update);
+	      this.checkNumInDelta(ix, iy, 6, [1, 0], update);
+	      this.checkNumInDelta(ix, iy, 5, [0, 1], update);
+	      this.checkNumInDelta(ix, iy, 5, [1, 0], update);
+	    }
+	  }
+	
+	  for (ix = 0; ix < this.size; ix++) {
+	    for (iy = 0; iy < this.size; iy++) {
+	
+	      this.checkTnLz(ix, iy);
+	      this.checkClusters(ix, iy);
+	    }
+	  }
+	
+	  for (ix = 0; ix < this.size; ix++) {
+	    for (iy = 0; iy < this.size; iy++) {
+	
+	      this.checkNumInDelta(ix, iy, 4, [0, 1], update);
+	      this.checkNumInDelta(ix, iy, 4, [1, 0], update);
+	      this.checkNumInDelta(ix, iy, 3, [0, 1], update);
+	      this.checkNumInDelta(ix, iy, 3, [1, 0], update);
+	    }
+	  }
+	
+	  callback();
+	};
+	
+	Board.prototype.killColor = function (color) {
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	
+	      if (this.grid[ix][iy] && this.grid[ix][iy].color === color) {
+	        this.removeDot(ix, iy);
+	      }
+	    }
+	  }
+	};
+	
+	Board.prototype.changeColors = function (color) {
+	  for (var ix = 0; ix < this.size; ix++) {
+	    for (var iy = 0; iy < this.size; iy++) {
+	      if (this.grid[ix][iy] && this.grid[ix][iy].color !== 'rainbow' && this.grid[ix][iy].color !== 'grey-out') {
+	        this.grid[ix][iy].color = color;
+	      }
+	    }
+	  }
+	};
+	
+	Board.prototype.killCross = function (x, y) {
+	  for (var ix = 0; ix < this.size; ix++) {
+	    if (this.grid[ix][y]) {
+	      this.removeDot(ix, y);
+	    }
+	  }
+	  for (var iy = 0; iy < this.size; iy++) {
+	    if (this.grid[x][iy]) {
+	      this.removeDot(x, iy);
+	    }
+	  }
+	};
+	
+	Board.prototype.killBigX = function (x, y) {
+	  var _this3 = this;
+	
+	  [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function (deltaPos) {
+	    var dx = deltaPos[0];
+	    var dy = deltaPos[1];
+	    for (var i = 0; x + i * dx >= 0 && x + i * dx < _this3.size && y + i * dy >= 0 && y + i * dy < _this3.size; i++) {
+	      _this3.removeDot(x + i * dx, y + i * dy);
+	    }
+	  });
+	};
+	
+	Board.prototype.killTri = function (x, y) {
+	  if (y < this.size - 1 && this.grid[x][y + 1]) {
+	    this.removeDot(x, y + 1);
+	  }
+	  if (x > 0 && y > 0 && this.grid[x - 1][y - 1]) {
+	    this.removeDot(x - 1, y - 1);
+	  }
+	  if (x < this.size - 1 && y > 0 && this.grid[x + 1][y - 1]) {
+	    this.removeDot(x + 1, y - 1);
+	  }
+	};
+	
+	Board.prototype.killSquare = function (x, y) {
+	  for (var ix = x - 2; ix < x + 3; ix++) {
+	    for (var iy = y - 2; iy < y + 3; iy++) {
+	      if (ix >= 0 && iy >= 0 && ix < this.size && iy < this.size && this.grid[ix][iy]) {
+	        this.removeDot(ix, iy);
+	      }
+	    }
+	  }
+	};
+	
+	Board.prototype.setDotForRemoval = function (x, y) {
+	  this.dotsToExplode[x][y] = true;
+	};
+	
+	Board.prototype.removeDot = function (x, y) {
+	  if (this.grid[x][y] === null) {
+	    return;
+	  }
+	  var oldDot = this.grid[x][y];
+	
+	  if (this.fruitify && oldDot.isFruit) this.score += 1000 * this.scoreMultiplier;
+	
+	  if (!(oldDot instanceof Dots.sphere)) {
+	    oldDot.isKilled = true;
+	    this.grid[x][y] = null;
+	    this.explodedSpaces[x][y] = oldDot.color;
+	    this.runDotCallbacks(x, y, oldDot);
+	  }
+	
+	  this.runDotExplosions(x, y, oldDot);
+	};
+	
+	Board.prototype.runDotCallbacks = function (x, y, dot) {
+	  if (dot instanceof Dots.star) {
+	    this.explosionCallbacks.star();
+	  } else if (dot instanceof Dots.square) {
+	    this.explosionCallbacks.square();
+	  } else if (dot instanceof Dots.plus) {
+	    this.explosionCallbacks.plus();
+	  } else if (dot instanceof Dots.triangle) {
+	    this.explosionCallbacks.triangle();
+	  } else if (dot instanceof Dots.heart) {
+	    this.explosionCallbacks.heart();
+	  } else if (dot instanceof Dots.asterisk) {
+	    this.explosionCallbacks.asterisk();
+	  } else if (dot instanceof Dots.sphere) {
+	    this.explosionCallbacks.sphere();
+	  }
+	};
+	
+	Board.prototype.runDotExplosions = function (x, y, dot) {
+	  if (dot instanceof Dots.star) {
+	    this.killColor(dot.color);
+	  } else if (dot instanceof Dots.square) {
+	    this.killCross(x, y);
+	  } else if (dot instanceof Dots.plus) {
+	    this.killBigX(x, y);
+	  } else if (dot instanceof Dots.triangle) {
+	    this.killTri(x, y);
+	  } else if (dot instanceof Dots.heart) {
+	    this.killSquare(x, y);
+	  } else if (dot instanceof Dots.asterisk) {
+	    this.changeColors(dot.color);
+	  } else if (dot instanceof Dots.sphere) {
+	    dot.color = 'grey-out';
+	    this.spheresToExplode.push(dot);
+	  }
+	};
+	
+	Board.prototype.replaceDot = function (x, y, dotConstructor) {
+	  if (this.grid[x][y] === null) {
+	    return;
+	  }
+	  var oldDot = this.grid[x][y];
+	  this.removeDot(x, y);
+	
+	  this.grid[x][y] = new dotConstructor({
+	    color: oldDot.color,
+	    pos: oldDot.pos,
+	    id: this.dotIdentifier
+	  });
+	
+	  this.dotsById[this.dotIdentifier] = this.grid[x][y];
+	  this.dotIdentifier++;
+	};
+	
+	Board.prototype.checkClusters = function (x, y) {
+	  if (!this.verifyValidPositions([x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]) || this.grid[x][y].color === 'rainbow' || this.grid[x][y].color === 'grey-out') {
+	    return;
+	  }
+	
+	  var thisColor = this.grid[x][y].color;
+	  if (this.grid[x + 1][y].color === thisColor && this.grid[x + 1][y + 1].color === thisColor && this.grid[x][y + 1].color === thisColor) {
+	
+	    this.setDotForRemoval(x, y + 1);
+	    this.setDotForRemoval(x + 1, y);
+	    this.setDotForRemoval(x + 1, y + 1);
+	    this.replaceDot(x, y, Dots.heart);
+	
+	    this.score += scoreConv[4] * this.scoreMultiplier;
+	  }
+	};
+	
+	Board.prototype.checkTnLz = function (x, y) {
+	  if (x + 2 >= this.size || y + 2 >= this.size) {
+	    return;
+	  }
+	
+	  for (var dy = 0; dy < 3; dy++) {
+	    if (this.grid[x][y + dy] && this.grid[x + 1][y + dy] && this.grid[x + 2][y + dy] && !this.dotsToExplode[x][y + dy] && !this.dotsToExplode[x + 1][y + dy] && !this.dotsToExplode[x + 2][y + dy]) {
+	      var thisColor = this.grid[x][y + dy].color;
+	      if (thisColor !== 'rainbow' && thisColor !== 'grey-out' && this.grid[x + 1][y + dy].color === thisColor && this.grid[x + 2][y + dy].color === thisColor) {
+	        for (var dx = 0; dx < 3; dx++) {
+	          if (this.verifyValidPositions([x + dx, y], [x + dx, y + 1], [x + dx, y + 2])) {
+	            if (this.grid[x + dx][y].color === thisColor && this.grid[x + dx][y + 1].color === thisColor && this.grid[x + dx][y + 2].color === thisColor) {
+	
+	              if (dx !== 0) this.setDotForRemoval(x, y + dy);
+	              if (dx !== 1) this.setDotForRemoval(x + 1, y + dy);
+	              if (dx !== 2) this.setDotForRemoval(x + 2, y + dy);
+	
+	              if (dy !== 0) this.setDotForRemoval(x + dx, y);
+	              if (dy !== 1) this.setDotForRemoval(x + dx, y + 1);
+	              if (dy !== 2) this.setDotForRemoval(x + dx, y + 2);
+	
+	              this.replaceDot(x + dx, y + dy, Dots.plus);
+	
+	              this.score += scoreConv[5] * this.scoreMultiplier;
+	            }
+	          }
+	        }
+	      }
+	    }
+	  }
+	};
+	
+	Board.prototype.checkNumInDelta = function (x, y, num, dPos, callback) {
+	  var dx = dPos[0];
+	  var dy = dPos[1];
+	  var size = this.size;
+	
+	  if (this.grid[x][y] && this.grid[x][y].id && x + (num - 1) * dx < size && y + (num - 1) * dy < size && this.grid[x][y].color !== 'rainbow' && this.grid[x][y].color !== 'grey-out') {
+	
+	    var initColor = this.grid[x][y].color;
+	    var sameColor = true;
+	
+	    for (var i = 0; i < num && sameColor; i++) {
+	      if (!this.verifyValidPositions([x + dx * i, y + dy * i]) || this.grid[x + dx * i][y + dy * i].color !== initColor) {
+	        sameColor = false;
+	      }
+	    }
+	
+	    if (sameColor && i === num) {
+	      for (var j = 0; j < num; j++) {
+	        if (Math.floor(num / 2) === j) {
+	          this.replaceDot(x + dx * j, y + dy * j, dotNumConv[num]);
+	        } else {
+	          this.setDotForRemoval(x + dx * j, y + dy * j);
+	        }
+	      }
+	      this.score += scoreConv[num];
+	    }
+	  }
+	};
+	
+	Board.prototype.checkStarsAndAsterisks = function (x, y) {
+	  if (this.grid[x][y] instanceof Dots.star || this.grid[x][y] instanceof Dots.asterisk || this.grid[x][y] instanceof Dots.plus) {
+	    if (x + 1 < this.size && (this.grid[x + 1][y] instanceof Dots.star || this.grid[x + 1][y] instanceof Dots.asterisk || this.grid[x + 1][y] instanceof Dots.plus)) {
+	      this.replaceDot(x, y, Dots.sphere);
+	      this.removeDot(x + 1, y);
+	      this.sphereify();
+	    } else if (y + 1 < this.size && (this.grid[x][y + 1] instanceof Dots.star || this.grid[x][y + 1] instanceof Dots.asterisk || this.grid[x][y + 1] instanceof Dots.plus)) {
+	      this.replaceDot(x, y, Dots.sphere);
+	      this.removeDot(x, y + 1);
+	      this.sphereify();
+	    }
+	  }
+	};
+	
+	Board.prototype.shiftColumnDown = function (x, startY) {
+	  var nextToBeFilled = startY;
+	
+	  for (var y = startY; y < this.size; y++) {
+	    if (this.grid[x][y]) {
+	      this.grid[x][y].pos = [x, nextToBeFilled];
+	      this.grid[x][nextToBeFilled] = this.grid[x][y];
+	      this.grid[x][nextToBeFilled].style = 'drop';
+	      this.grid[x][nextToBeFilled].oldPos = [x, y];
+	      this.grid[x][y] = null;
+	
+	      nextToBeFilled++;
+	    }
+	  }
+	};
+	
+	Board.prototype.columnsDrop = function (callback) {
+	  var columnsDropped = false;
+	
+	  for (var ix = 0; ix < this.size; ix++) {
+	    var thisColumnDropped = false;
+	
+	    for (var iy = 0; iy < this.size && !thisColumnDropped; iy++) {
+	
+	      if (!this.grid[ix][iy]) {
+	        thisColumnDropped = true;
+	        columnsDropped = true;
+	        this.shiftColumnDown(ix, iy);
+	      }
+	    }
+	  }
+	
+	  callback();
+	};
+	
+	module.exports = Board;
+
+/***/ },
+/* 407 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -36907,7 +36839,7 @@
 	};
 
 /***/ },
-/* 409 */
+/* 408 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36942,14 +36874,14 @@
 	    }
 	  },
 	  goalsRender: function goalsRender() {
-	    if (this.state.levelStatus.levelCompleted) {
-	      // <div style={{width: '140px'}}>
-	      return React.createElement(
-	        'div',
-	        null,
-	        'LEVEL COMPLETE!'
-	      );
-	    }
+	    // if (this.state.levelStatus.levelCompleted) {
+	    //   // <div style={{width: '140px'}}>
+	    //   return (
+	    //     <div>
+	    //       LEVEL COMPLETE!
+	    //     </div>
+	    //   );
+	    // }
 	
 	    return React.createElement(
 	      'div',
@@ -37016,7 +36948,7 @@
 	        'div',
 	        { className: 'moves-left-cont' },
 	        'Moves: ',
-	        this.state.levelStatus.movesLeft && this.state.levelStatus.movesLeft > 0 ? this.state.levelStatus.movesLeft : 'No more moves left!'
+	        this.state.levelStatus.movesLeft && this.state.levelStatus.movesLeft > 0 ? this.state.levelStatus.movesLeft : '0'
 	      ),
 	      React.createElement(
 	        'div',
@@ -37030,13 +36962,81 @@
 	module.exports = Goals;
 
 /***/ },
+/* 409 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var React = __webpack_require__(3);
+	
+	var Score = React.createClass({
+	  displayName: "Score",
+	  getInitialState: function getInitialState() {
+	    return {
+	      score: this.props.Liaison.score() || 0,
+	      score1: this.props.Liaison.score() || 0,
+	      score2: this.props.Liaison.score() || 0,
+	      cont: 1 };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.scoreListener = this.props.Liaison.addListener(this.updateScore);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.props.Liaison.removeListener(this.scoreListener);
+	  },
+	  updateScore: function updateScore() {
+	    var newScore = this.props.Liaison.score();
+	    if (this.state.score !== newScore) {
+	      if (this.state.cont === 1) {
+	        this.setState({
+	          score: newScore,
+	          score2: newScore,
+	          cont: 2
+	        });
+	      } else {
+	        this.setState({
+	          score: newScore,
+	          score1: newScore,
+	          cont: 1
+	        });
+	      }
+	    }
+	  },
+	  render: function render() {
+	
+	    return React.createElement(
+	      "div",
+	      { className: "score-cont" },
+	      React.createElement(
+	        "div",
+	        {
+	          className: "score-cont-1",
+	          style: { opacity: this.state.cont === 1 ? '1' : '0' }
+	        },
+	        this.state.score1
+	      ),
+	      React.createElement(
+	        "div",
+	        {
+	          className: "score-cont-2",
+	          style: { opacity: this.state.cont === 2 ? '1' : '0' }
+	        },
+	        this.state.score2
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = Score;
+
+/***/ },
 /* 410 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var React = __webpack_require__(3);
-	var Liaison = __webpack_require__(240);
+	var Liaison = __webpack_require__(405);
 	var hashHistory = __webpack_require__(1).hashHistory;
 	
 	var GameOverModal = React.createClass({
