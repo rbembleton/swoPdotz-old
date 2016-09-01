@@ -1,9 +1,10 @@
 const React = require('react');
-const Score = require('./score');
 const BoardDisplay = require('./board_display');
 const hashHistory = require('react-router').hashHistory;
 const BoardLevels = require('./constants/board_levels');
+const Liaison = require('./gameplay/liaison');
 const Goals = require('./goals');
+const Score = require('./score');
 const GameOverModal = require('./game_over_modal');
 
 const MGame = React.createClass({
@@ -15,7 +16,7 @@ const MGame = React.createClass({
 
 
   render () {
-    const displayGoals = BoardLevels[this.props.params.gameType].isGoalBased ? <Goals /> : "";
+    const displayGoals = BoardLevels[this.props.params.gameType].isGoalBased ? <Goals Liaison={Liaison}/> : "";
     const toDispModalOrNotThatIsTheQuestion = BoardLevels[this.props.params.gameType].isGoalBased ?
       <GameOverModal levelType={BoardLevels[this.props.params.gameType]}/> : '';
 
@@ -28,7 +29,7 @@ const MGame = React.createClass({
         <div className="screen">
           <BoardDisplay board={BoardLevels[this.props.params.gameType]}/>
         </div>
-        <Score />
+        <Score Liaison={Liaison}/>
         {toDispModalOrNotThatIsTheQuestion}
       </div>
     );

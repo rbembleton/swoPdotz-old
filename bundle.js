@@ -27370,11 +27370,12 @@
 	'use strict';
 	
 	var React = __webpack_require__(3);
-	var Score = __webpack_require__(239);
 	var BoardDisplay = __webpack_require__(256);
 	var hashHistory = __webpack_require__(1).hashHistory;
 	var BoardLevels = __webpack_require__(408);
+	var Liaison = __webpack_require__(240);
 	var Goals = __webpack_require__(409);
+	var Score = __webpack_require__(239);
 	var GameOverModal = __webpack_require__(410);
 	
 	var MGame = React.createClass({
@@ -27384,7 +27385,7 @@
 	    hashHistory.push('home');
 	  },
 	  render: function render() {
-	    var displayGoals = BoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(Goals, null) : "";
+	    var displayGoals = BoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(Goals, { Liaison: Liaison }) : "";
 	    var toDispModalOrNotThatIsTheQuestion = BoardLevels[this.props.params.gameType].isGoalBased ? React.createElement(GameOverModal, { levelType: BoardLevels[this.props.params.gameType] }) : '';
 	
 	    return React.createElement(
@@ -27401,7 +27402,7 @@
 	        { className: 'screen' },
 	        React.createElement(BoardDisplay, { board: BoardLevels[this.props.params.gameType] })
 	      ),
-	      React.createElement(Score, null),
+	      React.createElement(Score, { Liaison: Liaison }),
 	      toDispModalOrNotThatIsTheQuestion
 	    );
 	  }
@@ -27413,28 +27414,27 @@
 /* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	var React = __webpack_require__(3);
-	var Liaison = __webpack_require__(240);
 	
 	var Score = React.createClass({
-	  displayName: 'Score',
+	  displayName: "Score",
 	  getInitialState: function getInitialState() {
 	    return {
-	      score: Liaison.score() || 0,
-	      score1: Liaison.score() || 0,
-	      score2: Liaison.score() || 0,
+	      score: this.props.Liaison.score() || 0,
+	      score1: this.props.Liaison.score() || 0,
+	      score2: this.props.Liaison.score() || 0,
 	      cont: 1 };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    this.scoreListener = Liaison.addListener(this.updateScore);
+	    this.scoreListener = this.props.Liaison.addListener(this.updateScore);
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
-	    Liaison.removeListener(this.scoreListener);
+	    this.props.Liaison.removeListener(this.scoreListener);
 	  },
 	  updateScore: function updateScore() {
-	    var newScore = Liaison.score();
+	    var newScore = this.props.Liaison.score();
 	    if (this.state.score !== newScore) {
 	      if (this.state.cont === 1) {
 	        this.setState({
@@ -27454,20 +27454,20 @@
 	  render: function render() {
 	
 	    return React.createElement(
-	      'div',
-	      { className: 'score-cont' },
+	      "div",
+	      { className: "score-cont" },
 	      React.createElement(
-	        'div',
+	        "div",
 	        {
-	          className: 'score-cont-1',
+	          className: "score-cont-1",
 	          style: { opacity: this.state.cont === 1 ? '1' : '0' }
 	        },
 	        this.state.score1
 	      ),
 	      React.createElement(
-	        'div',
+	        "div",
 	        {
-	          className: 'score-cont-2',
+	          className: "score-cont-2",
 	          style: { opacity: this.state.cont === 2 ? '1' : '0' }
 	        },
 	        this.state.score2
@@ -27504,6 +27504,7 @@
 	var _numOfType = resetNumOfType();
 	var _levelGoals = resetLevelGoals();
 	var _boardTimeouts = [];
+	
 	var Liaison = function Liaison() {};
 	
 	Liaison.addListener = function (callback) {
@@ -27723,7 +27724,6 @@
 	  } else {
 	    Liaison.broadcastChanges();
 	    _boardTimeouts.push(setTimeout(function () {
-	      // debugger
 	      _board.resetExplodedSpaces();
 	      checkGroups();
 	    }, 400));
@@ -36913,25 +36913,24 @@
 	'use strict';
 	
 	var React = __webpack_require__(3);
-	var Liaison = __webpack_require__(240);
 	
 	var Goals = React.createClass({
 	  displayName: 'Goals',
 	  getInitialState: function getInitialState() {
 	    return {
-	      levelStatus: Liaison.levelStatus()
+	      levelStatus: this.props.Liaison.levelStatus()
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    this.scoreListener = Liaison.addListener(this.updateGoals);
+	    this.scoreListener = this.props.Liaison.addListener(this.updateGoals);
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.setState({ levelStatus: {} });
-	    Liaison.removeListener(this.scoreListener);
+	    this.props.Liaison.removeListener(this.scoreListener);
 	  },
 	  updateGoals: function updateGoals() {
 	    this.setState({
-	      levelStatus: Liaison.levelStatus()
+	      levelStatus: this.props.Liaison.levelStatus()
 	
 	    });
 	  },

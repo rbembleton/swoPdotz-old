@@ -23,7 +23,7 @@ module.exports = {
       square: 10,
       heart: 10
     },
-    moves: 25,
+    moves: 30,
     nextLevel: 'three'
   },
   'three': {
@@ -45,7 +45,7 @@ module.exports = {
     goals: {
       square: 5,
     },
-    moves: 10,
+    moves: 15,
     nextLevel: 'five'
   },
   'five': {
@@ -56,7 +56,7 @@ module.exports = {
     goals: {
       heart: 20
     },
-    moves: 20,
+    moves: 30,
     nextLevel: 'six'
   },
   'six': {

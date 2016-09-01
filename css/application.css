@@ -242,10 +242,9 @@ input[type="submit"] {
     transform-origin: center; } }
 .main-page {
   width: 600px;
-  height: 600px;
   display: block;
   margin: auto;
-  margin-top: 60px;
+  margin-top: 40px;
   margin-bottom: 160px;
   font-family: "Open Sans", sans-serif; }
   .main-page header {
@@ -816,9 +815,9 @@ input[type="submit"] {
   .mobile-main.main-page .levels-select {
     width: 800px; }
     .mobile-main.main-page .levels-select h2 {
-      font-size: 40px; }
+      font-size: 36px; }
     .mobile-main.main-page .levels-select .play-button {
-      font-size: 34px;
+      font-size: 32px;
       vertical-align: middle; }
       .mobile-main.main-page .levels-select .play-button span {
         font-size: 20px;
@@ -826,7 +825,7 @@ input[type="submit"] {
         margin: 5px 20px; }
   .mobile-main.main-page .dots-divider .icon-geo-circle {
     margin: 10px;
-    font-size: 24px; }
+    font-size: 18px; }
 
 .short-screen.mobile-main.main-page {
   margin-top: 12px; }

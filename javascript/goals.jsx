@@ -1,26 +1,25 @@
 const React = require('react');
-const Liaison = require('./gameplay/liaison');
 
 const Goals = React.createClass({
 
   getInitialState() {
     return({
-      levelStatus: Liaison.levelStatus()
+      levelStatus: this.props.Liaison.levelStatus()
     });
   },
 
   componentDidMount() {
-    this.scoreListener = Liaison.addListener(this.updateGoals);
+    this.scoreListener = this.props.Liaison.addListener(this.updateGoals);
   },
 
   componentWillUnmount () {
     this.setState({levelStatus: {}});
-    Liaison.removeListener(this.scoreListener);
+    this.props.Liaison.removeListener(this.scoreListener);
   },
 
   updateGoals () {
     this.setState({
-      levelStatus: Liaison.levelStatus(),
+      levelStatus: this.props.Liaison.levelStatus(),
 
     });
   },

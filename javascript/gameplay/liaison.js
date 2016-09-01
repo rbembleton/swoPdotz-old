@@ -18,6 +18,8 @@ let _moves;
 let _numOfType = resetNumOfType();
 let _levelGoals = resetLevelGoals();
 let _boardTimeouts = [];
+
+
 let Liaison = function () {
 };
 
@@ -232,7 +234,6 @@ function fillInTop() {
   } else {
     Liaison.broadcastChanges();
     _boardTimeouts.push(setTimeout((() => {
-      // debugger
       _board.resetExplodedSpaces();
       checkGroups();
     }), 400));
