@@ -986,7 +986,7 @@ input[type="submit"] {
 
 .short-screen.mobile-main.main-page {
   header {
-    font-size: 80px;
+    font-size: 70px;
   }
 
   .screen-holder {
@@ -994,21 +994,25 @@ input[type="submit"] {
   }
 
   .back-to-levels {
-    font-size: 24px;
+    font-size: 18px;
     margin-bottom: 0px;
   }
 
   .goals-cont {
-    font-size: 30px;
-    margin-top: 16px;
-  }
-
-  .screen {
+    font-size: 24px;
     margin-top: 10px;
   }
 
+  .goals-left-cont div {
+    width: 100px;
+  }
+
+  .screen {
+    margin-top: 8px;
+  }
+
   .score-cont {
-    margin-top: 20px;
+    margin-top: 10px;
 
     div {
       font-size: 42px;
@@ -1016,7 +1020,7 @@ input[type="submit"] {
   }
 
   footer {
-    font-size: 32px;
+    font-size: 24px;
   }
 
 }

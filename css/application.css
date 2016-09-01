@@ -815,22 +815,24 @@ input[type="submit"] {
       font-size: 60px; }
 
 .short-screen.mobile-main.main-page header {
-  font-size: 80px; }
+  font-size: 70px; }
 .short-screen.mobile-main.main-page .screen-holder {
   margin-top: 5px; }
 .short-screen.mobile-main.main-page .back-to-levels {
-  font-size: 24px;
+  font-size: 18px;
   margin-bottom: 0px; }
 .short-screen.mobile-main.main-page .goals-cont {
-  font-size: 30px;
-  margin-top: 16px; }
-.short-screen.mobile-main.main-page .screen {
+  font-size: 24px;
   margin-top: 10px; }
+.short-screen.mobile-main.main-page .goals-left-cont div {
+  width: 100px; }
+.short-screen.mobile-main.main-page .screen {
+  margin-top: 8px; }
 .short-screen.mobile-main.main-page .score-cont {
-  margin-top: 20px; }
+  margin-top: 10px; }
   .short-screen.mobile-main.main-page .score-cont div {
     font-size: 42px; }
 .short-screen.mobile-main.main-page footer {
-  font-size: 32px; }
+  font-size: 24px; }
 
 /*# sourceMappingURL=application.css.map */
