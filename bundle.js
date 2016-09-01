@@ -37759,7 +37759,7 @@
 	    };
 	
 	    if (this.state.animate !== ' ') {
-	      for (var i = 0; i < 4; i++) {
+	      for (var i = 0; i < 3; i++) {
 	        explosion.push(React.createElement(MParticle, { key: i, color: this.state.animate }));
 	      }
 	    }
