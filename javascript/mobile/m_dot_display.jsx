@@ -1,32 +1,9 @@
 const React = require('react');
-const PropTypes = React.PropTypes;
 const Dots = require('../dots/all_dots');
 const Colors = require('../constants/colors');
 const Shapes = require('../constants/shapes');
 const Liaison = require('../gameplay/liaison');
-
-import { DragSource } from 'react-dnd';
-
-const dotSource = {
-  beginDrag(props) {
-    return { dot: props.dot, specialClass: ' ' };
-  },
-  endDrag(props, monitor) {
-    if (!monitor.didDrop()) {
-      Liaison.ACTIONsnapToOrigin(props.dot);
-    }
-  }
-
-};
-
-function collect(connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging(),
-    dragOver: monitor.didDrop(),
-  };
-}
-
+const swapDots = require('./m_board_display').swapDots;
 
 const MDotDisplay = React.createClass({
 
@@ -34,11 +11,20 @@ const MDotDisplay = React.createClass({
     return({ pos: this.props.pos, specialClass: 'new-dot' });
   },
 
+  handleTouchstart (e) {
+    console.log('hi');
+  },
+
+
   changePos(e) {
+    e.preventDefault();
+
+    let myPageX = e.changedTouches[0].pageX;
+    let myPageY = e.changedTouches[0].pageY;
 
     const newPos = [
-      ((e.pageX - this.props.offset[0]) / this.props.sizeOfGrids) ,
-      ((this.props.offset[1] - e.pageY) / this.props.sizeOfGrids)
+      ((myPageX - this.props.offset[0]) / this.props.sizeOfGrids) ,
+      ((this.props.offset[1] - myPageY) / this.props.sizeOfGrids)
     ];
 
     if (newPos[0] < 0) {newPos[0] = 0;}
@@ -47,7 +33,12 @@ const MDotDisplay = React.createClass({
     if (newPos[1] > (this.props.numOfGrids - 1)) {newPos[1] = (this.props.numOfGrids - 1);}
 
     this.setState({ pos: newPos });
-    // }
+  },
+
+  handleTouchEnd(e) {
+    console.log(this.state.pos);
+    console.log([Math.round(this.state.pos[0]), Math.round(this.state.pos[1])]);
+    swapDots([Math.round(this.state.pos[0]), Math.round(this.state.pos[1])], this.props.dot);
   },
 
   switchDots(e) {
@@ -118,15 +109,14 @@ const MDotDisplay = React.createClass({
       padding: `${(this.props.sizeOfGrids - 25) / 2.0}px`
     };
 
-    var connectDragSource = this.props.connectDragSource;
-    var isDragging = this.props.isDragging;
-
-    return connectDragSource(
+    return (
       <div
         className={"dot-cont " + this.state.specialClass}
         style={pos}
         draggable={true}
-        onDrag={this.changePos}
+        onTouchStart={this.handleTouchStart}
+        onTouchMove={this.changePos}
+        onTouchEnd={this.handleTouchEnd}
       >
         <div
           className={this.props.dot.color + " m-" + (this.props.dot.isFruit ? "fruit" : this.props.dot.shape)}
@@ -139,9 +129,5 @@ const MDotDisplay = React.createClass({
 
 });
 
-MDotDisplay.propTypes = {
-  connectDragSource: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired,
-};
 
-module.exports = DragSource('Dot', dotSource, collect)(MDotDisplay);
+module.exports = MDotDisplay;

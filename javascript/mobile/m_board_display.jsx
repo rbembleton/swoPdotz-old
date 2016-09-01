@@ -5,11 +5,6 @@ const MDotDisplay = require('./m_dot_display');
 const ReactDOM = require('react-dom');
 const Liaison = require('../gameplay/liaison');
 
-import { DragDropContext } from 'react-dnd';
-// import HTML5Backend from 'react-dnd-html5-backend';
-import { default as TouchBackend } from 'react-dnd-touch-backend';
-
-
 
 const MBoardDisplay = React.createClass({
   getInitialState () {
@@ -30,17 +25,15 @@ const MBoardDisplay = React.createClass({
 
   componentDidMount () {
     this.dotListener = Liaison.addListener(this.updateDots);
-    // this.windowListenerResize = window.addEventListener('resize', this.updateOffset);
     window.addEventListener('resize', this.updateOffset);
     this.updateOffset();
     this.updateOffsetTimeout = setTimeout(this.updateOffset, 1000);
-    // this.updateOffsetInterval = setInterval(this.updateOffset, 5000);
   },
 
   updateOffset () {
     const boxResize = (this.sizeOfGrids) / 2.0;
     let myRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
-    this.setState({offset: [myRect.left + boxResize, myRect.bottom + (400 - boxResize)]});
+    this.setState({offset: [myRect.left + boxResize, myRect.bottom + (800 - boxResize)]});
   },
 
   updateDots () {
@@ -54,18 +47,10 @@ const MBoardDisplay = React.createClass({
 
   componentWillUnmount() {
     Liaison.ACTIONclearBoard();
-    // removeEventListener('resize', this.windowListenerResize);
     removeEventListener('resize', this.updateOffset);
     Liaison.removeListener(this.dotListener);
-    // clearInterval(this.updateOffsetInterval);
     clearTimeout(this.updateOffsetTimeout);
   },
-
-  // componentDidUpdate () {
-  //   this.updateOffset();
-  //
-  // },
-
 
 
   render () {
@@ -131,5 +116,4 @@ function posInRange(pos1, pos2) {
   );
 }
 
-// module.exports = DragDropContext(HTML5Backend)(MBoardDisplay);
-module.exports = DragDropContext(TouchBackend({ enableMouseEvents: true }))(MBoardDisplay);
+module.exports = MBoardDisplay;

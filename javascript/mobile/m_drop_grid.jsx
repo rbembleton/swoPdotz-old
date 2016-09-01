@@ -1,24 +1,6 @@
 const React = require('react');
 const PropTypes = React.PropTypes;
-const swapDots = require('./m_board_display').swapDots;
-const DropTarget = require('react-dnd').DropTarget;
 const MParticle = require('./m_particle');
-
-
-const squareTarget = {
-  drop(props, monitor) {
-    swapDots(props.pos, monitor.getItem().dot);
-  }
-};
-
-function collect(connect, monitor) {
-  return {
-    connectDropTarget: connect.dropTarget(),
-    isOver: monitor.isOver(),
-    currentDragTarget: monitor.getItem()
-  };
-}
-
 const MDropGrid = React.createClass({
 
   getInitialState () {
@@ -43,21 +25,19 @@ const MDropGrid = React.createClass({
   },
 
   render () {
-    const { pos, connectDropTarget, currentDragTarget, isOver } = this.props;
     let explosion = [];
+    let pos = this.props.pos;
 
     let sqPosZIndex = {
       width: `${this.props.sizeOfGrids}px`,
       height: `${this.props.sizeOfGrids}px`,
       bottom: `${pos[1] * this.props.sizeOfGrids}px`,
       left: `${pos[0] * this.props.sizeOfGrids}px`,
-      zIndex: `${(currentDragTarget &&
-        !(currentDragTarget.dot.pos[0] === pos[0] &&
-          currentDragTarget.dot.pos[1] === pos[1])) ? '5' : '1'}`
+      zIndex: `1`
     };
 
     if (this.state.animate !== ' ') {
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < 4; i++) {
         explosion.push(
           <MParticle key={i} color={this.state.animate}/>
 
@@ -65,7 +45,7 @@ const MDropGrid = React.createClass({
       }
     }
 
-    return connectDropTarget(
+    return (
       <div
         className={"dot-holder"}
         style={sqPosZIndex}
@@ -78,10 +58,4 @@ const MDropGrid = React.createClass({
 
 });
 
-MDropGrid.propTypes = {
-  pos: PropTypes.array.isRequired,
-  isOver: PropTypes.bool.isRequired
-};
-
-
-module.exports = DropTarget('Dot', squareTarget, collect)(MDropGrid);
+module.exports = MDropGrid;
