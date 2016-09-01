@@ -68,5 +68,17 @@ module.exports = {
       sphere: 3
     },
     moves: 30,
+    nextLevel: 'bonus'
   },
+  'bonus': {
+    name: 'bonus',
+    isGoalBased: true,
+    size: 12,
+    colors: [0,1,2,3,4,5],
+    goals: {
+      star: 10,
+    },
+    moves: 25,
+    fruitify: true
+  }
 };

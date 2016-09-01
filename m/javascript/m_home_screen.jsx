@@ -18,19 +18,11 @@ const HomeScreen = React.createClass({
 
   render () {
     const bonusShow = (
-      localStorage.one === 'true' && localStorage.two === 'true' && localStorage.three === 'true' ?
+      localStorage.m_one === 'true' && localStorage.m_two === 'true' && localStorage.m_three === 'true' &&
+      localStorage.m_four === 'true' && localStorage.m_five === 'true' && localStorage.m_six === 'true' ?
       <div style={{display: 'inline'}}>
         <span className="icon-geo-circle teal-hover"/>
-        <button id="bonus" onClick={this.playGame}>bonus</button>
-      </div>
-      : ""
-    );
-
-    const bonus2Show = (
-      localStorage.four === 'true' && localStorage.five === 'true' && localStorage.six === 'true' && localStorage.seven === 'true' ?
-      <div style={{display: 'inline'}}>
-        <span className="icon-geo-circle teal-hover"/>
-        <button id="bonus2" onClick={this.playGame}>bonus</button>
+        <button id="bonus" onClick={this.playMobileGame}>bonus</button>
       </div>
       : ""
     );
@@ -45,12 +37,13 @@ const HomeScreen = React.createClass({
           <button id="two" onClick={this.playMobileGame}>two</button>
             <span className="icon-geo-circle teal-hover"/>
           <button id="three" onClick={this.playMobileGame}>three</button>
-            <span className="icon-geo-circle teal-hover"/>
+            <br/>
           <button id="four" onClick={this.playMobileGame}>four</button>
             <span className="icon-geo-circle teal-hover"/>
           <button id="five" onClick={this.playMobileGame}>five</button>
             <span className="icon-geo-circle teal-hover"/>
           <button id="six" onClick={this.playMobileGame}>six</button>
+          {bonusShow}
         </div>
         <DotsDivider />
           <div className="play-button">

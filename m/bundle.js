@@ -27119,24 +27119,13 @@
 	    hashHistory.push('how');
 	  },
 	  render: function render() {
-	    var bonusShow = localStorage.one === 'true' && localStorage.two === 'true' && localStorage.three === 'true' ? React.createElement(
+	    var bonusShow = localStorage.m_one === 'true' && localStorage.m_two === 'true' && localStorage.m_three === 'true' && localStorage.m_four === 'true' && localStorage.m_five === 'true' && localStorage.m_six === 'true' ? React.createElement(
 	      'div',
 	      { style: { display: 'inline' } },
 	      React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
 	      React.createElement(
 	        'button',
-	        { id: 'bonus', onClick: this.playGame },
-	        'bonus'
-	      )
-	    ) : "";
-	
-	    var bonus2Show = localStorage.four === 'true' && localStorage.five === 'true' && localStorage.six === 'true' && localStorage.seven === 'true' ? React.createElement(
-	      'div',
-	      { style: { display: 'inline' } },
-	      React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
-	      React.createElement(
-	        'button',
-	        { id: 'bonus2', onClick: this.playGame },
+	        { id: 'bonus', onClick: this.playMobileGame },
 	        'bonus'
 	      )
 	    ) : "";
@@ -27170,7 +27159,7 @@
 	          { id: 'three', onClick: this.playMobileGame },
 	          'three'
 	        ),
-	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement('br', null),
 	        React.createElement(
 	          'button',
 	          { id: 'four', onClick: this.playMobileGame },
@@ -27187,7 +27176,8 @@
 	          'button',
 	          { id: 'six', onClick: this.playMobileGame },
 	          'six'
-	        )
+	        ),
+	        bonusShow
 	      ),
 	      React.createElement(DotsDivider, null),
 	      React.createElement(
@@ -39141,7 +39131,19 @@
 	    goals: {
 	      sphere: 3
 	    },
-	    moves: 30
+	    moves: 30,
+	    nextLevel: 'bonus'
+	  },
+	  'bonus': {
+	    name: 'bonus',
+	    isGoalBased: true,
+	    size: 12,
+	    colors: [0, 1, 2, 3, 4, 5],
+	    goals: {
+	      star: 10
+	    },
+	    moves: 25,
+	    fruitify: true
 	  }
 	};
 
@@ -39182,9 +39184,9 @@
 	  },
 	  updateGameOverModal: function updateGameOverModal() {
 	    if (Liaison.isOver() === 'won' && this.modalFlag === 0) {
-	      localStorage.setItem(this.props.levelType.name, true);
-	      if (!localStorage[this.props.levelType.name + '-score'] || parseInt(localStorage[this.props.levelType.name + '-score']) < Liaison.score()) {
-	        localStorage.setItem(this.props.levelType.name + '-score', Liaison.score());
+	      localStorage.setItem('m_' + this.props.levelType.name, true);
+	      if (!localStorage['m_' + this.props.levelType.name + '-score'] || parseInt(localStorage['m_' + this.props.levelType.name + '-score']) < Liaison.score()) {
+	        localStorage.setItem('m_' + this.props.levelType.name + '-score', Liaison.score());
 	      }
 	    }
 	

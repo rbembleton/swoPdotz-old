@@ -488,9 +488,9 @@ input[type="submit"] {
   left: 4px; }
 
 .fruit {
-  font-size: 18px;
-  top: -1.3px;
-  left: 4px;
+  font-size: 22px;
+  top: -6.3px;
+  left: 2px;
   animation: wiggle .5s infinite;
   transform-origin: center; }
 
@@ -757,9 +757,9 @@ input[type="submit"] {
     top: -20.25px;
     left: -7px; }
   .mobile-main.main-page .m-fruit {
-    font-size: 18px;
-    top: -1.3px;
-    left: 4px;
+    font-size: 44px;
+    top: -26.3px;
+    left: -10px;
     animation: wiggle .5s infinite;
     transform-origin: center; }
   .mobile-main.main-page .m-triangle {

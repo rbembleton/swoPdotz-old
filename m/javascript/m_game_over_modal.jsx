@@ -36,10 +36,10 @@ const MGameOverModal = React.createClass({
 
   updateGameOverModal () {
     if (Liaison.isOver() === 'won' && this.modalFlag === 0) {
-      localStorage.setItem(this.props.levelType.name, true);
-      if (!(localStorage[`${this.props.levelType.name}-score`]) ||
-        parseInt(localStorage[`${this.props.levelType.name}-score`]) < Liaison.score()) {
-        localStorage.setItem(`${this.props.levelType.name}-score`, Liaison.score());
+      localStorage.setItem(`m_${this.props.levelType.name}`, true);
+      if (!(localStorage[`m_${this.props.levelType.name}-score`]) ||
+        parseInt(localStorage[`m_${this.props.levelType.name}-score`]) < Liaison.score()) {
+        localStorage.setItem(`m_${this.props.levelType.name}-score`, Liaison.score());
       }
     }
 

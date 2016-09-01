@@ -1,16 +1,16 @@
 module.exports = {
   'infinity': {
     isGoalBased: false,
-    size: 16,
+    size: 15,
   },
   'ilikewinning': {
     isGoalBased: false,
-    size: 16,
+    size: 15,
     colors: [1,3,8]
   },
   'coolcolors': {
     isGoalBased: false,
-    size: 16,
+    size: 15,
     colors: [5,6,7,8,9]
   },
   'intro': {
@@ -61,7 +61,7 @@ module.exports = {
   'bonus': {
     name: 'bonus',
     isGoalBased: true,
-    size: 16,
+    size: 15,
     colors: [0,1,2,3,4,7,9],
     goals: {
       star: 5,
@@ -118,7 +118,7 @@ module.exports = {
   'bonus2': {
     name: 'bonus2',
     isGoalBased: true,
-    size: 16,
+    size: 14,
     colors: [0,1,2,3,4,5],
     goals: {
       star: 10,
