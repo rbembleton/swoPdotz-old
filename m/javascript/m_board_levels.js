@@ -68,6 +68,17 @@ module.exports = {
       sphere: 3
     },
     moves: 30,
+    nextLevel: 'seven'
+  },
+  'seven': {
+    name: 'seven',
+    isGoalBased: true,
+    size: 12,
+    colors: [1,2,3,4,7],
+    goals: {
+      asterisk: 1
+    },
+    moves: 30,
     nextLevel: 'bonus'
   },
   'bonus': {

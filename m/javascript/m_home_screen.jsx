@@ -19,7 +19,8 @@ const HomeScreen = React.createClass({
   render () {
     const bonusShow = (
       localStorage.m_one === 'true' && localStorage.m_two === 'true' && localStorage.m_three === 'true' &&
-      localStorage.m_four === 'true' && localStorage.m_five === 'true' && localStorage.m_six === 'true' ?
+      localStorage.m_four === 'true' && localStorage.m_five === 'true' && localStorage.m_six === 'true' &&
+      localStorage.m_seven === 'true' ?
       <div style={{display: 'inline'}}>
         <span className="icon-geo-circle teal-hover"/>
         <button id="bonus" onClick={this.playMobileGame}>bonus</button>
@@ -37,12 +38,14 @@ const HomeScreen = React.createClass({
           <button id="two" onClick={this.playMobileGame}>two</button>
             <span className="icon-geo-circle teal-hover"/>
           <button id="three" onClick={this.playMobileGame}>three</button>
-            <br/>
-          <button id="four" onClick={this.playMobileGame}>four</button>
             <span className="icon-geo-circle teal-hover"/>
+          <button id="four" onClick={this.playMobileGame}>four</button>
+            <br/>
           <button id="five" onClick={this.playMobileGame}>five</button>
             <span className="icon-geo-circle teal-hover"/>
           <button id="six" onClick={this.playMobileGame}>six</button>
+            <span className="icon-geo-circle teal-hover"/>
+          <button id="seven" onClick={this.playMobileGame}>seven</button>
           {bonusShow}
         </div>
         <DotsDivider />

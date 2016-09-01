@@ -27119,7 +27119,7 @@
 	    hashHistory.push('how');
 	  },
 	  render: function render() {
-	    var bonusShow = localStorage.m_one === 'true' && localStorage.m_two === 'true' && localStorage.m_three === 'true' && localStorage.m_four === 'true' && localStorage.m_five === 'true' && localStorage.m_six === 'true' ? React.createElement(
+	    var bonusShow = localStorage.m_one === 'true' && localStorage.m_two === 'true' && localStorage.m_three === 'true' && localStorage.m_four === 'true' && localStorage.m_five === 'true' && localStorage.m_six === 'true' && localStorage.m_seven === 'true' ? React.createElement(
 	      'div',
 	      { style: { display: 'inline' } },
 	      React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
@@ -27159,13 +27159,13 @@
 	          { id: 'three', onClick: this.playMobileGame },
 	          'three'
 	        ),
-	        React.createElement('br', null),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
 	        React.createElement(
 	          'button',
 	          { id: 'four', onClick: this.playMobileGame },
 	          'four'
 	        ),
-	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement('br', null),
 	        React.createElement(
 	          'button',
 	          { id: 'five', onClick: this.playMobileGame },
@@ -27176,6 +27176,12 @@
 	          'button',
 	          { id: 'six', onClick: this.playMobileGame },
 	          'six'
+	        ),
+	        React.createElement('span', { className: 'icon-geo-circle teal-hover' }),
+	        React.createElement(
+	          'button',
+	          { id: 'seven', onClick: this.playMobileGame },
+	          'seven'
 	        ),
 	        bonusShow
 	      ),
@@ -39130,6 +39136,17 @@
 	    colors: [1, 2, 3, 5, 7, 9],
 	    goals: {
 	      sphere: 3
+	    },
+	    moves: 30,
+	    nextLevel: 'seven'
+	  },
+	  'seven': {
+	    name: 'seven',
+	    isGoalBased: true,
+	    size: 12,
+	    colors: [1, 2, 3, 4, 7],
+	    goals: {
+	      asterisk: 1
 	    },
 	    moves: 30,
 	    nextLevel: 'bonus'
