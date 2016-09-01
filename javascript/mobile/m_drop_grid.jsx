@@ -37,7 +37,7 @@ const MDropGrid = React.createClass({
     };
 
     if (this.state.animate !== ' ') {
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < 2; i++) {
         explosion.push(
           <MParticle key={i} color={this.state.animate}/>
 
