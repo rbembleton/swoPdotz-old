@@ -214,16 +214,38 @@ Board.prototype.setValAt = function (pos, val) {
 };
 
 Board.prototype.checkInARows = function (callback, update) {
-  for (var ix = 0; ix < this.size; ix++) {
-    for (var iy = 0; iy < this.size; iy++) {
+  let ix, iy;
+
+  for (ix = 0; ix < this.size; ix++) {
+    for (iy = 0; iy < this.size; iy++) {
 
       this.checkStarsAndAsterisks(ix, iy);
+    }
+  }
+
+  for (ix = 0; ix < this.size; ix++) {
+    for (iy = 0; iy < this.size; iy++) {
+
       this.checkNumInDelta(ix, iy, 6, [0, 1], update);
       this.checkNumInDelta(ix, iy, 6, [1, 0], update);
-      this.checkTnLz(ix,iy);
       this.checkNumInDelta(ix, iy, 5, [0, 1], update);
       this.checkNumInDelta(ix, iy, 5, [1, 0], update);
+
+    }
+  }
+
+  for (ix = 0; ix < this.size; ix++) {
+    for (iy = 0; iy < this.size; iy++) {
+
+      this.checkTnLz(ix,iy);
       this.checkClusters(ix, iy);
+
+    }
+  }
+
+  for (ix = 0; ix < this.size; ix++) {
+    for (iy = 0; iy < this.size; iy++) {
+
       this.checkNumInDelta(ix, iy, 4, [0, 1], update);
       this.checkNumInDelta(ix, iy, 4, [1, 0], update);
       this.checkNumInDelta(ix, iy, 3, [0, 1], update);
