@@ -682,6 +682,9 @@ input[type="submit"] {
     margin: auto;
     width: 220px;
     text-align: center; }
+  .modal-content .back-to-levels {
+    margin: auto;
+    padding: 0px; }
   .modal-content .back-to-levels:hover {
     color: #8787ff;
     cursor: pointer; }

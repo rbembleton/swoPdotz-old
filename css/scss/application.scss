@@ -775,6 +775,11 @@ input[type="submit"] {
     text-align: center;
   }
 
+  .back-to-levels {
+    margin: auto;
+    padding: 0px;
+  }
+
   .back-to-levels:hover {
     color: $indigo;
     cursor: pointer;
